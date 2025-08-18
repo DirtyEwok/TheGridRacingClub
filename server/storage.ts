@@ -1,5 +1,7 @@
-import { type Member, type InsertMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats } from "@shared/schema";
+import { type Member, type InsertMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, members, championships, races, registrations } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   // Members
@@ -30,6 +32,159 @@ export interface IStorage {
   getAllRegistrations(): Promise<Registration[]>;
   createRegistration(registration: InsertRegistration): Promise<Registration>;
   deleteRegistration(raceId: string, memberId: string): Promise<boolean>;
+}
+
+export class DatabaseStorage implements IStorage {
+  // Members
+  async getMember(id: string): Promise<Member | undefined> {
+    const [member] = await db.select().from(members).where(eq(members.id, id));
+    return member || undefined;
+  }
+
+  async getMemberByGamertag(gamertag: string): Promise<Member | undefined> {
+    const [member] = await db.select().from(members).where(eq(members.gamertag, gamertag));
+    return member || undefined;
+  }
+
+  async createMember(insertMember: InsertMember): Promise<Member> {
+    const [member] = await db.insert(members).values(insertMember).returning();
+    return member;
+  }
+
+  // Championships
+  async getAllChampionships(): Promise<Championship[]> {
+    return await db.select().from(championships).where(eq(championships.isActive, true));
+  }
+
+  async getChampionship(id: string): Promise<Championship | undefined> {
+    const [championship] = await db.select().from(championships).where(eq(championships.id, id));
+    return championship || undefined;
+  }
+
+  async createChampionship(insertChampionship: InsertChampionship): Promise<Championship> {
+    const [championship] = await db.insert(championships).values(insertChampionship).returning();
+    return championship;
+  }
+
+  async updateChampionship(id: string, updateChampionship: UpdateChampionship): Promise<Championship | undefined> {
+    const [championship] = await db.update(championships).set(updateChampionship).where(eq(championships.id, id)).returning();
+    return championship || undefined;
+  }
+
+  async deleteChampionship(id: string): Promise<boolean> {
+    const result = await db.update(championships).set({ isActive: false }).where(eq(championships.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getChampionshipsWithStats(): Promise<ChampionshipWithStats[]> {
+    const allChampionships = await this.getAllChampionships();
+    const allRaces = await this.getAllRaces();
+    const allRegistrations = await this.getAllRegistrations();
+
+    return allChampionships.map(championship => {
+      const championshipRaces = allRaces.filter(race => race.championshipId === championship.id);
+      const totalRegistrations = championshipRaces.reduce((sum, race) => {
+        const raceRegistrations = allRegistrations.filter(reg => reg.raceId === race.id);
+        return sum + raceRegistrations.length;
+      }, 0);
+
+      return {
+        ...championship,
+        raceCount: championshipRaces.length,
+        totalRegistrations,
+      };
+    });
+  }
+
+  // Races
+  async getRace(id: string): Promise<Race | undefined> {
+    const [race] = await db.select().from(races).where(eq(races.id, id));
+    return race || undefined;
+  }
+
+  async getAllRaces(): Promise<Race[]> {
+    return await db.select().from(races).where(eq(races.isActive, true));
+  }
+
+  async createRace(insertRace: InsertRace): Promise<Race> {
+    const [race] = await db.insert(races).values(insertRace).returning();
+    return race;
+  }
+
+  async updateRace(id: string, updateRace: UpdateRace): Promise<Race | undefined> {
+    const [race] = await db.update(races).set(updateRace).where(eq(races.id, id)).returning();
+    return race || undefined;
+  }
+
+  async deleteRace(id: string): Promise<boolean> {
+    const result = await db.update(races).set({ isActive: false }).where(eq(races.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getRacesWithStats(memberId?: string): Promise<RaceWithStats[]> {
+    const allRaces = await this.getAllRaces();
+    const allChampionships = await this.getAllChampionships();
+    const allRegistrations = await this.getAllRegistrations();
+
+    return allRaces.map(race => {
+      const raceRegistrations = allRegistrations.filter(reg => reg.raceId === race.id);
+      const championship = allChampionships.find(c => c.id === race.championshipId);
+      
+      const isRegistered = memberId ? 
+        raceRegistrations.some(reg => reg.memberId === memberId) : false;
+
+      const now = new Date();
+      const deadline = new Date(race.registrationDeadline);
+      const timeUntilDeadline = deadline > now ? 
+        `${Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))} days` : 
+        'Closed';
+
+      return {
+        ...race,
+        registeredCount: raceRegistrations.length,
+        isRegistered,
+        timeUntilDeadline,
+        championshipName: championship?.name || undefined,
+      };
+    }).sort((a, b) => {
+      if (a.roundNumber && b.roundNumber) {
+        return a.roundNumber - b.roundNumber;
+      }
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+  }
+
+  // Registrations
+  async getRegistration(raceId: string, memberId: string): Promise<Registration | undefined> {
+    const [registration] = await db.select().from(registrations).where(
+      and(eq(registrations.raceId, raceId), eq(registrations.memberId, memberId))
+    );
+    return registration || undefined;
+  }
+
+  async getRegistrationsByRace(raceId: string): Promise<Registration[]> {
+    return await db.select().from(registrations).where(eq(registrations.raceId, raceId));
+  }
+
+  async getRegistrationsByMember(memberId: string): Promise<Registration[]> {
+    return await db.select().from(registrations).where(eq(registrations.memberId, memberId));
+  }
+
+  async getAllRegistrations(): Promise<Registration[]> {
+    return await db.select().from(registrations);
+  }
+
+  async createRegistration(insertRegistration: InsertRegistration): Promise<Registration> {
+    const [registration] = await db.insert(registrations).values(insertRegistration).returning();
+    return registration;
+  }
+
+  async deleteRegistration(raceId: string, memberId: string): Promise<boolean> {
+    const result = await db.delete(registrations).where(
+      and(eq(registrations.raceId, raceId), eq(registrations.memberId, memberId))
+    );
+    return (result.rowCount ?? 0) > 0;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -418,4 +573,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
