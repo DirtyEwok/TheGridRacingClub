@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { getCurrentMemberId } from "@/lib/memberSession";
 import championship1Image from "@assets/championship1.png";
+import championship2Image from "@assets/championship2.png";
 import type { RaceWithStats } from "@shared/schema";
 
 export default function Races() {
@@ -112,9 +113,13 @@ export default function Races() {
           {/* Right Championship Poster */}
           <div className="hidden lg:block">
             <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-              <h3 className="text-xs font-medium text-gray-300 mb-2 text-center">Championship 2</h3>
-              <div className="w-32 h-40 bg-gray-700 rounded border border-gray-600 flex items-center justify-center">
-                <span className="text-xs text-gray-400 text-center">Championship<br/>Poster 2</span>
+              <h3 className="text-xs font-medium text-gray-300 mb-2 text-center">GT3 Mid Evo Masters</h3>
+              <div className="w-32 h-40 rounded border border-gray-600 overflow-hidden">
+                <img 
+                  src={championship2Image} 
+                  alt="GT3 Mid Evo Masters 90" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
