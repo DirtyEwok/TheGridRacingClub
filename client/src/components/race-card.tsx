@@ -1,5 +1,7 @@
-import { Trophy, MapPin, Car, Users, Clock, CheckCircle, Info } from "lucide-react";
+import { useState } from "react";
+import { Trophy, MapPin, Car, Users, Clock, CheckCircle, Info, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CircuitPreview from "./circuit-preview";
 import type { RaceWithStats } from "@shared/schema";
 
 interface RaceCardProps {
@@ -9,6 +11,7 @@ interface RaceCardProps {
 }
 
 export default function RaceCard({ race, onRegister, onUnregister }: RaceCardProps) {
+  const [showPreview, setShowPreview] = useState(false);
   const raceDate = new Date(race.date);
   const isDeadlinePassed = new Date() > new Date(race.registrationDeadline);
   const isFull = race.registeredCount >= race.maxParticipants;
@@ -46,9 +49,18 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
               {status.text}
             </span>
           </div>
-          <div className="text-right text-sm text-gray-400">
-            <div>{raceDate.toLocaleDateString()}</div>
-            <div>{raceDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="p-2 hover:bg-gray-700 rounded-lg transition-colors group"
+              title="View Circuit Preview"
+            >
+              <Eye className="w-4 h-4 text-gray-400 group-hover:text-green-400" />
+            </button>
+            <div className="text-right text-sm text-gray-400">
+              <div>{raceDate.toLocaleDateString()}</div>
+              <div>{raceDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            </div>
           </div>
         </div>
 
@@ -127,6 +139,17 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
           </Button>
         </div>
       </div>
+
+      {/* Circuit Preview */}
+      {showPreview && (
+        <div className="border-t border-gray-700">
+          <CircuitPreview 
+            trackName={race.track} 
+            carClass={race.carClass}
+            isVisible={showPreview}
+          />
+        </div>
+      )}
     </div>
   );
 }
