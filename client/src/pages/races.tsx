@@ -75,9 +75,29 @@ export default function Races() {
       <MemberHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Upcoming Races</h1>
-          <p className="text-gray-300">Register for racing events and join the competition</p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Upcoming Races</h1>
+            <p className="text-gray-300">Register for racing events and join the competition</p>
+          </div>
+          
+          {/* Championship Posters Section */}
+          <div className="flex space-x-4">
+            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <h3 className="text-sm font-medium text-gray-300 mb-2">Current Championships</h3>
+              <div className="flex space-x-3">
+                {/* Championship Poster 1 */}
+                <div className="w-24 h-32 bg-gray-700 rounded border border-gray-600 flex items-center justify-center">
+                  <span className="text-xs text-gray-400 text-center">Championship<br/>Poster 1</span>
+                </div>
+                
+                {/* Championship Poster 2 */}
+                <div className="w-24 h-32 bg-gray-700 rounded border border-gray-600 flex items-center justify-center">
+                  <span className="text-xs text-gray-400 text-center">Championship<br/>Poster 2</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
