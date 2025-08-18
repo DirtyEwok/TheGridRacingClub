@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Trophy } from "lucide-react";
+import { Menu, X, Trophy, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function MemberHeader() {
@@ -43,20 +43,35 @@ export default function MemberHeader() {
             ))}
           </nav>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </Button>
+          {/* Admin Access & Mobile menu */}
+          <div className="flex items-center space-x-2">
+            {/* Discreet admin access */}
+            <Link href="/admin">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-600 hover:text-gray-400 hover:bg-gray-800"
+                title="Admin Access"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </Link>
+            
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
