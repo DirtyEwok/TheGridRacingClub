@@ -89,7 +89,7 @@ export default function Races() {
             <img 
               src={championship1Image} 
               alt="GT4 Mornings Season 2" 
-              className="w-32 h-40 object-cover rounded"
+              className="w-40 h-52 object-cover rounded"
             />
           </div>
 
@@ -110,7 +110,7 @@ export default function Races() {
             <img 
               src={championship2Image} 
               alt="GT3 Mid Evo Masters 90" 
-              className="w-32 h-40 object-cover rounded"
+              className="w-40 h-52 object-cover rounded"
             />
           </div>
         </div>
