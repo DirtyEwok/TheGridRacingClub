@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(222 84% 4.9%);
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(222 84% 4.9%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(222 84% 4.9%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: hsl(142 76% 36%);
+  --primary-foreground: hsl(355 7% 97%);
+  --secondary: hsl(217 32% 17%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --muted: hsl(217 32% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+  --accent: hsl(217 32% 17%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(217 32% 17%);
+  --input: hsl(217 32% 17%);
+  --ring: hsl(142 76% 36%);
+  --radius: 0.75rem;
+  
+  /* Racing-specific colors */
+  --racing-green: hsl(142 76% 36%);
+  --xbox-green: hsl(122 100% 25%);
+  --racing-red: hsl(0 84% 60%);
+  --racing-black: hsl(220 26% 14%);
+  --checkered: hsl(215 16% 47%);
+  
+  /* Font family */
+  --font-racing: 'Inter', 'system-ui', 'sans-serif';
+}
+
+.dark {
+  --background: hsl(222 84% 4.9%);
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(222 84% 4.9%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(222 84% 4.9%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: hsl(142 76% 36%);
+  --primary-foreground: hsl(355 7% 97%);
+  --secondary: hsl(217 32% 17%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --muted: hsl(217 32% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+  --accent: hsl(217 32% 17%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(217 32% 17%);
+  --input: hsl(217 32% 17%);
+  --ring: hsl(142 76% 36%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-racing);
+  }
+}
+
+@layer utilities {
+  .racing-gradient {
+    background: linear-gradient(135deg, var(--racing-black), hsl(217 32% 17%));
+  }
+  
+  .checkered-pattern {
+    background-image: 
+      linear-gradient(45deg, var(--checkered) 25%, transparent 25%), 
+      linear-gradient(-45deg, var(--checkered) 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, var(--checkered) 75%), 
+      linear-gradient(-45deg, transparent 75%, var(--checkered) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+}
