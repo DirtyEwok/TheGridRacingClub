@@ -12,6 +12,8 @@ Registration status color: Orange instead of green.
 Admin access: User requires exclusive control over race management and calendar editing.
 Member access: Members should only access /races link without admin functionality visible.
 Layout: Removed calendar to show 9 races in 3x3 grid layout for better space utilization.
+Admin navigation: Discreet settings icon in member header provides quick admin access for user.
+Welcome messages: New users see "Welcome to your race registration with The Grid" instead of hardcoded names.
 
 ## System Architecture
 
@@ -23,7 +25,7 @@ Layout: Removed calendar to show 9 races in 3x3 grid layout for better space uti
 
 **State Management**: Uses TanStack Query (React Query) for server state management, providing caching, background updates, and optimistic updates for race registrations. Local component state is managed with React hooks.
 
-**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, Championships, and Admin pages. Member-specific routes (/races, /championships) use MemberHeader without admin access, while admin routes use the full Header with admin navigation.
+**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, Championships, and Admin pages. Member-specific routes (/races, /championships) use MemberHeader with limited navigation and discreet admin access via settings icon, while admin routes use the full Header with complete admin navigation.
 
 **Form Handling**: React Hook Form with Zod validation provides type-safe form management for race registration and member creation.
 
@@ -33,7 +35,7 @@ Layout: Removed calendar to show 9 races in 3x3 grid layout for better space uti
 
 **Route Structure**: Clean separation of concerns with dedicated route handlers for races, members, and registrations. All API endpoints are prefixed with `/api/`. Admin-only endpoints for race CRUD operations are protected with authorization headers.
 
-**Data Storage**: Currently uses an in-memory storage implementation for development, with a well-defined interface that can be easily swapped for database persistence. PostgreSQL database is configured and ready for production use.
+**Data Storage**: Currently uses an in-memory storage implementation for development, with a well-defined interface that can be easily swapped for database persistence. Member session management stores user details in localStorage for registration persistence between sessions. PostgreSQL database is configured and ready for production use.
 
 **Error Handling**: Centralized error handling middleware provides consistent error responses and logging.
 
