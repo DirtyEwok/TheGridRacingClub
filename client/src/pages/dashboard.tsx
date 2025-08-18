@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import Header from "@/components/header";
 import RaceCard from "@/components/race-card";
 import RegistrationModal from "@/components/registration-modal";
-import RaceCalendar from "@/components/race-calendar";
+
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -115,7 +115,7 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {races.map((race) => (
               <RaceCard
                 key={race.id}
@@ -127,8 +127,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Race Calendar */}
-        <RaceCalendar races={races} />
+
 
         {/* Registration Modal */}
         <RegistrationModal
