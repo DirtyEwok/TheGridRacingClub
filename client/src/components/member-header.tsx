@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Trophy, Settings } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logoImage from "@assets/logo.png";
 
 export default function MemberHeader() {
   const [location] = useLocation();
@@ -27,7 +28,7 @@ export default function MemberHeader() {
                   window.location.href = '/admin';
                 }}
               >
-                <Trophy className="h-8 w-8 text-racing-green" />
+                <img src={logoImage} alt="The Grid" className="h-8 w-auto" />
                 <span className="text-xl font-bold text-white">The Grid</span>
               </div>
             </Link>
