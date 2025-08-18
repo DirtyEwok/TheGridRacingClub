@@ -76,8 +76,8 @@ export default function Races() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">The Grid Racing Club</h1>
-          <p className="text-gray-300">Browse and register for upcoming racing events</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Upcoming Races</h1>
+          <p className="text-gray-300">Register for racing events and join the competition</p>
         </div>
 
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

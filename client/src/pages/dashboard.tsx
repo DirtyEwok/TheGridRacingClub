@@ -60,7 +60,6 @@ export default function Dashboard() {
   };
 
   const registeredRaces = races.filter(race => race.isRegistered);
-  const totalWins = 12; // Mock data - would come from member profile in real app
 
   if (isLoading) {
     return (
@@ -84,7 +83,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-white mb-2">
-                  Welcome back, <span className="text-racing-green">RacerPro2023</span>!
+                  Welcome to <span className="text-racing-green">The Grid Racing Club</span>
                 </h2>
                 <p className="text-gray-300">Ready to hit the track? Check out upcoming races below.</p>
               </div>
@@ -92,10 +91,6 @@ export default function Dashboard() {
                 <div className="bg-gray-800 rounded-lg p-4">
                   <div className="text-2xl font-bold text-racing-green">{registeredRaces.length}</div>
                   <div className="text-sm text-gray-400">Registered</div>
-                </div>
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-yellow-400">{totalWins}</div>
-                  <div className="text-sm text-gray-400">Wins</div>
                 </div>
               </div>
             </div>
