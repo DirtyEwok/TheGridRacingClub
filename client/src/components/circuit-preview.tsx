@@ -92,16 +92,7 @@ const trackDatabase: Record<string, CircuitData> = {
     ],
     stats: { length: "5.472 km", turns: 11, lapRecord: "1:18.441", difficulty: "Advanced" }
   },
-  "Donington Park": {
-    name: "Donington Park",
-    layout: "M 120 200 Q 160 140 220 160 Q 280 180 300 240 Q 280 300 220 280 Q 160 260 120 200 Z",
-    highlights: [
-      { name: "Craner Curves", type: "corner", position: { x: 200, y: 170 }, description: "Fast sweeping uphill curves" },
-      { name: "Old Hairpin", type: "corner", position: { x: 280, y: 260 }, description: "Tight hairpin with elevation change" },
-      { name: "Coppice Corner", type: "corner", position: { x: 180, y: 260 }, description: "Downhill right-hander" }
-    ],
-    stats: { length: "4.020 km", turns: 12, lapRecord: "1:25.892", difficulty: "Advanced" }
-  },
+
   "Zandvoort": {
     name: "Zandvoort",
     layout: "M 100 180 Q 140 120 200 140 Q 260 160 300 200 Q 320 240 280 280 Q 240 320 180 300 Q 120 280 100 240 Q 80 200 100 180 Z",
