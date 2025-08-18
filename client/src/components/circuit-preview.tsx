@@ -143,6 +143,27 @@ const trackDatabase: Record<string, CircuitData> = {
     ],
     stats: { length: "4.522 km", turns: 16, lapRecord: "1:16.976", difficulty: "Advanced" }
   },
+  // Track name aliases for different naming formats
+  "Circuit of Spa-Francorchamps": {
+    name: "Circuit of Spa-Francorchamps",
+    layout: "M 80 200 Q 60 150 100 100 Q 150 60 220 80 Q 300 100 350 150 Q 380 200 350 250 Q 300 300 220 280 Q 150 260 100 220 Q 60 180 80 200 Z",
+    highlights: [
+      { name: "Eau Rouge", type: "corner", position: { x: 120, y: 120 }, description: "Legendary uphill left-right combination" },
+      { name: "Kemmel Straight", type: "straight", position: { x: 250, y: 90 }, description: "Long straight with DRS overtaking zone" },
+      { name: "Bus Stop Chicane", type: "corner", position: { x: 200, y: 260 }, description: "Tight chicane before main straight" }
+    ],
+    stats: { length: "7.004 km", turns: 20, lapRecord: "1:41.252", difficulty: "Expert" }
+  },
+  "Silverstone Circuit - GP Layout": {
+    name: "Silverstone Circuit - GP Layout",
+    layout: "M 100 180 Q 80 120 140 90 Q 200 60 280 90 Q 350 120 380 180 Q 350 240 280 270 Q 200 300 140 270 Q 80 240 100 180 Z",
+    highlights: [
+      { name: "Copse Corner", type: "corner", position: { x: 150, y: 100 }, description: "High-speed right-hander opening sequence" },
+      { name: "Maggotts-Becketts", type: "sector", position: { x: 280, y: 120 }, description: "Fast flowing S-curves complex" },
+      { name: "Stowe Corner", type: "corner", position: { x: 200, y: 280 }, description: "Slow hairpin with overtaking opportunities" }
+    ],
+    stats: { length: "5.891 km", turns: 18, lapRecord: "1:24.303", difficulty: "Advanced" }
+  },
 
 };
 
