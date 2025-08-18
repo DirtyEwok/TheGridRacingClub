@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import CreateRaceModal from "@/components/create-race-modal";
 import CreateChampionshipModal from "@/components/create-championship-modal";
+import EditChampionshipModal from "@/components/edit-championship-modal";
 import EditRaceModal from "@/components/edit-race-modal";
 import type { RaceWithStats, ChampionshipWithStats } from "@shared/schema";
 
@@ -16,6 +17,7 @@ export default function AdminPanel() {
   const [isCreateRaceModalOpen, setIsCreateRaceModalOpen] = useState(false);
   const [isCreateChampionshipModalOpen, setIsCreateChampionshipModalOpen] = useState(false);
   const [editingRace, setEditingRace] = useState<RaceWithStats | null>(null);
+  const [editingChampionship, setEditingChampionship] = useState<ChampionshipWithStats | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -279,6 +281,14 @@ export default function AdminPanel() {
                     <Button
                       variant="outline"
                       size="sm"
+                      onClick={() => setEditingChampionship(championship)}
+                      className="bg-gray-600 hover:bg-gray-500 border-gray-500"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => handleDeleteChampionship(championship)}
                       className="bg-red-900 hover:bg-red-800 border-red-700 text-red-300"
                     >
@@ -307,6 +317,12 @@ export default function AdminPanel() {
       <CreateChampionshipModal 
         isOpen={isCreateChampionshipModalOpen}
         onClose={() => setIsCreateChampionshipModalOpen(false)}
+      />
+
+      <EditChampionshipModal 
+        championship={editingChampionship}
+        isOpen={!!editingChampionship}
+        onClose={() => setEditingChampionship(null)}
       />
       
       <EditRaceModal 
