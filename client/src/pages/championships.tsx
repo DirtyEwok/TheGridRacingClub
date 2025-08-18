@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Trophy, Calendar, Users, Plus, Medal } from "lucide-react";
-import Header from "@/components/header";
+import MemberHeader from "@/components/member-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ export default function Championships() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black">
-        <Header />
+        <MemberHeader />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-white">Loading championships...</div>
         </main>
@@ -30,21 +30,12 @@ export default function Championships() {
 
   return (
     <div className="min-h-screen bg-black">
-      <Header />
+      <MemberHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Championships</h1>
-            <p className="text-gray-300">View active racing championships and seasons</p>
-          </div>
-          <Button 
-            onClick={() => window.location.href = '/admin'}
-            className="bg-racing-green hover:bg-green-600 text-white"
-          >
-            <Plus className="mr-2 w-4 h-4" />
-            Manage Championships
-          </Button>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Championships</h1>
+          <p className="text-gray-300">View active racing championships and seasons</p>
         </div>
 
         {championships.length === 0 ? (

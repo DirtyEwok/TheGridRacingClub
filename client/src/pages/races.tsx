@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import Header from "@/components/header";
+import MemberHeader from "@/components/member-header";
 import RaceCard from "@/components/race-card";
 import RegistrationModal from "@/components/registration-modal";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ export default function Races() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black">
-        <Header />
+        <MemberHeader />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-white">Loading...</div>
         </main>
@@ -70,7 +70,7 @@ export default function Races() {
 
   return (
     <div className="min-h-screen bg-black">
-      <Header />
+      <MemberHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">

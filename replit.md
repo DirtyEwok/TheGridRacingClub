@@ -10,6 +10,8 @@ Preferred communication style: Simple, everyday language.
 Background color: Pure black for racing theme.
 Registration status color: Orange instead of green.
 Admin access: User requires exclusive control over race management and calendar editing.
+Member access: Members should only access /races link without admin functionality visible.
+Layout: Removed calendar to show 9 races in 3x3 grid layout for better space utilization.
 
 ## System Architecture
 
@@ -21,7 +23,7 @@ Admin access: User requires exclusive control over race management and calendar 
 
 **State Management**: Uses TanStack Query (React Query) for server state management, providing caching, background updates, and optimistic updates for race registrations. Local component state is managed with React hooks.
 
-**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, Championships, and Admin pages for comprehensive race and championship management.
+**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, Championships, and Admin pages. Member-specific routes (/races, /championships) use MemberHeader without admin access, while admin routes use the full Header with admin navigation.
 
 **Form Handling**: React Hook Form with Zod validation provides type-safe form management for race registration and member creation.
 
