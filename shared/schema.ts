@@ -88,6 +88,7 @@ export const insertChampionshipSchema = createInsertSchema(championships).pick({
   endDate: true,
   maxParticipants: true,
   rules: true,
+  isActive: true,
 }).extend({
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
