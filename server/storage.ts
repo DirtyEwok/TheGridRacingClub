@@ -27,6 +27,7 @@ export interface IStorage {
   getRegistration(raceId: string, memberId: string): Promise<Registration | undefined>;
   getRegistrationsByRace(raceId: string): Promise<Registration[]>;
   getRegistrationsByMember(memberId: string): Promise<Registration[]>;
+  getAllRegistrations(): Promise<Registration[]>;
   createRegistration(registration: InsertRegistration): Promise<Registration>;
   deleteRegistration(raceId: string, memberId: string): Promise<boolean>;
 }
@@ -390,6 +391,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.registrations.values()).filter(
       (reg) => reg.memberId === memberId,
     );
+  }
+
+  async getAllRegistrations(): Promise<Registration[]> {
+    return Array.from(this.registrations.values());
   }
 
   async createRegistration(insertRegistration: InsertRegistration): Promise<Registration> {

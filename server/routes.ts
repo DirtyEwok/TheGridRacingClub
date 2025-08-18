@@ -215,6 +215,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all registrations (for debugging)
+  app.get("/api/registrations", async (req, res) => {
+    try {
+      const registrations = await storage.getAllRegistrations();
+      res.json(registrations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch registrations" });
+    }
+  });
+
   // Register for race
   app.post("/api/registrations", async (req, res) => {
     try {
