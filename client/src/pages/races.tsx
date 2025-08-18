@@ -78,9 +78,12 @@ export default function Races() {
             <h1 className="text-3xl font-bold text-white mb-2">All Races</h1>
             <p className="text-gray-300">Browse and register for upcoming racing events</p>
           </div>
-          <Button className="bg-racing-green hover:bg-green-600 text-white">
+          <Button 
+            onClick={() => window.location.href = '/admin'}
+            className="bg-racing-green hover:bg-green-600 text-white"
+          >
             <Plus className="mr-2 w-4 h-4" />
-            Create Race
+            Manage Races
           </Button>
         </div>
 

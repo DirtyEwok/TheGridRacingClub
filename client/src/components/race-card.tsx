@@ -117,7 +117,12 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
               {isDeadlinePassed ? "Registration Closed" : isFull ? "Race Full" : "Register Now"}
             </Button>
           )}
-          <Button variant="outline" size="icon" className="bg-gray-700 hover:bg-gray-600 border-gray-600">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => alert(`Race Details:\n\n${race.name}\n${race.track}\n${race.carClass}\n\nDate: ${new Date(race.date).toLocaleDateString()}\nTime: ${new Date(race.date).toLocaleTimeString()}\n\nRegistration Deadline: ${new Date(race.registrationDeadline).toLocaleDateString()}\n\nParticipants: ${race.registeredCount}/${race.maxParticipants}`)}
+            className="bg-gray-700 hover:bg-gray-600 border-gray-600"
+          >
             <Info className="w-4 h-4" />
           </Button>
         </div>

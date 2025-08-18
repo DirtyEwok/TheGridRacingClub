@@ -7,6 +7,9 @@ This is a full-stack web application for managing The Grid Racing Club, built wi
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Background color: Pure black for racing theme.
+Registration status color: Orange instead of green.
+Admin access: User requires exclusive control over race management and calendar editing.
 
 ## System Architecture
 
@@ -18,7 +21,7 @@ Preferred communication style: Simple, everyday language.
 
 **State Management**: Uses TanStack Query (React Query) for server state management, providing caching, background updates, and optimistic updates for race registrations. Local component state is managed with React hooks.
 
-**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application has a simple structure with Dashboard and Races pages.
+**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, and Admin pages for comprehensive race management.
 
 **Form Handling**: React Hook Form with Zod validation provides type-safe form management for race registration and member creation.
 
@@ -26,15 +29,15 @@ Preferred communication style: Simple, everyday language.
 
 **Express.js Server**: RESTful API server built with Express.js and TypeScript. The server handles race management, member registration, and race participation tracking.
 
-**Route Structure**: Clean separation of concerns with dedicated route handlers for races, members, and registrations. All API endpoints are prefixed with `/api/`.
+**Route Structure**: Clean separation of concerns with dedicated route handlers for races, members, and registrations. All API endpoints are prefixed with `/api/`. Admin-only endpoints for race CRUD operations are protected with authorization headers.
 
-**Data Storage**: Currently uses an in-memory storage implementation for development, with a well-defined interface that can be easily swapped for database persistence.
+**Data Storage**: Currently uses an in-memory storage implementation for development, with a well-defined interface that can be easily swapped for database persistence. PostgreSQL database is configured and ready for production use.
 
 **Error Handling**: Centralized error handling middleware provides consistent error responses and logging.
 
 ### Data Models
 
-**Members**: User profiles with display name, Xbox gamertag, and experience level (Beginner, Intermediate, Advanced, Professional).
+**Members**: User profiles with display name, Xbox gamertag, experience level (Beginner, Intermediate, Advanced, Professional), and admin status for race management permissions.
 
 **Races**: Racing events with details like track, car class, date/time, participant limits, and registration deadlines.
 

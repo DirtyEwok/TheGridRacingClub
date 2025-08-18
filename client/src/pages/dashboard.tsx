@@ -106,9 +106,12 @@ export default function Dashboard() {
         <section className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-white">Upcoming Races</h2>
-            <Button className="bg-racing-green hover:bg-green-600 text-white">
+            <Button 
+              onClick={() => window.location.href = '/admin'}
+              className="bg-racing-green hover:bg-green-600 text-white"
+            >
               <Plus className="mr-2 w-4 h-4" />
-              Create Race
+              Manage Races
             </Button>
           </div>
 

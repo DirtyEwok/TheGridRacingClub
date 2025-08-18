@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type Race, type InsertRace, type Registration, type InsertRegistration, type RaceWithStats } from "@shared/schema";
+import { type Member, type InsertMember, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -11,6 +11,8 @@ export interface IStorage {
   getRace(id: string): Promise<Race | undefined>;
   getAllRaces(): Promise<Race[]>;
   createRace(race: InsertRace): Promise<Race>;
+  updateRace(id: string, race: UpdateRace): Promise<Race | undefined>;
+  deleteRace(id: string): Promise<boolean>;
   getRacesWithStats(memberId?: string): Promise<RaceWithStats[]>;
 
   // Registrations
@@ -85,7 +87,7 @@ export class MemStorage implements IStorage {
 
   async createMember(insertMember: InsertMember): Promise<Member> {
     const id = randomUUID();
-    const member: Member = { ...insertMember, id };
+    const member: Member = { ...insertMember, id, isAdmin: false };
     this.members.set(id, member);
     return member;
   }
@@ -103,6 +105,28 @@ export class MemStorage implements IStorage {
     const race: Race = { ...insertRace, id, isActive: true };
     this.races.set(id, race);
     return race;
+  }
+
+  async updateRace(id: string, updateRace: UpdateRace): Promise<Race | undefined> {
+    const existingRace = this.races.get(id);
+    if (!existingRace) return undefined;
+    
+    const updatedRace: Race = { ...existingRace, ...updateRace };
+    this.races.set(id, updatedRace);
+    return updatedRace;
+  }
+
+  async deleteRace(id: string): Promise<boolean> {
+    if (!this.races.has(id)) return false;
+    
+    // Also remove all registrations for this race
+    const registrationsToDelete = Array.from(this.registrations.entries())
+      .filter(([_, reg]) => reg.raceId === id)
+      .map(([regId]) => regId);
+    
+    registrationsToDelete.forEach(regId => this.registrations.delete(regId));
+    
+    return this.races.delete(id);
   }
 
   async getRacesWithStats(memberId?: string): Promise<RaceWithStats[]> {

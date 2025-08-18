@@ -8,6 +8,7 @@ export const members = pgTable("members", {
   displayName: text("display_name").notNull(),
   gamertag: text("gamertag").notNull().unique(),
   experienceLevel: text("experience_level").notNull(), // "Beginner", "Intermediate", "Advanced", "Professional"
+  isAdmin: boolean("is_admin").notNull().default(false),
 });
 
 export const races = pgTable("races", {
@@ -34,6 +35,16 @@ export const insertMemberSchema = createInsertSchema(members).pick({
   experienceLevel: true,
 });
 
+export const updateRaceSchema = createInsertSchema(races).pick({
+  name: true,
+  track: true,
+  carClass: true,
+  date: true,
+  maxParticipants: true,
+  registrationDeadline: true,
+  isActive: true,
+});
+
 export const insertRaceSchema = createInsertSchema(races).pick({
   name: true,
   track: true,
@@ -51,6 +62,7 @@ export const insertRegistrationSchema = createInsertSchema(registrations).pick({
 export type InsertMember = z.infer<typeof insertMemberSchema>;
 export type Member = typeof members.$inferSelect;
 export type InsertRace = z.infer<typeof insertRaceSchema>;
+export type UpdateRace = z.infer<typeof updateRaceSchema>;
 export type Race = typeof races.$inferSelect;
 export type InsertRegistration = z.infer<typeof insertRegistrationSchema>;
 export type Registration = typeof registrations.$inferSelect;

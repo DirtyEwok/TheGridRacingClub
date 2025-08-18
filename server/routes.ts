@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMemberSchema, insertRaceSchema, insertRegistrationSchema } from "@shared/schema";
+import { insertMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -29,9 +29,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new race
+  // Create new race (admin only)
   app.post("/api/races", async (req, res) => {
     try {
+      // Check if user is admin (simple check for now - you can expand this)
+      const adminCheck = req.headers.authorization === "admin"; // Replace with proper auth
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
       const raceData = insertRaceSchema.parse(req.body);
       const race = await storage.createRace(raceData);
       res.status(201).json(race);
@@ -40,6 +46,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid race data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create race" });
+    }
+  });
+
+  // Update race (admin only)
+  app.put("/api/races/:id", async (req, res) => {
+    try {
+      // Check if user is admin (simple check for now - you can expand this)
+      const adminCheck = req.headers.authorization === "admin"; // Replace with proper auth
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const raceData = updateRaceSchema.parse(req.body);
+      const race = await storage.updateRace(req.params.id, raceData);
+      
+      if (!race) {
+        return res.status(404).json({ message: "Race not found" });
+      }
+      
+      res.json(race);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid race data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update race" });
+    }
+  });
+
+  // Delete race (admin only)
+  app.delete("/api/races/:id", async (req, res) => {
+    try {
+      // Check if user is admin (simple check for now - you can expand this)
+      const adminCheck = req.headers.authorization === "admin"; // Replace with proper auth
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const success = await storage.deleteRace(req.params.id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Race not found" });
+      }
+      
+      res.json({ message: "Race deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete race" });
     }
   });
 

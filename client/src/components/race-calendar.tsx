@@ -56,10 +56,20 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-white">{monthName}</h3>
             <div className="flex space-x-2">
-              <Button variant="outline" size="icon" className="bg-gray-700 hover:bg-gray-600 border-gray-600">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => alert('Previous month navigation - coming soon!')}
+                className="bg-gray-700 hover:bg-gray-600 border-gray-600"
+              >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <Button variant="outline" size="icon" className="bg-gray-700 hover:bg-gray-600 border-gray-600">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => alert('Next month navigation - coming soon!')}
+                className="bg-gray-700 hover:bg-gray-600 border-gray-600"
+              >
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -84,16 +94,24 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
               return (
                 <div
                   key={index}
-                  className={`aspect-square p-1 text-center text-sm relative rounded ${
+                  onClick={() => {
+                    if (hasRaces) {
+                      const racesList = day.races.map(race => 
+                        `• ${race.name} at ${new Date(race.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                      ).join('\n');
+                      alert(`Races on ${day.date.toLocaleDateString()}:\n\n${racesList}`);
+                    }
+                  }}
+                  className={`aspect-square p-1 text-center text-sm relative rounded cursor-pointer ${
                     !day.isCurrentMonth 
                       ? "text-gray-500" 
                       : hasRaces
                         ? isRegistered
-                          ? "bg-orange-500 bg-opacity-20 border border-orange-500"
+                          ? "bg-orange-500 bg-opacity-20 border border-orange-500 hover:bg-opacity-30"
                           : isClosingSoon
-                            ? "bg-yellow-500 bg-opacity-20 border border-yellow-500"
-                            : "bg-racing-green bg-opacity-20 border border-racing-green"
-                        : "text-gray-300"
+                            ? "bg-yellow-500 bg-opacity-20 border border-yellow-500 hover:bg-opacity-30"
+                            : "bg-racing-green bg-opacity-20 border border-racing-green hover:bg-opacity-30"
+                        : "text-gray-300 hover:bg-gray-700"
                   }`}
                 >
                   <div className={`font-medium ${hasRaces && day.isCurrentMonth ? "text-white" : ""}`}>
