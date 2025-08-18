@@ -1,8 +1,8 @@
-# Xbox Racing Club Management System
+# The Grid Racing Club Management System
 
 ## Overview
 
-This is a full-stack web application for managing an Xbox racing club, built with React, TypeScript, and Express. The system allows members to register for racing events, view race schedules, and manage their participation in upcoming races. The application features a modern, racing-themed UI with a dark design optimized for gaming communities.
+This is a full-stack web application for managing The Grid Racing Club, built with React, TypeScript, and Express. The system allows members to register for racing events, view race schedules, and manage their participation in upcoming races. The application features a modern, racing-themed UI with a black background design optimized for gaming communities.
 
 ## User Preferences
 
@@ -14,7 +14,7 @@ Preferred communication style: Simple, everyday language.
 
 **React SPA with TypeScript**: The client is built as a single-page application using React 18 with TypeScript for type safety. The application uses a component-based architecture with reusable UI components.
 
-**Styling System**: The application uses Tailwind CSS for utility-first styling combined with shadcn/ui components for consistent, accessible UI elements. Custom CSS variables define a racing-themed color palette with dark backgrounds and racing green accents.
+**Styling System**: The application uses Tailwind CSS for utility-first styling combined with shadcn/ui components for consistent, accessible UI elements. Custom CSS variables define a racing-themed color palette with pure black backgrounds and racing green accents.
 
 **State Management**: Uses TanStack Query (React Query) for server state management, providing caching, background updates, and optimistic updates for race registrations. Local component state is managed with React hooks.
 

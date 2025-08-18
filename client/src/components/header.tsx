@@ -15,7 +15,7 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             <Flag className="text-2xl text-racing-green mr-3" />
-            <h1 className="text-xl font-bold text-white">Xbox Racing Club</h1>
+            <h1 className="text-xl font-bold text-white">The Grid Racing Club</h1>
           </Link>
           <nav className="flex space-x-6">
             {navItems.map((item) => (
