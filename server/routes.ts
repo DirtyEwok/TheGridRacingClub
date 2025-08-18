@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema } from "@shared/schema";
+import { insertMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -92,6 +92,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Race deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete race" });
+    }
+  });
+
+  // Get all championships
+  app.get("/api/championships", async (req, res) => {
+    try {
+      const championships = await storage.getChampionshipsWithStats();
+      res.json(championships);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch championships" });
+    }
+  });
+
+  // Get single championship
+  app.get("/api/championships/:id", async (req, res) => {
+    try {
+      const championship = await storage.getChampionship(req.params.id);
+      if (!championship) {
+        return res.status(404).json({ message: "Championship not found" });
+      }
+      res.json(championship);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch championship" });
+    }
+  });
+
+  // Create new championship (admin only)
+  app.post("/api/championships", async (req, res) => {
+    try {
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const championshipData = insertChampionshipSchema.parse(req.body);
+      const championship = await storage.createChampionship(championshipData);
+      res.status(201).json(championship);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid championship data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create championship" });
+    }
+  });
+
+  // Update championship (admin only)
+  app.put("/api/championships/:id", async (req, res) => {
+    try {
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const championshipData = updateChampionshipSchema.parse(req.body);
+      const championship = await storage.updateChampionship(req.params.id, championshipData);
+      
+      if (!championship) {
+        return res.status(404).json({ message: "Championship not found" });
+      }
+      
+      res.json(championship);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid championship data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update championship" });
+    }
+  });
+
+  // Delete championship (admin only)
+  app.delete("/api/championships/:id", async (req, res) => {
+    try {
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const success = await storage.deleteChampionship(req.params.id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Championship not found" });
+      }
+      
+      res.json({ message: "Championship deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete championship" });
     }
   });
 

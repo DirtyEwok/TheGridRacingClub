@@ -11,6 +11,16 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { updateRaceSchema, type UpdateRace, type RaceWithStats } from "@shared/schema";
 
+type EditRaceFormData = {
+  name: string;
+  track: string;
+  carClass: string;
+  date: string;
+  maxParticipants: number;
+  registrationDeadline: string;
+  isActive: boolean;
+};
+
 interface EditRaceModalProps {
   race: RaceWithStats | null;
   isOpen: boolean;
@@ -22,15 +32,14 @@ export default function EditRaceModal({ race, isOpen, onClose }: EditRaceModalPr
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const form = useForm<UpdateRace>({
-    resolver: zodResolver(updateRaceSchema),
+  const form = useForm<EditRaceFormData>({
     defaultValues: {
       name: "",
       track: "",
       carClass: "",
-      date: new Date(),
+      date: new Date().toISOString().slice(0, 16),
       maxParticipants: 20,
-      registrationDeadline: new Date(),
+      registrationDeadline: new Date().toISOString().slice(0, 16),
       isActive: true,
     },
   });
@@ -42,9 +51,9 @@ export default function EditRaceModal({ race, isOpen, onClose }: EditRaceModalPr
         name: race.name,
         track: race.track,
         carClass: race.carClass,
-        date: new Date(race.date),
+        date: new Date(race.date).toISOString().slice(0, 16),
         maxParticipants: race.maxParticipants,
-        registrationDeadline: new Date(race.registrationDeadline),
+        registrationDeadline: new Date(race.registrationDeadline).toISOString().slice(0, 16),
         isActive: race.isActive,
       });
     }
@@ -60,12 +69,18 @@ export default function EditRaceModal({ race, isOpen, onClose }: EditRaceModalPr
     },
   });
 
-  const onSubmit = async (data: UpdateRace) => {
+  const onSubmit = async (data: EditRaceFormData) => {
     if (!race) return;
 
     setIsSubmitting(true);
     try {
-      await updateRaceMutation.mutateAsync(data);
+      // Transform form data to match API expectations
+      const raceData: UpdateRace = {
+        ...data,
+        date: new Date(data.date),
+        registrationDeadline: new Date(data.registrationDeadline),
+      };
+      await updateRaceMutation.mutateAsync(raceData);
       
       // Invalidate races query to refresh data
       queryClient.invalidateQueries({ queryKey: ["/api/races"] });
@@ -149,7 +164,7 @@ export default function EditRaceModal({ race, isOpen, onClose }: EditRaceModalPr
             <Input
               id="date"
               type="datetime-local"
-              {...form.register("date", { valueAsDate: true })}
+              {...form.register("date")}
               className="bg-gray-700 border-gray-600 text-white focus:border-racing-green"
             />
             {form.formState.errors.date && (
@@ -164,7 +179,7 @@ export default function EditRaceModal({ race, isOpen, onClose }: EditRaceModalPr
             <Input
               id="registrationDeadline"
               type="datetime-local"
-              {...form.register("registrationDeadline", { valueAsDate: true })}
+              {...form.register("registrationDeadline")}
               className="bg-gray-700 border-gray-600 text-white focus:border-racing-green"
             />
             {form.formState.errors.registrationDeadline && (

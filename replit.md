@@ -21,7 +21,7 @@ Admin access: User requires exclusive control over race management and calendar 
 
 **State Management**: Uses TanStack Query (React Query) for server state management, providing caching, background updates, and optimistic updates for race registrations. Local component state is managed with React hooks.
 
-**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, and Admin pages for comprehensive race management.
+**Routing**: Implements client-side routing with Wouter, a lightweight routing library. The application structure includes Dashboard, Races, Championships, and Admin pages for comprehensive race and championship management.
 
 **Form Handling**: React Hook Form with Zod validation provides type-safe form management for race registration and member creation.
 
@@ -39,11 +39,13 @@ Admin access: User requires exclusive control over race management and calendar 
 
 **Members**: User profiles with display name, Xbox gamertag, experience level (Beginner, Intermediate, Advanced, Professional), and admin status for race management permissions.
 
-**Races**: Racing events with details like track, car class, date/time, participant limits, and registration deadlines.
+**Championships**: Seasonal racing competitions with multiple races, including details like season name, description, start/end dates, participant limits, and championship-specific rules.
+
+**Races**: Racing events with details like track, car class, date/time, participant limits, registration deadlines, and optional championship association with round numbers and points structure.
 
 **Registrations**: Junction table linking members to races with registration timestamps.
 
-**Extended Race Data**: Races are enhanced with calculated statistics including registration counts, time until deadline, and user registration status.
+**Extended Data**: Races are enhanced with calculated statistics including registration counts, time until deadline, user registration status, and championship names. Championships include race counts and total registrations.
 
 ### Development Architecture
 

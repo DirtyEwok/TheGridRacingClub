@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats } from "@shared/schema";
+import { type Member, type InsertMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -6,6 +6,14 @@ export interface IStorage {
   getMember(id: string): Promise<Member | undefined>;
   getMemberByGamertag(gamertag: string): Promise<Member | undefined>;
   createMember(member: InsertMember): Promise<Member>;
+
+  // Championships
+  getAllChampionships(): Promise<Championship[]>;
+  getChampionship(id: string): Promise<Championship | undefined>;
+  createChampionship(championship: InsertChampionship): Promise<Championship>;
+  updateChampionship(id: string, championship: UpdateChampionship): Promise<Championship | undefined>;
+  deleteChampionship(id: string): Promise<boolean>;
+  getChampionshipsWithStats(): Promise<ChampionshipWithStats[]>;
 
   // Races
   getRace(id: string): Promise<Race | undefined>;
@@ -25,20 +33,38 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private members: Map<string, Member>;
+  private championships: Map<string, Championship>;
   private races: Map<string, Race>;
   private registrations: Map<string, Registration>;
 
   constructor() {
     this.members = new Map();
+    this.championships = new Map();
     this.races = new Map();
     this.registrations = new Map();
     this.initializeData();
   }
 
   private initializeData() {
+    // Create sample championship
+    const championship1: Championship = {
+      id: randomUUID(),
+      name: "2024 Winter Championship",
+      description: "Winter season championship with F1 and GT3 races",
+      season: "2024 Season 1",
+      startDate: new Date("2024-12-01T00:00:00Z"),
+      endDate: new Date("2025-02-28T23:59:59Z"),
+      isActive: true,
+      maxParticipants: 24,
+      rules: "Standard F1 and GT3 regulations apply. Points: 25-18-15-12-10-8-6-4-2-1 for top 10 finishers.",
+    };
+
+    this.championships.set(championship1.id, championship1);
+
     // Create some sample races
     const race1: Race = {
       id: randomUUID(),
+      championshipId: championship1.id,
       name: "Silverstone GP Championship",
       track: "Silverstone Circuit - GP Layout",
       carClass: "Formula 1",
@@ -46,10 +72,13 @@ export class MemStorage implements IStorage {
       maxParticipants: 24,
       registrationDeadline: new Date("2024-12-14T23:59:59Z"),
       isActive: true,
+      roundNumber: 1,
+      points: "25-18-15-12-10-8-6-4-2-1",
     };
 
     const race2: Race = {
       id: randomUUID(),
+      championshipId: null,
       name: "Spa-Francorchamps Endurance",
       track: "Circuit de Spa-Francorchamps",
       carClass: "GT3",
@@ -57,10 +86,13 @@ export class MemStorage implements IStorage {
       maxParticipants: 20,
       registrationDeadline: new Date("2024-12-16T23:59:59Z"),
       isActive: true,
+      roundNumber: null,
+      points: null,
     };
 
     const race3: Race = {
       id: randomUUID(),
+      championshipId: championship1.id,
       name: "Monaco Street Circuit",
       track: "Circuit de Monaco",
       carClass: "Formula 1",
@@ -68,6 +100,8 @@ export class MemStorage implements IStorage {
       maxParticipants: 20,
       registrationDeadline: new Date("2024-12-21T23:59:59Z"),
       isActive: true,
+      roundNumber: 2,
+      points: "25-18-15-12-10-8-6-4-2-1",
     };
 
     this.races.set(race1.id, race1);
@@ -102,7 +136,14 @@ export class MemStorage implements IStorage {
 
   async createRace(insertRace: InsertRace): Promise<Race> {
     const id = randomUUID();
-    const race: Race = { ...insertRace, id, isActive: true };
+    const race: Race = { 
+      ...insertRace, 
+      id, 
+      isActive: true,
+      championshipId: insertRace.championshipId || null,
+      roundNumber: insertRace.roundNumber || null,
+      points: insertRace.points || null,
+    };
     this.races.set(id, race);
     return race;
   }
@@ -129,6 +170,73 @@ export class MemStorage implements IStorage {
     return this.races.delete(id);
   }
 
+  // Championship methods
+  async getAllChampionships(): Promise<Championship[]> {
+    return Array.from(this.championships.values()).filter(championship => championship.isActive);
+  }
+
+  async getChampionship(id: string): Promise<Championship | undefined> {
+    return this.championships.get(id);
+  }
+
+  async createChampionship(insertChampionship: InsertChampionship): Promise<Championship> {
+    const id = randomUUID();
+    const championship: Championship = { 
+      ...insertChampionship, 
+      id, 
+      isActive: true,
+      description: insertChampionship.description || null,
+      maxParticipants: insertChampionship.maxParticipants || null,
+      rules: insertChampionship.rules || null,
+    };
+    this.championships.set(id, championship);
+    return championship;
+  }
+
+  async updateChampionship(id: string, updateChampionship: UpdateChampionship): Promise<Championship | undefined> {
+    const existingChampionship = this.championships.get(id);
+    if (!existingChampionship) return undefined;
+    
+    const updatedChampionship: Championship = { ...existingChampionship, ...updateChampionship };
+    this.championships.set(id, updatedChampionship);
+    return updatedChampionship;
+  }
+
+  async deleteChampionship(id: string): Promise<boolean> {
+    if (!this.championships.has(id)) return false;
+    
+    // Remove championship reference from all races
+    Array.from(this.races.entries())
+      .filter(([_, race]) => race.championshipId === id)
+      .forEach(([raceId, race]) => {
+        this.races.set(raceId, { ...race, championshipId: null, roundNumber: null, points: null });
+      });
+    
+    return this.championships.delete(id);
+  }
+
+  async getChampionshipsWithStats(): Promise<ChampionshipWithStats[]> {
+    const championships = await this.getAllChampionships();
+    
+    return Promise.all(championships.map(async (championship) => {
+      const races = Array.from(this.races.values()).filter(race => 
+        race.championshipId === championship.id && race.isActive
+      );
+      
+      let totalRegistrations = 0;
+      for (const race of races) {
+        const registrations = await this.getRegistrationsByRace(race.id);
+        totalRegistrations += registrations.length;
+      }
+      
+      return {
+        ...championship,
+        raceCount: races.length,
+        totalRegistrations,
+      };
+    }));
+  }
+
   async getRacesWithStats(memberId?: string): Promise<RaceWithStats[]> {
     const races = await this.getAllRaces();
     const racesWithStats: RaceWithStats[] = [];
@@ -138,6 +246,13 @@ export class MemStorage implements IStorage {
       const registeredCount = registrations.length;
       const isRegistered = memberId ? 
         registrations.some(reg => reg.memberId === memberId) : false;
+
+      // Get championship name if race is part of a championship
+      let championshipName: string | undefined;
+      if (race.championshipId) {
+        const championship = await this.getChampionship(race.championshipId);
+        championshipName = championship?.name;
+      }
 
       const now = new Date();
       const deadline = new Date(race.registrationDeadline);
@@ -149,6 +264,7 @@ export class MemStorage implements IStorage {
         registeredCount,
         isRegistered,
         timeUntilDeadline,
+        championshipName,
       });
     }
 

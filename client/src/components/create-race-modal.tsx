@@ -10,6 +10,15 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertRaceSchema, type InsertRace } from "@shared/schema";
 
+type CreateRaceFormData = {
+  name: string;
+  track: string;
+  carClass: string;
+  date: string;
+  maxParticipants: number;
+  registrationDeadline: string;
+};
+
 interface CreateRaceModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,15 +29,14 @@ export default function CreateRaceModal({ isOpen, onClose }: CreateRaceModalProp
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const form = useForm<InsertRace>({
-    resolver: zodResolver(insertRaceSchema),
+  const form = useForm<CreateRaceFormData>({
     defaultValues: {
       name: "",
       track: "",
       carClass: "",
-      date: new Date(),
+      date: new Date().toISOString().slice(0, 16),
       maxParticipants: 20,
-      registrationDeadline: new Date(),
+      registrationDeadline: new Date().toISOString().slice(0, 16),
     },
   });
 
@@ -41,10 +49,16 @@ export default function CreateRaceModal({ isOpen, onClose }: CreateRaceModalProp
     },
   });
 
-  const onSubmit = async (data: InsertRace) => {
+  const onSubmit = async (data: CreateRaceFormData) => {
     setIsSubmitting(true);
     try {
-      await createRaceMutation.mutateAsync(data);
+      // Transform form data to match API expectations
+      const raceData: InsertRace = {
+        ...data,
+        date: new Date(data.date),
+        registrationDeadline: new Date(data.registrationDeadline),
+      };
+      await createRaceMutation.mutateAsync(raceData);
       
       // Invalidate races query to refresh data
       queryClient.invalidateQueries({ queryKey: ["/api/races"] });
@@ -127,7 +141,7 @@ export default function CreateRaceModal({ isOpen, onClose }: CreateRaceModalProp
             <Input
               id="date"
               type="datetime-local"
-              {...form.register("date", { valueAsDate: true })}
+              {...form.register("date")}
               className="bg-gray-700 border-gray-600 text-white focus:border-racing-green"
             />
             {form.formState.errors.date && (
@@ -142,7 +156,7 @@ export default function CreateRaceModal({ isOpen, onClose }: CreateRaceModalProp
             <Input
               id="registrationDeadline"
               type="datetime-local"
-              {...form.register("registrationDeadline", { valueAsDate: true })}
+              {...form.register("registrationDeadline")}
               className="bg-gray-700 border-gray-600 text-white focus:border-racing-green"
             />
             {form.formState.errors.registrationDeadline && (
