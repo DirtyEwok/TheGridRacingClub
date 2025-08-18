@@ -46,31 +46,31 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
-    // Create sample championship
+    // Create GT4 Mornings championship
     const championship1: Championship = {
       id: randomUUID(),
-      name: "2024 Winter Championship",
-      description: "Winter season championship with F1 and GT3 races",
-      season: "2024 Season 1",
-      startDate: new Date("2024-12-01T00:00:00Z"),
-      endDate: new Date("2025-02-28T23:59:59Z"),
+      name: "GT4 Mornings Season 2",
+      description: "Sunday morning GT4 racing championship",
+      season: "2024 Season 2",
+      startDate: new Date("2024-08-01T00:00:00Z"),
+      endDate: new Date("2024-12-31T23:59:59Z"),
       isActive: true,
-      maxParticipants: 24,
-      rules: "Standard F1 and GT3 regulations apply. Points: 25-18-15-12-10-8-6-4-2-1 for top 10 finishers.",
+      maxParticipants: 20,
+      rules: "GT4 car class only. Grid position will be determined by qualifying. Points: 25-18-15-12-10-8-6-4-2-1 for top 10 finishers.",
     };
 
     this.championships.set(championship1.id, championship1);
 
-    // Create some sample races
+    // Create GT4 Mornings races
     const race1: Race = {
       id: randomUUID(),
       championshipId: championship1.id,
-      name: "Silverstone GP Championship",
-      track: "Silverstone Circuit - GP Layout",
-      carClass: "Formula 1",
-      date: new Date("2024-12-15T20:00:00Z"),
-      maxParticipants: 24,
-      registrationDeadline: new Date("2024-12-14T23:59:59Z"),
+      name: "GT4 Mornings Round 1",
+      track: "Red Bull Ring",
+      carClass: "GT4",
+      date: new Date("2024-08-25T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-08-24T20:00:00Z"),
       isActive: true,
       roundNumber: 1,
       points: "25-18-15-12-10-8-6-4-2-1",
@@ -78,35 +78,125 @@ export class MemStorage implements IStorage {
 
     const race2: Race = {
       id: randomUUID(),
-      championshipId: null,
-      name: "Spa-Francorchamps Endurance",
-      track: "Circuit de Spa-Francorchamps",
-      carClass: "GT3",
-      date: new Date("2024-12-18T19:30:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-12-16T23:59:59Z"),
-      isActive: true,
-      roundNumber: null,
-      points: null,
-    };
-
-    const race3: Race = {
-      id: randomUUID(),
       championshipId: championship1.id,
-      name: "Monaco Street Circuit",
-      track: "Circuit de Monaco",
-      carClass: "Formula 1",
-      date: new Date("2024-12-22T21:00:00Z"),
+      name: "GT4 Mornings Round 2",
+      track: "Zolder",
+      carClass: "GT4",
+      date: new Date("2024-09-01T20:00:00Z"),
       maxParticipants: 20,
-      registrationDeadline: new Date("2024-12-21T23:59:59Z"),
+      registrationDeadline: new Date("2024-08-31T20:00:00Z"),
       isActive: true,
       roundNumber: 2,
       points: "25-18-15-12-10-8-6-4-2-1",
     };
 
+    const race3: Race = {
+      id: randomUUID(),
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 3",
+      track: "Monza",
+      carClass: "GT4",
+      date: new Date("2024-09-08T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-09-07T20:00:00Z"),
+      isActive: true,
+      roundNumber: 3,
+      points: "25-18-15-12-10-8-6-4-2-1",
+    };
+
+    const race4: Race = {
+      id: randomUUID(),
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 4",
+      track: "Laguna Seca",
+      carClass: "GT4",
+      date: new Date("2024-09-15T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-09-14T20:00:00Z"),
+      isActive: true,
+      roundNumber: 4,
+      points: "25-18-15-12-10-8-6-4-2-1",
+    };
+
+    const race5: Race = {
+      id: randomUUID(),
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 5",
+      track: "Hungaroring",
+      carClass: "GT4",
+      date: new Date("2024-09-22T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-09-21T20:00:00Z"),
+      isActive: true,
+      roundNumber: 5,
+      points: "25-18-15-12-10-8-6-4-2-1",
+    };
+
+    const race6: Race = {
+      id: randomUUID(),
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 6",
+      track: "Paul Ricard",
+      carClass: "GT4",
+      date: new Date("2024-09-29T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-09-28T20:00:00Z"),
+      isActive: true,
+      roundNumber: 6,
+      points: "25-18-15-12-10-8-6-4-2-1",
+    };
+
+    const race7: Race = {
+      id: randomUUID(),
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 7",
+      track: "Watkins Glen",
+      carClass: "GT4",
+      date: new Date("2024-10-06T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-10-05T20:00:00Z"),
+      isActive: true,
+      roundNumber: 7,
+      points: "25-18-15-12-10-8-6-4-2-1",
+    };
+
+    const race8: Race = {
+      id: randomUUID(),
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 8",
+      track: "Donington Park",
+      carClass: "GT4",
+      date: new Date("2024-10-13T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-10-12T20:00:00Z"),
+      isActive: true,
+      roundNumber: 8,
+      points: "25-18-15-12-10-8-6-4-2-1",
+    };
+
+    const race9: Race = {
+      id: randomUUID(),
+      championshipId: null,
+      name: "GT4 Mornings THE FINAL",
+      track: "Zandvoort",
+      carClass: "GT4",
+      date: new Date("2024-10-20T20:00:00Z"),
+      maxParticipants: 20,
+      registrationDeadline: new Date("2024-10-19T20:00:00Z"),
+      isActive: true,
+      roundNumber: null,
+      points: null,
+    };
+
     this.races.set(race1.id, race1);
     this.races.set(race2.id, race2);
     this.races.set(race3.id, race3);
+    this.races.set(race4.id, race4);
+    this.races.set(race5.id, race5);
+    this.races.set(race6.id, race6);
+    this.races.set(race7.id, race7);
+    this.races.set(race8.id, race8);
+    this.races.set(race9.id, race9);
   }
 
   async getMember(id: string): Promise<Member | undefined> {
