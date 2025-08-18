@@ -125,6 +125,10 @@ export type Race = typeof races.$inferSelect;
 export type InsertRegistration = z.infer<typeof insertRegistrationSchema>;
 export type Registration = typeof registrations.$inferSelect;
 
+export type RegistrationWithMember = Registration & {
+  member?: Member;
+};
+
 export type RaceWithStats = Race & {
   registeredCount: number;
   isRegistered?: boolean;

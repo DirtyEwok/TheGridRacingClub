@@ -11,6 +11,7 @@ import CreateRaceModal from "@/components/create-race-modal";
 import CreateChampionshipModal from "@/components/create-championship-modal";
 import EditChampionshipModal from "@/components/edit-championship-modal";
 import EditRaceModal from "@/components/edit-race-modal";
+import RaceDriversModal from "@/components/race-drivers-modal";
 import type { RaceWithStats, ChampionshipWithStats } from "@shared/schema";
 
 export default function AdminPanel() {
@@ -18,6 +19,7 @@ export default function AdminPanel() {
   const [isCreateChampionshipModalOpen, setIsCreateChampionshipModalOpen] = useState(false);
   const [editingRace, setEditingRace] = useState<RaceWithStats | null>(null);
   const [editingChampionship, setEditingChampionship] = useState<ChampionshipWithStats | null>(null);
+  const [viewingDriversRace, setViewingDriversRace] = useState<RaceWithStats | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -210,6 +212,14 @@ export default function AdminPanel() {
                     <Button
                       variant="outline"
                       size="sm"
+                      onClick={() => setViewingDriversRace(race)}
+                      className="bg-blue-900 hover:bg-blue-800 border-blue-700 text-blue-300"
+                    >
+                      <Users className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => setEditingRace(race)}
                       className="bg-gray-600 hover:bg-gray-500 border-gray-500"
                     >
@@ -329,6 +339,12 @@ export default function AdminPanel() {
         race={editingRace}
         isOpen={!!editingRace}
         onClose={() => setEditingRace(null)}
+      />
+
+      <RaceDriversModal 
+        race={viewingDriversRace}
+        isOpen={!!viewingDriversRace}
+        onClose={() => setViewingDriversRace(null)}
       />
     </div>
   );

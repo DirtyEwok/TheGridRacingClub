@@ -262,6 +262,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get registered drivers for a race (admin only)
+  app.get("/api/races/:raceId/drivers", async (req, res) => {
+    try {
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { raceId } = req.params;
+      const registrations = await storage.getRegistrationsByRace(raceId);
+      
+      // Get member details for each registration
+      const drivers = await Promise.all(
+        registrations.map(async (registration) => {
+          const member = await storage.getMember(registration.memberId);
+          return {
+            ...registration,
+            member
+          };
+        })
+      );
+
+      res.json(drivers);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch race drivers" });
+    }
+  });
+
   // Unregister from race
   app.delete("/api/registrations/:raceId/:memberId", async (req, res) => {
     try {

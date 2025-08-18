@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { setCurrentMember, getCurrentMember } from "@/lib/memberSession";
 import type { RaceWithStats, InsertMember, InsertRegistration } from "@shared/schema";
 
 const registrationSchema = z.object({
@@ -34,9 +35,9 @@ export default function RegistrationModal({ race, isOpen, onClose }: Registratio
   const form = useForm<RegistrationForm>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
-      displayName: "",
-      gamertag: "",
-      experienceLevel: "Intermediate",
+      displayName: getCurrentMember()?.displayName || "",
+      gamertag: getCurrentMember()?.gamertag || "",
+      experienceLevel: (getCurrentMember()?.experienceLevel as "Beginner" | "Intermediate" | "Advanced" | "Professional") || "Intermediate",
     },
   });
 
@@ -79,6 +80,9 @@ export default function RegistrationModal({ race, isOpen, onClose }: Registratio
         });
       }
 
+      // Store member in session for future use
+      setCurrentMember(member);
+
       // Create registration
       await createRegistrationMutation.mutateAsync({
         raceId: race.id,
@@ -115,7 +119,9 @@ export default function RegistrationModal({ race, isOpen, onClose }: Registratio
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-gray-800 border-gray-700">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-white">Race Registration</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-white">
+            {getCurrentMember() ? "Race Registration" : "Welcome to your race registration with The Grid"}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

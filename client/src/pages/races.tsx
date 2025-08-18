@@ -7,10 +7,8 @@ import RegistrationModal from "@/components/registration-modal";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { getCurrentMemberId } from "@/lib/memberSession";
 import type { RaceWithStats } from "@shared/schema";
-
-// For demo purposes, using a mock member ID
-const MOCK_MEMBER_ID = "demo-member";
 
 export default function Races() {
   const [selectedRace, setSelectedRace] = useState<RaceWithStats | null>(null);
@@ -21,7 +19,9 @@ export default function Races() {
   const { data: races = [], isLoading } = useQuery<RaceWithStats[]>({
     queryKey: ["/api/races"],
     queryFn: async () => {
-      const response = await fetch(`/api/races?memberId=${MOCK_MEMBER_ID}`);
+      const memberId = getCurrentMemberId();
+      const url = memberId ? `/api/races?memberId=${memberId}` : '/api/races';
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch races");
       return response.json();
     },
@@ -29,7 +29,9 @@ export default function Races() {
 
   const unregisterMutation = useMutation({
     mutationFn: async (raceId: string) => {
-      const response = await apiRequest("DELETE", `/api/registrations/${raceId}/${MOCK_MEMBER_ID}`);
+      const memberId = getCurrentMemberId();
+      if (!memberId) throw new Error("No member session found");
+      const response = await apiRequest("DELETE", `/api/registrations/${raceId}/${memberId}`);
       return response.json();
     },
     onSuccess: () => {

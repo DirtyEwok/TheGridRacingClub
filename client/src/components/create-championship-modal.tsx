@@ -74,6 +74,7 @@ export default function CreateChampionshipModal({ isOpen, onClose }: CreateChamp
         description: data.description || undefined,
         maxParticipants: data.maxParticipants || undefined,
         rules: data.rules || undefined,
+        isActive: true, // Set championships as active by default
       };
       await createChampionshipMutation.mutateAsync(championshipData);
       
