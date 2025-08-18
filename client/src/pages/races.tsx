@@ -95,14 +95,27 @@ export default function Races() {
 
           {/* Race Grid */}
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-1 max-w-6xl">
-            {races.map((race) => (
-              <RaceCard
-                key={race.id}
-                race={race}
-                onRegister={handleRegister}
-                onUnregister={handleUnregister}
-              />
-            ))}
+            {races
+              .sort((a, b) => {
+                // First sort by round number (championship races first)
+                if (a.roundNumber !== null && b.roundNumber !== null) {
+                  return a.roundNumber - b.roundNumber;
+                }
+                if (a.roundNumber !== null && b.roundNumber === null) return -1;
+                if (a.roundNumber === null && b.roundNumber !== null) return 1;
+                
+                // Then by date for non-championship races
+                return new Date(a.date).getTime() - new Date(b.date).getTime();
+              })
+              .map((race) => (
+                <RaceCard
+                  key={race.id}
+                  race={race}
+                  onRegister={handleRegister}
+                  onUnregister={handleUnregister}
+                />
+              ))
+            }
           </div>
 
           {/* Right Championship Poster */}
