@@ -123,48 +123,26 @@ const trackDatabase: Record<string, CircuitData> = {
     ],
     stats: { length: "5.891 km", turns: 18, lapRecord: "1:24.303", difficulty: "Advanced" }
   },
-  "Mount Panorama": {
-    name: "Mount Panorama",
-    layout: "M 80 250 Q 70 200 110 160 Q 150 120 210 110 Q 270 100 330 130 Q 380 160 390 220 Q 400 280 350 320 Q 300 360 240 350 Q 180 340 130 300 Q 80 260 80 250 Z",
+  "Nürburgring": {
+    name: "Nürburgring",
+    layout: "M 120 200 Q 90 140 150 100 Q 220 70 290 110 Q 350 150 320 210 Q 290 270 220 280 Q 150 290 120 230 Q 90 180 120 200 Z",
     highlights: [
-      { name: "The Cutting", type: "corner", position: { x: 140, y: 140 }, description: "Steep uphill climb through the cutting" },
-      { name: "Skyline", type: "corner", position: { x: 320, y: 150 }, description: "Dramatic mountaintop section with views" },
-      { name: "The Chase", type: "sector", position: { x: 250, y: 320 }, description: "Fast downhill section back to start/finish" }
+      { name: "Turn 1", type: "corner", position: { x: 160, y: 120 }, description: "Tight right-hander after main straight" },
+      { name: "Stadium Section", type: "sector", position: { x: 280, y: 180 }, description: "Technical infield complex with elevation" },
+      { name: "NGK Chicane", type: "corner", position: { x: 180, y: 260 }, description: "Slow chicane breaking lap rhythm" }
     ],
-    stats: { length: "6.213 km", turns: 23, lapRecord: "2:01.286", difficulty: "Expert" }
+    stats: { length: "5.148 km", turns: 15, lapRecord: "1:31.618", difficulty: "Advanced" }
   },
-  "Kyalami": {
-    name: "Kyalami",
-    layout: "M 120 200 Q 100 150 150 120 Q 200 90 260 110 Q 320 130 350 180 Q 370 230 340 270 Q 310 310 250 300 Q 190 290 150 250 Q 110 210 120 200 Z",
+  "Brands Hatch": {
+    name: "Brands Hatch",
+    layout: "M 140 200 Q 100 160 120 120 Q 160 80 220 100 Q 280 120 320 160 Q 340 200 300 240 Q 260 280 200 260 Q 140 240 140 200 Z",
     highlights: [
-      { name: "Turn 1", type: "corner", position: { x: 160, y: 130 }, description: "High-speed right-hander after main straight" },
-      { name: "Crowthorne Corner", type: "corner", position: { x: 320, y: 200 }, description: "Fast sweeping corner with elevation change" },
-      { name: "Sunset Bend", type: "corner", position: { x: 200, y: 280 }, description: "Technical corner leading onto back straight" }
+      { name: "Paddock Hill Bend", type: "corner", position: { x: 140, y: 140 }, description: "Steep downhill right-hander" },
+      { name: "Druids Hairpin", type: "corner", position: { x: 200, y: 110 }, description: "Tight hairpin at bottom of hill" },
+      { name: "Clearways", type: "corner", position: { x: 270, y: 220 }, description: "Fast sweeping corner onto main straight" }
     ],
-    stats: { length: "4.522 km", turns: 16, lapRecord: "1:16.976", difficulty: "Advanced" }
-  },
-  // Track name aliases for different naming formats
-  "Circuit of Spa-Francorchamps": {
-    name: "Circuit of Spa-Francorchamps",
-    layout: "M 80 200 Q 60 150 100 100 Q 150 60 220 80 Q 300 100 350 150 Q 380 200 350 250 Q 300 300 220 280 Q 150 260 100 220 Q 60 180 80 200 Z",
-    highlights: [
-      { name: "Eau Rouge", type: "corner", position: { x: 120, y: 120 }, description: "Legendary uphill left-right combination" },
-      { name: "Kemmel Straight", type: "straight", position: { x: 250, y: 90 }, description: "Long straight with DRS overtaking zone" },
-      { name: "Bus Stop Chicane", type: "corner", position: { x: 200, y: 260 }, description: "Tight chicane before main straight" }
-    ],
-    stats: { length: "7.004 km", turns: 20, lapRecord: "1:41.252", difficulty: "Expert" }
-  },
-  "Silverstone Circuit - GP Layout": {
-    name: "Silverstone Circuit - GP Layout",
-    layout: "M 100 180 Q 80 120 140 90 Q 200 60 280 90 Q 350 120 380 180 Q 350 240 280 270 Q 200 300 140 270 Q 80 240 100 180 Z",
-    highlights: [
-      { name: "Copse Corner", type: "corner", position: { x: 150, y: 100 }, description: "High-speed right-hander opening sequence" },
-      { name: "Maggotts-Becketts", type: "sector", position: { x: 280, y: 120 }, description: "Fast flowing S-curves complex" },
-      { name: "Stowe Corner", type: "corner", position: { x: 200, y: 280 }, description: "Slow hairpin with overtaking opportunities" }
-    ],
-    stats: { length: "5.891 km", turns: 18, lapRecord: "1:24.303", difficulty: "Advanced" }
-  },
-
+    stats: { length: "3.908 km", turns: 9, lapRecord: "1:13.887", difficulty: "Advanced" }
+  }
 };
 
 interface CircuitPreviewProps {
