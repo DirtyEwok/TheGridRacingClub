@@ -19,7 +19,14 @@ export default function MemberHeader() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/races">
-              <div className="flex items-center space-x-2 cursor-pointer">
+              <div 
+                className="flex items-center space-x-2 cursor-pointer"
+                onDoubleClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = '/admin';
+                }}
+              >
                 <Trophy className="h-8 w-8 text-racing-green" />
                 <span className="text-xl font-bold text-white">The Grid</span>
               </div>
@@ -45,17 +52,13 @@ export default function MemberHeader() {
 
           {/* Admin Access & Mobile menu */}
           <div className="flex items-center space-x-2">
-            {/* Discreet admin access */}
-            <Link href="/admin">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 hover:text-gray-400 hover:bg-gray-800"
-                title="Admin Access"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            </Link>
+            {/* Hidden admin access - double click on logo */}
+            <div 
+              onDoubleClick={() => window.location.href = '/admin'}
+              className="cursor-pointer"
+              title=""
+            >
+            </div>
             
             {/* Mobile menu button */}
             <div className="md:hidden">
