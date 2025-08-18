@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { RaceWithStats } from "@shared/schema";
@@ -9,8 +9,10 @@ interface RaceCalendarProps {
 
 export default function RaceCalendar({ races }: RaceCalendarProps) {
   const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+  const [viewDate, setViewDate] = useState(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
+  
+  const currentMonth = viewDate.getMonth();
+  const currentYear = viewDate.getFullYear();
 
   const calendarData = useMemo(() => {
     const firstDay = new Date(currentYear, currentMonth, 1);
@@ -47,6 +49,14 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
 
   const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
+  const goToPreviousMonth = () => {
+    setViewDate(new Date(currentYear, currentMonth - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setViewDate(new Date(currentYear, currentMonth + 1, 1));
+  };
+
   return (
     <section>
       <h2 className="text-2xl font-bold text-white mb-6">Race Calendar</h2>
@@ -59,7 +69,7 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
               <Button 
                 variant="outline" 
                 size="icon" 
-                onClick={() => alert('Previous month navigation - coming soon!')}
+                onClick={goToPreviousMonth}
                 className="bg-gray-700 hover:bg-gray-600 border-gray-600"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -67,7 +77,7 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
               <Button 
                 variant="outline" 
                 size="icon" 
-                onClick={() => alert('Next month navigation - coming soon!')}
+                onClick={goToNextMonth}
                 className="bg-gray-700 hover:bg-gray-600 border-gray-600"
               >
                 <ChevronRight className="w-4 h-4" />
