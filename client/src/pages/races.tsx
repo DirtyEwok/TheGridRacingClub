@@ -86,16 +86,11 @@ export default function Races() {
         <div className="flex justify-center items-start space-x-8">
           {/* Left Championship Poster */}
           <div className="hidden lg:block">
-            <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-              <h3 className="text-xs font-medium text-gray-300 mb-2 text-center">GT4 Mornings S2</h3>
-              <div className="w-32 h-40 rounded border border-gray-600 overflow-hidden">
-                <img 
-                  src={championship1Image} 
-                  alt="GT4 Mornings Season 2" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+            <img 
+              src={championship1Image} 
+              alt="GT4 Mornings Season 2" 
+              className="w-32 h-40 object-cover rounded"
+            />
           </div>
 
           {/* Race Grid */}
@@ -112,16 +107,11 @@ export default function Races() {
 
           {/* Right Championship Poster */}
           <div className="hidden lg:block">
-            <div className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-              <h3 className="text-xs font-medium text-gray-300 mb-2 text-center">GT3 Mid Evo Masters</h3>
-              <div className="w-32 h-40 rounded border border-gray-600 overflow-hidden">
-                <img 
-                  src={championship2Image} 
-                  alt="GT3 Mid Evo Masters 90" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+            <img 
+              src={championship2Image} 
+              alt="GT3 Mid Evo Masters 90" 
+              className="w-32 h-40 object-cover rounded"
+            />
           </div>
         </div>
 
