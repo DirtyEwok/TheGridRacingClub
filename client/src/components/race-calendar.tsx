@@ -89,7 +89,7 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
                       ? "text-gray-500" 
                       : hasRaces
                         ? isRegistered
-                          ? "bg-green-500 bg-opacity-20 border border-green-500"
+                          ? "bg-orange-500 bg-opacity-20 border border-orange-500"
                           : isClosingSoon
                             ? "bg-yellow-500 bg-opacity-20 border border-yellow-500"
                             : "bg-racing-green bg-opacity-20 border border-racing-green"
@@ -102,7 +102,7 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
                   {hasRaces && (
                     <div className={`w-2 h-2 rounded-full mx-auto mt-1 ${
                       isRegistered 
-                        ? "bg-green-500"
+                        ? "bg-orange-500"
                         : isClosingSoon
                           ? "bg-yellow-500"
                           : "bg-racing-green"
@@ -124,7 +124,7 @@ export default function RaceCalendar({ races }: RaceCalendarProps) {
                 <span className="text-gray-400">Closing Soon</span>
               </div>
               <div className="flex items-center">
-                <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
                 <span className="text-gray-400">Registered</span>
               </div>
             </div>

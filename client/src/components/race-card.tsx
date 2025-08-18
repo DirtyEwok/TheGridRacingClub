@@ -16,7 +16,7 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
 
   const getStatusBadge = () => {
     if (race.isRegistered) {
-      return { text: "REGISTERED", color: "bg-green-500", icon: CheckCircle };
+      return { text: "REGISTERED", color: "bg-orange-500", icon: CheckCircle };
     }
     if (isDeadlinePassed || isFull) {
       return { text: "CLOSED", color: "bg-gray-500", icon: Clock };
@@ -31,7 +31,7 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
   const StatusIcon = status.icon;
 
   const getBorderColor = () => {
-    if (race.isRegistered) return "border-green-500 hover:border-green-400";
+    if (race.isRegistered) return "border-orange-500 hover:border-orange-400";
     if (status.color === "bg-yellow-500") return "border-yellow-500 hover:border-yellow-400";
     return "border-gray-700 hover:border-racing-green";
   };
@@ -86,10 +86,10 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
 
         {race.isRegistered && (
           <div className="mb-3">
-            <div className="bg-green-900 border border-green-500 rounded-lg p-3">
+            <div className="bg-orange-900 border border-orange-500 rounded-lg p-3">
               <div className="flex items-center">
-                <CheckCircle className="text-green-500 mr-2 w-4 h-4" />
-                <span className="text-green-400 text-sm font-medium">You're registered!</span>
+                <CheckCircle className="text-orange-500 mr-2 w-4 h-4" />
+                <span className="text-orange-400 text-sm font-medium">You're registered!</span>
               </div>
               <div className="text-xs text-gray-400 mt-1">Grid position will be determined by qualifying</div>
             </div>
