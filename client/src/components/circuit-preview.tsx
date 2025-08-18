@@ -46,7 +46,7 @@ const trackDatabase: Record<string, CircuitData> = {
     name: "Monza",
     layout: "M 80 180 L 320 180 Q 350 180 350 150 L 350 100 Q 350 70 320 70 L 250 70 Q 220 70 220 100 L 220 130 Q 220 160 250 160 L 180 160 Q 150 160 150 130 L 150 100 Q 150 70 120 70 L 80 70 Q 50 70 50 100 L 50 150 Q 50 180 80 180 Z",
     highlights: [
-      { name: "Parabolica", type: "corner", position: { x: 300, y: 120 }, description: "Famous high-speed banked corner" },
+      { name: "Parabolica", type: "corner", position: { x: 300, y: 120 }, description: "Famous high-speed sweeping corner" },
       { name: "Main Straight", type: "straight", position: { x: 200, y: 180 }, description: "Longest straight in F1 calendar" },
       { name: "Chicane", type: "corner", position: { x: 180, y: 100 }, description: "First chicane heavy braking zone" }
     ],
