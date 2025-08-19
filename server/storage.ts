@@ -235,7 +235,7 @@ Settings:
 #RACEANDRESPECT`,
       season: "Season 2",
       startDate: new Date("2025-08-21T00:00:00.000Z"),
-      endDate: new Date("2025-10-02T23:59:59.000Z"),
+      endDate: new Date("2025-09-25T23:59:59.000Z"),
       isActive: true,
       maxParticipants: 30,
       rules: null,
@@ -328,19 +328,7 @@ Settings:
       points: null,
     };
 
-    const race7: Race = {
-      id: "gt4-round-7",
-      championshipId: championship1.id,
-      name: "GT4 Mornings Round 7",
-      track: "Zandvoort",
-      carClass: "GT4",
-      date: new Date("2025-10-02T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
-      maxParticipants: 30,
-      registrationDeadline: new Date("2025-10-01T19:00:00.000Z"),
-      isActive: true,
-      roundNumber: 7,
-      points: null,
-    };
+
 
     // Now create GT3 Mid Evo Masters championship
     const championship2: Championship = {
@@ -473,7 +461,7 @@ Server goes live at 20:00`,
     this.races.set(race4.id, race4);
     this.races.set(race5.id, race5);
     this.races.set(race6.id, race6);
-    this.races.set(race7.id, race7);
+
     this.races.set(gt3Race1.id, gt3Race1);
     this.races.set(gt3Race2.id, gt3Race2);
     this.races.set(gt3Race3.id, gt3Race3);

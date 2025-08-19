@@ -18,11 +18,11 @@ Championship branding: Races page features championship posters on left (GT4 Mor
 Championship rules: Completely removed rules section from championship display to eliminate unwanted points systems and text clutter.
 
 ## CRITICAL RACE TIME REQUIREMENTS (NEVER CHANGE):
-- GT4 Mornings Season 2: ALL races at 20:00 UK time (8:00pm) - FIXED REQUIREMENT
-- GT3 Mid Evo Masters: ALL races at 19:45 UK time (7:45pm) - FIXED REQUIREMENT  
+- GT4 Mornings Season 2: 6 races starting August 21st, 2025 - ALL races at 20:00 UK time (8:00pm) - FIXED REQUIREMENT
+- GT3 Mid Evo Masters: 5 races - ALL races at 19:45 UK time (7:45pm) - FIXED REQUIREMENT  
 - Timezone: LOCKED to UK (Europe/London) for all display and database storage
 - User frustration: Multiple incorrect time changes have caused drivers to re-register repeatedly
-- Database stability: PostgreSQL storage implemented to prevent data loss on server restarts
+- Database stability: PostgreSQL DatabaseStorage implemented to prevent data loss on server restarts (switched from unreliable MemStorage)
 
 ## System Architecture
 
