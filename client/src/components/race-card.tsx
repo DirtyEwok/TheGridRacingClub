@@ -12,12 +12,10 @@ interface RaceCardProps {
 
 export default function RaceCard({ race, onRegister, onUnregister }: RaceCardProps) {
   const [showPreview, setShowPreview] = useState(false);
-  // Parse dates as UK timezone
+  // Parse dates and ensure UK timezone display
   const parseUKDate = (dateStr: string | Date) => {
     const cleanDate = String(dateStr).replace('Z', '');
-    const date = new Date(cleanDate);
-    // Force UK timezone interpretation
-    return new Date(date.toLocaleString("en-GB", {timeZone: "Europe/London"}));
+    return new Date(cleanDate);
   };
   const raceDate = parseUKDate(race.date);
   const isDeadlinePassed = new Date() > parseUKDate(race.registrationDeadline);
