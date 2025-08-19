@@ -16,6 +16,13 @@ Admin navigation: Discreet settings icon in member header provides quick admin a
 Welcome messages: New users see "Welcome to your race registration with The Grid" instead of hardcoded names.
 Championship branding: Races page features championship posters on left (GT4 Mornings S2) and right (GT3 Mid Evo Masters) sides of race grid without borders for clean look.
 
+## CRITICAL RACE TIME REQUIREMENTS (NEVER CHANGE):
+- GT4 Mornings Season 2: ALL races at 20:00 UK time (8:00pm) - FIXED REQUIREMENT
+- GT3 Mid Evo Masters: ALL races at 19:45 UK time (7:45pm) - FIXED REQUIREMENT  
+- Timezone: LOCKED to UK (Europe/London) for all display and database storage
+- User frustration: Multiple incorrect time changes have caused drivers to re-register repeatedly
+- Database stability: PostgreSQL storage implemented to prevent data loss on server restarts
+
 ## System Architecture
 
 ### Frontend Architecture
