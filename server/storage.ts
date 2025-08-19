@@ -202,148 +202,271 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
-    // Create GT4 Mornings championship
+    // Create GT4 Mornings championship with correct data
     const championship1: Championship = {
-      id: randomUUID(),
-      name: "GT4 Mornings Season 2",
-      description: "Sunday morning GT4 racing championship",
-      season: "2024 Season 2",
-      startDate: new Date("2024-08-01T00:00:00Z"),
-      endDate: new Date("2024-12-31T23:59:59Z"),
+      id: "f1d7cc7c-9508-4cd6-9056-0cb42e881745",
+      name: "GT4 Mornings",
+      description: `Welcome to the Grid Racing Club GT4 Mornings Season 2 on ACC!
+
+Strap yourselves because it's time to simulate the morning commute! If it were on racing circuits with GT4 cars.
+
+Session Times:
+• Qualifying: 11 am - 6 min (Friday)
+• Race 5 am - 25 mins (Saturday)
+• Qualifying: 9 am - 6 minutes (Saturday)
+• Race: 7 am - 25 mins (Sunday)
+
+Race Format:
+• RT-Red Bull Ring
+• R2-Zolder
+• R3-Monza
+• R4-Laguna Seca
+• R5-Hungaroring
+• R6-Paul Ricard Final-Zandvoort
+
+Registration is an agreement to all club rules and regs.
+
+Settings:
+• Random weather
+• No mandatory pit stop
+• No car change permitted
+• Custom setups permitted
+
+#RACEANDRESPECT`,
+      season: "Season 2",
+      startDate: new Date("2025-01-21T00:00:00.000Z"),
+      endDate: new Date("2025-02-10T23:59:59.000Z"),
       isActive: true,
-      maxParticipants: 20,
-      rules: "GT4 car class only. Grid position will be determined by qualifying. Points: 25-18-15-12-10-8-6-4-2-1 for top 10 finishers.",
+      maxParticipants: 30,
+      rules: null,
     };
 
     this.championships.set(championship1.id, championship1);
 
-    // Create GT4 Mornings races with proper Sunday morning schedule (21:00 UTC = 10:00 BST)
+    // Create GT4 Mornings races with CORRECT dates and 20:00 UK time (NEVER CHANGE)
     const race1: Race = {
-      id: randomUUID(),
+      id: "gt4-round-1",
       championshipId: championship1.id,
       name: "GT4 Mornings Round 1",
       track: "Red Bull Ring",
       carClass: "GT4",
-      date: new Date("2024-08-25T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-08-24T21:00:00Z"),
+      date: new Date("2025-01-26T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-01-25T20:00:00.000Z"),
       isActive: true,
       roundNumber: 1,
-      points: "25-18-15-12-10-8-6-4-2-1",
+      points: null,
     };
 
     const race2: Race = {
-      id: randomUUID(),
+      id: "gt4-round-2",
       championshipId: championship1.id,
       name: "GT4 Mornings Round 2",
       track: "Zolder",
       carClass: "GT4",
-      date: new Date("2024-09-01T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-08-31T21:00:00Z"),
+      date: new Date("2025-02-02T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-02-01T20:00:00.000Z"),
       isActive: true,
       roundNumber: 2,
-      points: "25-18-15-12-10-8-6-4-2-1",
+      points: null,
     };
 
     const race3: Race = {
-      id: randomUUID(),
+      id: "gt4-round-3",
       championshipId: championship1.id,
       name: "GT4 Mornings Round 3",
       track: "Monza",
       carClass: "GT4",
-      date: new Date("2024-09-08T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-09-07T21:00:00Z"),
+      date: new Date("2025-02-09T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-02-08T20:00:00.000Z"),
       isActive: true,
       roundNumber: 3,
-      points: "25-18-15-12-10-8-6-4-2-1",
+      points: null,
     };
 
     const race4: Race = {
-      id: randomUUID(),
+      id: "gt4-round-4",
       championshipId: championship1.id,
       name: "GT4 Mornings Round 4",
       track: "Laguna Seca",
       carClass: "GT4",
-      date: new Date("2024-09-15T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-09-14T21:00:00Z"),
+      date: new Date("2025-02-16T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-02-15T20:00:00.000Z"),
       isActive: true,
       roundNumber: 4,
-      points: "25-18-15-12-10-8-6-4-2-1",
+      points: null,
     };
 
     const race5: Race = {
-      id: randomUUID(),
+      id: "gt4-round-5",
       championshipId: championship1.id,
       name: "GT4 Mornings Round 5",
       track: "Hungaroring",
       carClass: "GT4",
-      date: new Date("2024-09-22T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-09-21T21:00:00Z"),
+      date: new Date("2025-02-23T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-02-22T20:00:00.000Z"),
       isActive: true,
       roundNumber: 5,
-      points: "25-18-15-12-10-8-6-4-2-1",
+      points: null,
     };
 
     const race6: Race = {
-      id: randomUUID(),
+      id: "gt4-round-6",
       championshipId: championship1.id,
       name: "GT4 Mornings Round 6",
       track: "Paul Ricard",
       carClass: "GT4",
-      date: new Date("2024-09-29T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-09-28T21:00:00Z"),
+      date: new Date("2025-03-02T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-03-01T20:00:00.000Z"),
       isActive: true,
       roundNumber: 6,
-      points: "25-18-15-12-10-8-6-4-2-1",
-    };
-
-    const race7: Race = {
-      id: randomUUID(),
-      championshipId: championship1.id,
-      name: "GT4 Mornings Round 7",
-      track: "Watkins Glen",
-      carClass: "GT4",
-      date: new Date("2024-10-06T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-10-05T21:00:00Z"),
-      isActive: true,
-      roundNumber: 7,
-      points: "25-18-15-12-10-8-6-4-2-1",
-    };
-
-    const race8: Race = {
-      id: randomUUID(),
-      championshipId: championship1.id,
-      name: "GT4 Mornings Round 8",
-      track: "Donington Park",
-      carClass: "GT4",
-      date: new Date("2024-10-13T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-10-12T21:00:00Z"),
-      isActive: true,
-      roundNumber: 8,
-      points: "25-18-15-12-10-8-6-4-2-1",
-    };
-
-    const race9: Race = {
-      id: randomUUID(),
-      championshipId: null,
-      name: "GT4 Mornings THE FINAL",
-      track: "Zandvoort",
-      carClass: "GT4",
-      date: new Date("2024-10-20T21:00:00Z"),
-      maxParticipants: 20,
-      registrationDeadline: new Date("2024-10-19T21:00:00Z"),
-      isActive: true,
-      roundNumber: null,
       points: null,
     };
 
+    const race7: Race = {
+      id: "gt4-round-7",
+      championshipId: championship1.id,
+      name: "GT4 Mornings Round 7",
+      track: "Zandvoort",
+      carClass: "GT4",
+      date: new Date("2025-03-09T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-03-08T20:00:00.000Z"),
+      isActive: true,
+      roundNumber: 7,
+      points: null,
+    };
+
+    // Now create GT3 Mid Evo Masters championship
+    const championship2: Championship = {
+      id: "gt3-mid-evo-masters",
+      name: "GT3 Mid Evo Masters",
+      description: `Assetto Corsa Competizione - GT3 Mid Evo Masters
+
+A 5-week series, 90-minute endurance races for anything GT3 spec with the engine in the middle.
+
+Sessions:
+• No practice
+• 20 mins Q
+• 90 mins R
+
+No mandatory pit stop.
+Random weather
+
+Rounds:
+• Round 1: Mount Panorama
+• Round 2: Silverstone
+• Round 3: Hungaroring
+• Round 4: Spa
+• Round 5: Kyalami
+
+Cars - any model of the following:
+• Audi R8
+• Ferrari 488
+• Honda NSX 
+• Lamborghini Huracan
+• McLaren 650s & 720s
+• Reiter Engineering
+
+*Evo models can be used
+
+Settings:
+• Usual full damage
+• Mech damage
+• License on
+• No car swaps
+
+Server Info:
+Password: GT390
+Party opens at 19:45
+Server goes live at 20:00`,
+      season: "Season 1",
+      startDate: new Date("2025-08-09T00:00:00.000Z"),
+      endDate: new Date("2025-09-06T23:59:59.000Z"),
+      isActive: true,
+      maxParticipants: 30,
+      rules: null,
+    };
+
+    this.championships.set(championship2.id, championship2);
+
+    // Create GT3 races with 19:45 UK time (FIXED REQUIREMENT)
+    const gt3Race1: Race = {
+      id: "gt3-round-1",
+      championshipId: championship2.id,
+      name: "GT3 Mid Evo Masters Round 1",
+      track: "Mount Panorama",
+      carClass: "GT3",
+      date: new Date("2025-08-09T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-08-08T18:45:00.000Z"),
+      isActive: true,
+      roundNumber: 1,
+      points: null,
+    };
+
+    const gt3Race2: Race = {
+      id: "gt3-round-2",
+      championshipId: championship2.id,
+      name: "GT3 Mid Evo Masters Round 2",
+      track: "Silverstone",
+      carClass: "GT3",
+      date: new Date("2025-08-16T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-08-15T18:45:00.000Z"),
+      isActive: true,
+      roundNumber: 2,
+      points: null,
+    };
+
+    const gt3Race3: Race = {
+      id: "gt3-round-3",
+      championshipId: championship2.id,
+      name: "GT3 Mid Evo Masters Round 3",
+      track: "Hungaroring",
+      carClass: "GT3",
+      date: new Date("2025-08-23T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-08-22T18:45:00.000Z"),
+      isActive: true,
+      roundNumber: 3,
+      points: null,
+    };
+
+    const gt3Race4: Race = {
+      id: "gt3-round-4",
+      championshipId: championship2.id,
+      name: "GT3 Mid Evo Masters Round 4",
+      track: "Spa-Francorchamps",
+      carClass: "GT3",
+      date: new Date("2025-08-30T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-08-29T18:45:00.000Z"),
+      isActive: true,
+      roundNumber: 4,
+      points: null,
+    };
+
+    const gt3Race5: Race = {
+      id: "gt3-round-5",
+      championshipId: championship2.id,
+      name: "GT3 Mid Evo Masters Round 5",
+      track: "Kyalami",
+      carClass: "GT3",
+      date: new Date("2025-09-06T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      maxParticipants: 30,
+      registrationDeadline: new Date("2025-09-05T18:45:00.000Z"),
+      isActive: true,
+      roundNumber: 5,
+      points: null,
+    };
+
+    // Add all races to the storage
     this.races.set(race1.id, race1);
     this.races.set(race2.id, race2);
     this.races.set(race3.id, race3);
@@ -351,8 +474,11 @@ export class MemStorage implements IStorage {
     this.races.set(race5.id, race5);
     this.races.set(race6.id, race6);
     this.races.set(race7.id, race7);
-    this.races.set(race8.id, race8);
-    this.races.set(race9.id, race9);
+    this.races.set(gt3Race1.id, gt3Race1);
+    this.races.set(gt3Race2.id, gt3Race2);
+    this.races.set(gt3Race3.id, gt3Race3);
+    this.races.set(gt3Race4.id, gt3Race4);
+    this.races.set(gt3Race5.id, gt3Race5);
   }
 
   async getMember(id: string): Promise<Member | undefined> {
