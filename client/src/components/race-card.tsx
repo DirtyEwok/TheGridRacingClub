@@ -59,7 +59,6 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
             </button>
             <div className="text-right text-sm text-gray-400">
               <div>{raceDate.toLocaleDateString("en-GB", {timeZone: "Europe/London"})}</div>
-              <div>{raceDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/London" })}</div>
             </div>
           </div>
         </div>
