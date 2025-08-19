@@ -234,8 +234,8 @@ Settings:
 
 #RACEANDRESPECT`,
       season: "Season 2",
-      startDate: new Date("2025-01-21T00:00:00.000Z"),
-      endDate: new Date("2025-02-10T23:59:59.000Z"),
+      startDate: new Date("2025-08-10T00:00:00.000Z"),
+      endDate: new Date("2025-09-21T23:59:59.000Z"),
       isActive: true,
       maxParticipants: 30,
       rules: null,
@@ -250,9 +250,9 @@ Settings:
       name: "GT4 Mornings Round 1",
       track: "Red Bull Ring",
       carClass: "GT4",
-      date: new Date("2025-01-26T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-08-10T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-01-25T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-08-09T19:00:00.000Z"),
       isActive: true,
       roundNumber: 1,
       points: null,
@@ -264,9 +264,9 @@ Settings:
       name: "GT4 Mornings Round 2",
       track: "Zolder",
       carClass: "GT4",
-      date: new Date("2025-02-02T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-08-17T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-02-01T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-08-16T19:00:00.000Z"),
       isActive: true,
       roundNumber: 2,
       points: null,
@@ -278,9 +278,9 @@ Settings:
       name: "GT4 Mornings Round 3",
       track: "Monza",
       carClass: "GT4",
-      date: new Date("2025-02-09T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-08-24T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-02-08T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-08-23T19:00:00.000Z"),
       isActive: true,
       roundNumber: 3,
       points: null,
@@ -292,9 +292,9 @@ Settings:
       name: "GT4 Mornings Round 4",
       track: "Laguna Seca",
       carClass: "GT4",
-      date: new Date("2025-02-16T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-08-31T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-02-15T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-08-30T19:00:00.000Z"),
       isActive: true,
       roundNumber: 4,
       points: null,
@@ -306,9 +306,9 @@ Settings:
       name: "GT4 Mornings Round 5",
       track: "Hungaroring",
       carClass: "GT4",
-      date: new Date("2025-02-23T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-09-07T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-02-22T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-09-06T19:00:00.000Z"),
       isActive: true,
       roundNumber: 5,
       points: null,
@@ -320,9 +320,9 @@ Settings:
       name: "GT4 Mornings Round 6",
       track: "Paul Ricard",
       carClass: "GT4",
-      date: new Date("2025-03-02T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-09-14T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-03-01T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-09-13T19:00:00.000Z"),
       isActive: true,
       roundNumber: 6,
       points: null,
@@ -334,9 +334,9 @@ Settings:
       name: "GT4 Mornings Round 7",
       track: "Zandvoort",
       carClass: "GT4",
-      date: new Date("2025-03-09T20:00:00.000Z"), // 20:00 UK time - NEVER CHANGE
+      date: new Date("2025-09-21T19:00:00.000Z"), // 20:00 UK time (BST) - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-03-08T20:00:00.000Z"),
+      registrationDeadline: new Date("2025-09-20T19:00:00.000Z"),
       isActive: true,
       roundNumber: 7,
       points: null,
