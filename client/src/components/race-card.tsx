@@ -13,7 +13,7 @@ interface RaceCardProps {
 export default function RaceCard({ race, onRegister, onUnregister }: RaceCardProps) {
   const [showPreview, setShowPreview] = useState(false);
   // Parse dates without timezone conversion to show exact database times
-  const parseLocalDate = (dateStr: string) => {
+  const parseLocalDate = (dateStr: string | Date) => {
     const cleanDate = String(dateStr).replace('Z', '').replace('T', ' ');
     return new Date(cleanDate);
   };
