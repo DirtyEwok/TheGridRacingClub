@@ -23,6 +23,7 @@ Championship rules: Completely removed rules section from championship display t
 - Timezone: LOCKED to UK (Europe/London) for all display and database storage
 - User frustration: Multiple incorrect time changes have caused drivers to re-register repeatedly
 - Database stability: PostgreSQL DatabaseStorage implemented to prevent data loss on server restarts (switched from unreliable MemStorage)
+- System status: Working correctly with all 10 registered drivers and race registrations preserved in database
 
 ## System Architecture
 
