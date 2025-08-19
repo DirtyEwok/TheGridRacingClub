@@ -13,8 +13,8 @@ interface RaceCardProps {
 export default function RaceCard({ race, onRegister, onUnregister }: RaceCardProps) {
   const [showPreview, setShowPreview] = useState(false);
   // Remove timezone conversion to show times as intended (20:00 = 8pm)
-  const raceDate = new Date(race.date.replace('Z', ''));
-  const isDeadlinePassed = new Date() > new Date(race.registrationDeadline.replace('Z', ''));
+  const raceDate = new Date(String(race.date).replace('Z', ''));
+  const isDeadlinePassed = new Date() > new Date(String(race.registrationDeadline).replace('Z', ''));
   const isFull = race.registeredCount >= race.maxParticipants;
   const fillPercentage = (race.registeredCount / race.maxParticipants) * 100;
 
