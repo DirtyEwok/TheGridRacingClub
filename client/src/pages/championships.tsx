@@ -83,7 +83,7 @@ export default function Championships() {
                         </div>
                         <p className="text-sm text-gray-400 mb-1">{championship.season}</p>
                         {championship.description && (
-                          <p className="text-gray-300 mb-4">{championship.description}</p>
+                          <div className="text-gray-300 mb-4 whitespace-pre-line">{championship.description}</div>
                         )}
                       </div>
                     </div>
