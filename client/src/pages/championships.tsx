@@ -83,7 +83,13 @@ export default function Championships() {
                         </div>
                         <p className="text-sm text-gray-400 mb-1">{championship.season}</p>
                         {championship.description && (
-                          <div className="text-gray-300 mb-4 whitespace-pre-line">{championship.description}</div>
+                          <div className="text-gray-300 mb-4">
+                            {championship.description.split('\n').map((line, index) => (
+                              <div key={index} className={line.trim() === '' ? 'h-2' : ''}>
+                                {line.trim() === '' ? '' : line}
+                              </div>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>
