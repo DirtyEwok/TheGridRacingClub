@@ -54,7 +54,7 @@ export default function EditChampionshipModal({ championship, isOpen, onClose }:
       startDate: "",
       endDate: "",
       maxParticipants: undefined,
-      rules: "",
+      rules: undefined,
       isActive: true,
     },
   });

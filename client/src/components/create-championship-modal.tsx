@@ -50,7 +50,7 @@ export default function CreateChampionshipModal({ isOpen, onClose }: CreateChamp
       startDate: new Date().toISOString().slice(0, 10),
       endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10), // 90 days from now
       maxParticipants: undefined,
-      rules: "",
+      rules: undefined,
     },
   });
 
