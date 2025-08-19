@@ -12,13 +12,15 @@ interface RaceCardProps {
 
 export default function RaceCard({ race, onRegister, onUnregister }: RaceCardProps) {
   const [showPreview, setShowPreview] = useState(false);
-  // Parse dates without timezone conversion to show exact database times
-  const parseLocalDate = (dateStr: string | Date) => {
-    const cleanDate = String(dateStr).replace('Z', '').replace('T', ' ');
-    return new Date(cleanDate);
+  // Parse dates as UK timezone
+  const parseUKDate = (dateStr: string | Date) => {
+    const cleanDate = String(dateStr).replace('Z', '');
+    const date = new Date(cleanDate);
+    // Force UK timezone interpretation
+    return new Date(date.toLocaleString("en-GB", {timeZone: "Europe/London"}));
   };
-  const raceDate = parseLocalDate(race.date);
-  const isDeadlinePassed = new Date() > parseLocalDate(race.registrationDeadline);
+  const raceDate = parseUKDate(race.date);
+  const isDeadlinePassed = new Date() > parseUKDate(race.registrationDeadline);
   const isFull = race.registeredCount >= race.maxParticipants;
   const fillPercentage = (race.registeredCount / race.maxParticipants) * 100;
 
@@ -63,8 +65,8 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
               <Eye className="w-4 h-4 text-gray-400 group-hover:text-green-400" />
             </button>
             <div className="text-right text-sm text-gray-400">
-              <div>{raceDate.toLocaleDateString()}</div>
-              <div>{raceDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+              <div>{raceDate.toLocaleDateString("en-GB", {timeZone: "Europe/London"})}</div>
+              <div>{raceDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/London" })}</div>
             </div>
           </div>
         </div>
