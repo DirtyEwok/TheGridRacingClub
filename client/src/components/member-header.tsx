@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoImage from "@assets/logo.png";
+import SignInModal from "./sign-in-modal";
+import { getCurrentMember, clearCurrentMember } from "@/lib/memberSession";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function MemberHeader() {
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const currentMember = getCurrentMember();
 
   const navigation = [
     { name: "Races", href: "/races" },
@@ -51,8 +57,37 @@ export default function MemberHeader() {
             ))}
           </nav>
 
-          {/* Admin Access & Mobile menu */}
+          {/* Member Status & Mobile menu */}
           <div className="flex items-center space-x-2">
+            {/* Member Status */}
+            <div className="hidden md:flex items-center space-x-2">
+              {currentMember ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-300">Welcome, {currentMember.displayName}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      clearCurrentMember();
+                      queryClient.invalidateQueries({ queryKey: ["/api/races"] });
+                    }}
+                    className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700"
+                  >
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsSignInOpen(true)}
+                  className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              )}
+            </div>
             {/* Hidden admin access - double click on logo */}
             <div 
               onDoubleClick={() => window.location.href = '/admin'}
@@ -101,6 +136,12 @@ export default function MemberHeader() {
           </div>
         </div>
       )}
+      
+      {/* Sign In Modal */}
+      <SignInModal 
+        isOpen={isSignInOpen} 
+        onClose={() => setIsSignInOpen(false)} 
+      />
     </header>
   );
 }
