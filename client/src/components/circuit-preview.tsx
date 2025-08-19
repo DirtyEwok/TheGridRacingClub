@@ -133,6 +133,16 @@ const trackDatabase: Record<string, CircuitData> = {
     ],
     stats: { length: "6.213 km", turns: 23, lapRecord: "2:01.286", difficulty: "Expert" }
   },
+  "Circuit de Spa-Francorchamps": {
+    name: "Circuit de Spa-Francorchamps",
+    layout: "M 80 200 Q 60 150 100 100 Q 150 60 220 80 Q 300 100 350 150 Q 380 200 350 250 Q 300 300 220 280 Q 150 260 100 220 Q 60 180 80 200 Z",
+    highlights: [
+      { name: "Eau Rouge", type: "corner", position: { x: 120, y: 120 }, description: "Legendary uphill left-right combination" },
+      { name: "Kemmel Straight", type: "straight", position: { x: 250, y: 90 }, description: "Long straight with DRS overtaking zone" },
+      { name: "Bus Stop Chicane", type: "corner", position: { x: 200, y: 260 }, description: "Tight chicane before main straight" }
+    ],
+    stats: { length: "7.004 km", turns: 20, lapRecord: "1:41.252", difficulty: "Expert" }
+  },
   "Kyalami": {
     name: "Kyalami",
     layout: "M 120 200 Q 100 150 150 120 Q 200 90 260 110 Q 320 130 350 180 Q 370 230 340 270 Q 310 310 250 300 Q 190 290 150 250 Q 110 210 120 200 Z",
