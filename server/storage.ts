@@ -386,8 +386,8 @@ Password: GT390
 Party opens at 19:45
 Server goes live at 20:00`,
       season: "Season 1",
-      startDate: new Date("2025-08-09T00:00:00.000Z"),
-      endDate: new Date("2025-09-06T23:59:59.000Z"),
+      startDate: new Date("2025-01-30T00:00:00.000Z"),
+      endDate: new Date("2025-02-27T23:59:59.000Z"),
       isActive: true,
       maxParticipants: 30,
       rules: null,
@@ -395,16 +395,16 @@ Server goes live at 20:00`,
 
     this.championships.set(championship2.id, championship2);
 
-    // Create GT3 races with 19:45 UK time (FIXED REQUIREMENT)
+    // Create GT3 races with 19:45 UK time (FIXED REQUIREMENT) - CORRECTED DATES
     const gt3Race1: Race = {
       id: "gt3-round-1",
       championshipId: championship2.id,
       name: "GT3 Mid Evo Masters Round 1",
       track: "Mount Panorama",
       carClass: "GT3",
-      date: new Date("2025-08-09T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      date: new Date("2025-01-30T19:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-08-08T18:45:00.000Z"),
+      registrationDeadline: new Date("2025-01-29T19:45:00.000Z"),
       isActive: true,
       roundNumber: 1,
       points: null,
@@ -416,9 +416,9 @@ Server goes live at 20:00`,
       name: "GT3 Mid Evo Masters Round 2",
       track: "Silverstone",
       carClass: "GT3",
-      date: new Date("2025-08-16T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      date: new Date("2025-02-06T19:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-08-15T18:45:00.000Z"),
+      registrationDeadline: new Date("2025-02-05T19:45:00.000Z"),
       isActive: true,
       roundNumber: 2,
       points: null,
@@ -430,9 +430,9 @@ Server goes live at 20:00`,
       name: "GT3 Mid Evo Masters Round 3",
       track: "Hungaroring",
       carClass: "GT3",
-      date: new Date("2025-08-23T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      date: new Date("2025-02-13T19:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-08-22T18:45:00.000Z"),
+      registrationDeadline: new Date("2025-02-12T19:45:00.000Z"),
       isActive: true,
       roundNumber: 3,
       points: null,
@@ -444,9 +444,9 @@ Server goes live at 20:00`,
       name: "GT3 Mid Evo Masters Round 4",
       track: "Spa-Francorchamps",
       carClass: "GT3",
-      date: new Date("2025-08-30T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      date: new Date("2025-02-20T19:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-08-29T18:45:00.000Z"),
+      registrationDeadline: new Date("2025-02-19T19:45:00.000Z"),
       isActive: true,
       roundNumber: 4,
       points: null,
@@ -458,9 +458,9 @@ Server goes live at 20:00`,
       name: "GT3 Mid Evo Masters Round 5",
       track: "Kyalami",
       carClass: "GT3",
-      date: new Date("2025-09-06T18:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
+      date: new Date("2025-02-27T19:45:00.000Z"), // 19:45 UK time - NEVER CHANGE
       maxParticipants: 30,
-      registrationDeadline: new Date("2025-09-05T18:45:00.000Z"),
+      registrationDeadline: new Date("2025-02-26T19:45:00.000Z"),
       isActive: true,
       roundNumber: 5,
       points: null,

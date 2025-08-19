@@ -12,13 +12,8 @@ interface RaceCardProps {
 
 export default function RaceCard({ race, onRegister, onUnregister }: RaceCardProps) {
   const [showPreview, setShowPreview] = useState(false);
-  // Parse dates and ensure UK timezone display
-  const parseUKDate = (dateStr: string | Date) => {
-    const cleanDate = String(dateStr).replace('Z', '');
-    return new Date(cleanDate);
-  };
-  const raceDate = parseUKDate(race.date);
-  const isDeadlinePassed = new Date() > parseUKDate(race.registrationDeadline);
+  const raceDate = new Date(race.date);
+  const isDeadlinePassed = new Date() > new Date(race.registrationDeadline);
   const isFull = race.registeredCount >= race.maxParticipants;
   const fillPercentage = (race.registeredCount / race.maxParticipants) * 100;
 
