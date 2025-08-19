@@ -121,12 +121,7 @@ export default function Championships() {
                   </CardHeader>
 
                   <CardContent>
-                    {championship.rules && (
-                      <div className="bg-gray-700 rounded-lg p-4 mb-4">
-                        <h4 className="text-sm font-semibold text-white mb-2">Championship Rules</h4>
-                        <p className="text-sm text-gray-300">{championship.rules}</p>
-                      </div>
-                    )}
+
 
                     <div className="flex justify-between items-center">
                       <div className="text-sm text-gray-400">
