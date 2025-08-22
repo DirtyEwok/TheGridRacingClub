@@ -1,4 +1,4 @@
-import championshipImage from "@assets/championship1.png";
+import comingSoonImage from "@assets/EVENTS-18_1755875515221.png";
 
 export default function ComingSoon() {
 
@@ -16,11 +16,11 @@ export default function ComingSoon() {
             Here's what's coming to The Grid Racing Club.
           </p>
           
-          {/* Championship Image */}
+          {/* Masterclass Season 9 Image */}
           <div className="flex justify-center">
             <img 
-              src={championshipImage} 
-              alt="Racing Championship" 
+              src={comingSoonImage} 
+              alt="Masterclass Season 9 - Coming Soon" 
               className="max-w-lg w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
             />
           </div>
