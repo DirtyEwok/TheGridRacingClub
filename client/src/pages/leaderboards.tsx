@@ -47,9 +47,8 @@ export default function Leaderboards() {
                 <img 
                   src={gt4LeaderboardImage} 
                   alt="GT4 Mornings Season 2 Leaderboard" 
-                  className="w-full h-auto rounded-lg mb-4"
+                  className="w-full h-auto rounded-lg"
                 />
-                <p className="text-lg text-gray-400">Championship results will appear here after races are completed.</p>
               </div>
             </div>
           </div>
