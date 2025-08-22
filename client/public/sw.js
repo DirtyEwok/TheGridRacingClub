@@ -1,4 +1,4 @@
-const CACHE_NAME = 'the-grid-racing-club-v1';
+const CACHE_NAME = 'the-grid-racing-club-v2';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
@@ -15,15 +15,24 @@ self.addEventListener('install', function(event) {
   );
 });
 
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
+    fetch(event.request).catch(function() {
+      return caches.match(event.request);
+    })
   );
 });
