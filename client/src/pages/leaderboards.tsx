@@ -1,5 +1,6 @@
 import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award } from "lucide-react";
+import masterclassImage from "@assets/EVENTS-18_1755875515221.png";
 
 export default function Leaderboards() {
   console.log('Leaderboards component rendering');
@@ -42,9 +43,13 @@ export default function Leaderboards() {
               <h2 className="text-2xl font-bold text-white">GT4 Mornings Season 2</h2>
             </div>
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-              <div className="text-center text-gray-400 py-8">
-                <Award className="h-16 w-16 mx-auto mb-4 text-gray-600" />
-                <p className="text-lg">Championship results will appear here after races are completed.</p>
+              <div className="text-center">
+                <img 
+                  src={masterclassImage} 
+                  alt="Masterclass Season 9" 
+                  className="w-full h-auto rounded-lg mb-4"
+                />
+                <p className="text-lg text-gray-400">Championship results will appear here after races are completed.</p>
               </div>
             </div>
           </div>
