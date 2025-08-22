@@ -11,7 +11,6 @@ export default function ComingSoon() {
             <span className="text-racing-green">Coming Soon</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-            We're working hard to bring you even more tools to enhance your racing experience. 
             Here's what's coming to The Grid Racing Club.
           </p>
           
