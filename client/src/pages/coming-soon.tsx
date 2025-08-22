@@ -32,9 +32,6 @@ export default function ComingSoon() {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <p className="text-gray-300 text-lg mb-6">
-            Have suggestions for features you'd like to see? Let us know!
-          </p>
           <div className="text-racing-green font-semibold">
             Keep racing, and stay tuned for updates!
           </div>
