@@ -1,3 +1,5 @@
+import championshipImage from "@assets/championship1.png";
+
 export default function ComingSoon() {
 
   return (
@@ -9,10 +11,19 @@ export default function ComingSoon() {
             Exciting Features 
             <span className="text-racing-green"> Coming Soon</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
             We're working hard to bring you even more tools to enhance your racing experience. 
             Here's what's coming to The Grid Racing Club.
           </p>
+          
+          {/* Championship Image */}
+          <div className="flex justify-center">
+            <img 
+              src={championshipImage} 
+              alt="Racing Championship" 
+              className="max-w-lg w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
+            />
+          </div>
         </div>
 
 
