@@ -8,6 +8,7 @@ export default function Header() {
     { path: "/", label: "Dashboard" },
     { path: "/races", label: "Races" },
     { path: "/championships", label: "Championships" },
+    { path: "/coming-soon", label: "Coming Soon" },
     { path: "/admin", label: "Admin" },
   ];
 

@@ -17,6 +17,7 @@ export default function MemberHeader() {
   const navigation = [
     { name: "Races", href: "/races" },
     { name: "Championships", href: "/championships" },
+    { name: "Coming Soon", href: "/coming-soon" },
   ];
 
   return (
