@@ -16,11 +16,6 @@ export default function ComingSoon() {
       icon: <Users className="h-8 w-8 text-racing-green" />,
       title: "Team Management", 
       description: "Form racing teams, coordinate strategies, and track team performance across championships."
-    },
-    {
-      icon: <Zap className="h-8 w-8 text-racing-green" />,
-      title: "Performance Stats",
-      description: "Detailed driver statistics including lap times, consistency ratings, and improvement tracking."
     }
   ];
 
