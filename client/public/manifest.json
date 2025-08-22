@@ -1,0 +1,25 @@
+{
+  "name": "The Grid Racing Club",
+  "short_name": "The Grid",
+  "description": "Racing club management for The Grid Racing Club on Xbox Series S",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#22c55e",
+  "orientation": "portrait",
+  "categories": ["sports", "games"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23000000'/%3E%3Ctext x='96' y='120' font-family='Arial,sans-serif' font-size='80' font-weight='bold' text-anchor='middle' fill='%2322c55e'%3ETG%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23000000'/%3E%3Ctext x='256' y='320' font-family='Arial,sans-serif' font-size='200' font-weight='bold' text-anchor='middle' fill='%2322c55e'%3ETG%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
