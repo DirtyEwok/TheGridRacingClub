@@ -2,9 +2,11 @@ import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award } from "lucide-react";
 
 export default function Leaderboards() {
+  console.log('Leaderboards component rendering');
   return (
     <div className="min-h-screen bg-black">
       <MemberHeader />
+      <div style={{ border: '2px solid red', padding: '10px' }}>DEBUG: Navigation should appear above this red box</div>
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
