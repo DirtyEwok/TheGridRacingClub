@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Dashboard from "@/pages/dashboard";
 import Races from "@/pages/races";
 import Championships from "@/pages/championships";
+import Leaderboards from "@/pages/leaderboards";
 import ComingSoon from "@/pages/coming-soon";
 import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/races" component={Races} />
       <Route path="/championships" component={Championships} />
+      <Route path="/leaderboards" component={Leaderboards} />
       <Route path="/coming-soon" component={ComingSoon} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
