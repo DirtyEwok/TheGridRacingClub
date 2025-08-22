@@ -46,16 +46,7 @@ export default function Leaderboards() {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-white mb-6 text-center">Driver Statistics</h2>
-          <div className="text-center text-gray-400 py-8">
-            <Trophy className="h-16 w-16 mx-auto mb-4 text-gray-600" />
-            <p className="text-lg">
-              Individual driver stats and race history will be displayed here once the season begins.
-            </p>
-          </div>
-        </div>
+
 
         {/* Call to Action */}
         <div className="text-center mt-16">
