@@ -9,7 +9,7 @@ export default function Leaderboards() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-white mb-6">
-            <span className="text-racing-green">Leaderboards</span>
+            <span className="text-racing-green">Current Standings</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Track your performance and see how you rank against other drivers in The Grid Racing Club.
