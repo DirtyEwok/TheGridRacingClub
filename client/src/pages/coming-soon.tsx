@@ -1,9 +1,11 @@
 import comingSoonImage from "@assets/EVENTS-18_1755875515221.png";
+import MemberHeader from "@/components/member-header";
 
 export default function ComingSoon() {
 
   return (
     <div className="min-h-screen bg-black">
+      <MemberHeader />
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
