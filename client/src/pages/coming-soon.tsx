@@ -5,7 +5,7 @@ export default function ComingSoon() {
     {
       icon: <Trophy className="h-8 w-8 text-racing-green" />,
       title: "Live Leaderboards",
-      description: "Real-time race results and championship standings with detailed performance analytics."
+      description: ""
     },
     {
       icon: <Calendar className="h-8 w-8 text-racing-green" />,
