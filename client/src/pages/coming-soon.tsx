@@ -8,8 +8,7 @@ export default function ComingSoon() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-white mb-6">
-            Exciting Features 
-            <span className="text-racing-green"> Coming Soon</span>
+            <span className="text-racing-green">Coming Soon</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
             We're working hard to bring you even more tools to enhance your racing experience. 
