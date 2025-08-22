@@ -16,12 +16,22 @@ export default function ComingSoon() {
           </p>
           
           {/* Masterclass Season 9 Image */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-8">
             <img 
               src={comingSoonImage} 
               alt="Masterclass Season 9 - Coming Soon" 
               className="max-w-lg w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
             />
+          </div>
+          
+          {/* Season 9 Details */}
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-lg text-gray-300 leading-relaxed">
+              We return with Season 9 of the Grid's MasterClass and this time its GT2 power.
+            </p>
+            <p className="text-lg text-gray-300 leading-relaxed mt-2">
+              Full details will be announced soon.
+            </p>
           </div>
         </div>
 
