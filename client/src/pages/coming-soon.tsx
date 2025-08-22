@@ -1,23 +1,4 @@
-import { Calendar, Trophy, Users, Zap } from "lucide-react";
-
 export default function ComingSoon() {
-  const features = [
-    {
-      icon: <Trophy className="h-8 w-8 text-racing-green" />,
-      title: "Live Leaderboards",
-      description: ""
-    },
-    {
-      icon: <Calendar className="h-8 w-8 text-racing-green" />,
-      title: "Season Calendar",
-      description: "Complete racing schedule with track previews, weather conditions, and practice times."
-    },
-    {
-      icon: <Users className="h-8 w-8 text-racing-green" />,
-      title: "Team Management", 
-      description: "Form racing teams, coordinate strategies, and track team performance across championships."
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-black">
@@ -34,29 +15,7 @@ export default function ComingSoon() {
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {features.map((feature, index) => (
-            <div 
-              key={index}
-              className="bg-gray-900 border border-gray-700 rounded-lg p-8 hover:border-racing-green transition-all duration-300 transform hover:scale-105"
-            >
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  {feature.icon}
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+
 
         {/* Timeline Section */}
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
