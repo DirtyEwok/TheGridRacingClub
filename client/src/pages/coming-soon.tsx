@@ -28,38 +28,7 @@ export default function ComingSoon() {
 
 
 
-        {/* Timeline Section */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-white mb-6 text-center">
-            Development Timeline
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-4 h-4 bg-racing-green rounded-full flex-shrink-0"></div>
-              <div className="text-gray-300">
-                <span className="font-semibold text-racing-green">Phase 1:</span> Enhanced race registration and member profiles
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-4 h-4 bg-gray-600 rounded-full flex-shrink-0"></div>
-              <div className="text-gray-400">
-                <span className="font-semibold">Phase 2:</span> Live race results and leaderboard integration
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-4 h-4 bg-gray-600 rounded-full flex-shrink-0"></div>
-              <div className="text-gray-400">
-                <span className="font-semibold">Phase 3:</span> Team management and advanced analytics
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-4 h-4 bg-gray-600 rounded-full flex-shrink-0"></div>
-              <div className="text-gray-400">
-                <span className="font-semibold">Phase 4:</span> Mobile app enhancements and push notifications
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         {/* Call to Action */}
         <div className="text-center mt-16">
