@@ -1,6 +1,6 @@
 import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award } from "lucide-react";
-import masterclassImage from "@assets/EVENTS-18_1755875515221.png";
+import gt4LeaderboardImage from "@assets/gt4redbull_1755878317150.png";
 
 export default function Leaderboards() {
   console.log('Leaderboards component rendering');
@@ -24,7 +24,7 @@ export default function Leaderboards() {
           
           {/* GT3 Mid Evo Masters Leaderboard */}
           <div>
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="flex items-center justify-center space-x-3 mb-4">
               <Trophy className="h-8 w-8 text-racing-green" />
               <h2 className="text-2xl font-bold text-white">GT3 Mid Evo Masters</h2>
             </div>
@@ -38,15 +38,15 @@ export default function Leaderboards() {
 
           {/* GT4 Mornings Season 2 Leaderboard */}
           <div>
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="flex items-center justify-center space-x-3 mb-4">
               <Medal className="h-8 w-8 text-racing-green" />
               <h2 className="text-2xl font-bold text-white">GT4 Mornings Season 2</h2>
             </div>
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
               <div className="text-center">
                 <img 
-                  src={masterclassImage} 
-                  alt="Masterclass Season 9" 
+                  src={gt4LeaderboardImage} 
+                  alt="GT4 Mornings Season 2 Leaderboard" 
                   className="w-full h-auto rounded-lg mb-4"
                 />
                 <p className="text-lg text-gray-400">Championship results will appear here after races are completed.</p>
