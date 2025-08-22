@@ -22,26 +22,30 @@ export default function Leaderboards() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           
           {/* GT3 Mid Evo Masters Leaderboard */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-            <div className="flex items-center space-x-3 mb-6">
+          <div>
+            <div className="flex items-center space-x-3 mb-4">
               <Trophy className="h-8 w-8 text-racing-green" />
               <h2 className="text-2xl font-bold text-white">GT3 Mid Evo Masters</h2>
             </div>
-            <div className="text-center text-gray-400 py-8">
-              <Award className="h-16 w-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-lg">Championship results will appear here after races are completed.</p>
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+              <div className="text-center text-gray-400 py-8">
+                <Award className="h-16 w-16 mx-auto mb-4 text-gray-600" />
+                <p className="text-lg">Championship results will appear here after races are completed.</p>
+              </div>
             </div>
           </div>
 
           {/* GT4 Mornings Season 2 Leaderboard */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-            <div className="flex items-center space-x-3 mb-6">
+          <div>
+            <div className="flex items-center space-x-3 mb-4">
               <Medal className="h-8 w-8 text-racing-green" />
               <h2 className="text-2xl font-bold text-white">GT4 Mornings Season 2</h2>
             </div>
-            <div className="text-center text-gray-400 py-8">
-              <Award className="h-16 w-16 mx-auto mb-4 text-gray-600" />
-              <p className="text-lg">Championship results will appear here after races are completed.</p>
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+              <div className="text-center text-gray-400 py-8">
+                <Award className="h-16 w-16 mx-auto mb-4 text-gray-600" />
+                <p className="text-lg">Championship results will appear here after races are completed.</p>
+              </div>
             </div>
           </div>
         </div>
