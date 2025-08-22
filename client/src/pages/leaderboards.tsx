@@ -40,7 +40,7 @@ export default function Leaderboards() {
               <Medal className="h-8 w-8 text-racing-green" />
               <h2 className="text-2xl font-bold text-white">GT4 Mornings Season 2</h2>
             </div>
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
               <div className="text-center">
                 <img 
                   src={gt4LeaderboardImage} 
