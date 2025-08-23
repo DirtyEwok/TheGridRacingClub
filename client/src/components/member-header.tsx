@@ -28,7 +28,14 @@ export default function MemberHeader() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/races">
-              <div className="flex items-center space-x-2 cursor-pointer">
+              <div 
+                className="flex items-center space-x-2 cursor-pointer"
+                onDoubleClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = '/admin';
+                }}
+              >
                 <img src={logoImage} alt="The Grid" className="h-8 w-auto" />
                 <span className="text-xl font-bold text-white">The Grid</span>
               </div>
