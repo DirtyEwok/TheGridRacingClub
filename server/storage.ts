@@ -147,9 +147,6 @@ export class DatabaseStorage implements IStorage {
         championshipName: championship?.name || undefined,
       };
     }).sort((a, b) => {
-      if (a.roundNumber && b.roundNumber) {
-        return a.roundNumber - b.roundNumber;
-      }
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
   }
