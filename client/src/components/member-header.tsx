@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoImage from "@assets/logo.png";
 import SignInModal from "./sign-in-modal";
@@ -84,6 +84,16 @@ export default function MemberHeader() {
               )}
             </div>
 
+            {/* Discreet Admin Access */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => window.location.href = '/admin'}
+              className="text-gray-400 hover:text-racing-green hover:bg-gray-800 p-2"
+              title="Admin Settings"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
             
             {/* Mobile menu button */}
             <div className="md:hidden">
