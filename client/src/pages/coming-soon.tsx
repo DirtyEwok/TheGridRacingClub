@@ -1,4 +1,4 @@
-import comingSoonImage from "@assets/EVENTS-18_1755875515221.png";
+import comingSoonImage from "@assets/MC9porsche_1756023122999.png";
 import MemberHeader from "@/components/member-header";
 
 export default function ComingSoon() {
@@ -20,15 +20,15 @@ export default function ComingSoon() {
           <div className="flex justify-center mb-8">
             <img 
               src={comingSoonImage} 
-              alt="Masterclass Season 9 - Coming Soon" 
-              className="max-w-lg w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
+              alt="Masterclass Season 9 GT2 Porsche - Coming Soon" 
+              className="max-w-4xl w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
             />
           </div>
           
           {/* Season 9 Details */}
           <div className="text-center max-w-2xl mx-auto">
             <p className="text-lg text-gray-300 leading-relaxed">
-              We return with Season 9 of the Grid's MasterClass and this time its GT2 power.
+              We return with Season 9 of the Grid's MasterClass and this time its GT2 Porsche 911 RS power.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed mt-2">
               Full details will be announced soon.
