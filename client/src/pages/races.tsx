@@ -92,7 +92,7 @@ export default function Races() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen carbon-fiber">
         <MemberHeader />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-white">Loading...</div>
@@ -102,7 +102,7 @@ export default function Races() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen carbon-fiber">
       <MemberHeader />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
