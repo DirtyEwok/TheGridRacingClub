@@ -155,6 +155,53 @@ export default function MemberHeader() {
                 </div>
               </Link>
             ))}
+            
+            {/* Member-specific mobile navigation */}
+            {currentMember && (
+              <>
+                <div className="border-t border-gray-600 my-2"></div>
+                <Link href={`/members/${currentMember.id}/profile`}>
+                  <div
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors flex items-center ${
+                      location === `/members/${currentMember.id}/profile`
+                        ? "bg-racing-green text-white"
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                    }`}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
+                  </div>
+                </Link>
+                <div
+                  onClick={() => {
+                    clearCurrentMember();
+                    queryClient.invalidateQueries({ queryKey: ["/api/races"] });
+                    setIsMenuOpen(false);
+                  }}
+                  className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white"
+                >
+                  Sign Out
+                </div>
+              </>
+            )}
+            
+            {/* Sign In for non-members */}
+            {!currentMember && (
+              <>
+                <div className="border-t border-gray-600 my-2"></div>
+                <div
+                  onClick={() => {
+                    setIsSignInOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
