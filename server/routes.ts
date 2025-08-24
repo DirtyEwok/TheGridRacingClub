@@ -620,6 +620,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/objects/normalize-path", async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const { uploadURL } = req.body;
+      const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+      res.json({ objectPath });
+    } catch (error) {
+      console.error("Error normalizing object path:", error);
+      res.status(500).json({ error: "Failed to normalize object path" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // ============ WEBSOCKET SETUP ============

@@ -98,20 +98,34 @@ export function ObjectUploader({
       setUploadProgress(100);
       console.log('Upload successful');
       
-      // Extract object path from upload URL for display
-      // The upload URL contains the full path, we need to extract just the object identifier
-      const urlParts = uploadURL.split('/');
-      const fileName = urlParts[urlParts.length - 1].split('?')[0]; // Remove query params
-      const objectPath = `/objects/uploads/${fileName}`;
-      
-      console.log('Object path:', objectPath);
-      
-      // Close modal and reset state first
-      setIsOpen(false);
-      reset();
-      
-      // Then call completion callback
-      onComplete?.(objectPath);
+      // Use the object storage service to normalize the path correctly
+      try {
+        const normalizeResponse = await fetch('/api/objects/normalize-path', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uploadURL }),
+        });
+        
+        if (!normalizeResponse.ok) {
+          throw new Error('Failed to normalize object path');
+        }
+        
+        const { objectPath } = await normalizeResponse.json();
+        console.log('Upload URL:', uploadURL);
+        console.log('Normalized object path:', objectPath);
+        
+        // Close modal and reset state first
+        setIsOpen(false);
+        reset();
+        
+        // Then call completion callback
+        onComplete?.(objectPath);
+      } catch (normalizeError) {
+        console.error('Path normalization error:', normalizeError);
+        setError('Failed to process uploaded file');
+      }
     } catch (err) {
       console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'Upload failed');

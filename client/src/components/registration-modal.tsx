@@ -14,7 +14,7 @@ import { setCurrentMember, getCurrentMember } from "@/lib/memberSession";
 import type { RaceWithStats, InsertMember, InsertRegistration } from "@shared/schema";
 
 const registrationSchema = z.object({
-  displayName: z.string().min(1, "Display name is required"),
+  displayName: z.string().min(1, "Nickname is required"),
   gamertag: z.string().min(1, "Xbox gamertag is required"),
   experienceLevel: z.enum(["Beginner", "Intermediate", "Advanced", "Professional"]),
 });
@@ -127,7 +127,7 @@ export default function RegistrationModal({ race, isOpen, onClose }: Registratio
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="displayName" className="text-sm font-medium text-gray-300">
-              Display Name
+              Nickname/Known as
             </Label>
             <Input
               id="displayName"

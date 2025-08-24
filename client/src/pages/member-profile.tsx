@@ -95,11 +95,15 @@ function MemberProfile() {
   });
 
   const handleImageUpload = (objectPath: string) => {
+    console.log('handleImageUpload called with path:', objectPath);
+    
     // Set the form value with the object path
     form.setValue("profileImageUrl", objectPath);
     
     // Automatically save the profile with the new image
     const currentValues = form.getValues();
+    console.log('Updating profile with values:', currentValues);
+    
     updateProfileMutation.mutate({
       ...currentValues,
       profileImageUrl: objectPath
@@ -205,6 +209,8 @@ function MemberProfile() {
                       src={member.profileImageUrl}
                       alt={member.displayName}
                       className="w-24 h-24 rounded-full object-cover border-2 border-racing-green"
+                      onLoad={() => console.log('Image loaded successfully:', member.profileImageUrl)}
+                      onError={(e) => console.error('Image failed to load:', member.profileImageUrl, e)}
                     />
                   ) : (
                     <div className="w-24 h-24 bg-racing-green rounded-full flex items-center justify-center">
@@ -295,7 +301,7 @@ function MemberProfile() {
                     name="displayName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-white">Display Name</FormLabel>
+                        <FormLabel className="text-white">Nickname/Known as</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
