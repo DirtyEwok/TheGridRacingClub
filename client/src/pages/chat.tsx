@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, Users, Settings } from "lucide-react";
+import { MessageCircle, Users, Settings, Crown } from "lucide-react";
 import { type ChatRoomWithStats, type Championship } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { getCurrentMember } from "@/lib/memberSession";
@@ -17,6 +17,15 @@ export default function Chat() {
   const queryClient = useQueryClient();
   const currentMember = getCurrentMember();
   const currentMemberId = currentMember?.id || "";
+
+  // Club admin information
+  const clubAdminText = `Add our admin to your Xbox friends list.
+CJ Carmichael aka CJ DirtyEwok (Founder and Owner)
+Adam Beazley aka Adzinski82 (Club Manager)
+Alex Luke aka Alexcdl18
+Neil Brown aka Stalker Brown
+Dan Gray aka Snuffles1983
+Neil Broom aka Neilb`;
 
   // Fetch chat rooms
   const { data: chatRooms, isLoading } = useQuery<ChatRoomWithStats[]>({
@@ -216,6 +225,44 @@ export default function Chat() {
                     )}
                   </div>
                 </ScrollArea>
+                
+                {/* Club Admin Team */}
+                <div className="border-t border-gray-700 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Crown className="w-4 h-4 text-racing-green" />
+                    <h3 className="text-sm font-semibold text-white">Club Admin Team</h3>
+                  </div>
+                  <div className="space-y-1">
+                    {clubAdminText.split('\n').map((line, index) => {
+                      if (line.trim() === '') return <div key={index} className="h-1"></div>;
+                      
+                      // Check if this line contains CJ DirtyEwok
+                      if (line.includes('CJ DirtyEwok')) {
+                        return (
+                          <div key={index} className="text-lime-400 text-xs font-medium">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Check if this line contains admin names (has "aka" but not CJ DirtyEwok)
+                      if (line.includes('aka') && !line.includes('CJ DirtyEwok')) {
+                        return (
+                          <div key={index} className="text-yellow-400 text-xs font-medium">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Regular text
+                      return (
+                        <div key={index} className="text-gray-300 text-xs">
+                          {line}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
