@@ -117,12 +117,6 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
-    alert(`Enter pressed! Member: ${currentUser?.gamertag}, ID: ${currentMemberId}, Message: "${messageText.trim()}"`);
-    console.log('🔧 Enter key send:', { 
-      messageText: messageText.trim(),
-      currentMemberId,
-      userGamertag: currentUser?.gamertag
-    });
     
     if (e) {
       e.preventDefault();
@@ -163,58 +157,6 @@ export default function ChatRoomComponent({
     }
   };
 
-  // Mobile-friendly send handler
-  const handleSendButtonClick = async () => {
-    alert('Button clicked!'); // Simple test
-    console.log('🔧 Send attempt:', { 
-      messageText: messageText.trim(),
-      currentMemberId,
-      hasMessage: !!messageText.trim(),
-      isSending,
-      userGamertag: currentUser?.gamertag
-    });
-    
-    if (!messageText.trim() || isSending || !currentMemberId) {
-      console.log('🔧 Send blocked - reason:', {
-        noMessage: !messageText.trim(),
-        isSending,
-        noMemberId: !currentMemberId
-      });
-      return;
-    }
-    
-    setIsSending(true);
-    try {
-      console.log('🔧 Making API call...');
-      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: messageText.trim(),
-          memberId: currentMemberId,
-        }),
-      });
-      
-      console.log('🔧 Response status:', response.status);
-      
-      if (response.ok) {
-        console.log('🔧 Success! Clearing input');
-        setMessageText("");
-        if (onMessageDraftChange) {
-          onMessageDraftChange("");
-        }
-      } else {
-        const errorText = await response.text();
-        console.log('🔧 API failed:', response.status, errorText);
-      }
-    } catch (error) {
-      console.error('🔧 Network error:', error);
-    } finally {
-      setTimeout(() => setIsSending(false), 300);
-    }
-  };
 
   const formatMessageTime = (date: Date) => {
     return format(new Date(date), "HH:mm");
@@ -520,7 +462,13 @@ export default function ChatRoomComponent({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  alert('KeyDown Enter detected!');
+                  handleSendMessage(e);
+                }
+              }}
+              onKeyUp={(e) => {
+                // Mobile backup - some mobile browsers prefer keyup
+                if (e.key === 'Enter' && !e.shiftKey && /Mobi|Android/i.test(navigator.userAgent)) {
+                  e.preventDefault();
                   handleSendMessage(e);
                 }
               }}
@@ -542,19 +490,10 @@ export default function ChatRoomComponent({
               <Image className="w-4 h-4" />
             </ObjectUploader>
             <button
-              type="button"
+              type="submit"
               disabled={!messageText.trim() || isSending}
-              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                alert('Mouse down!');
-                handleSendButtonClick();
-              }}
-              onTouchStart={(e) => {
-                e.preventDefault();
-                alert('Touch start!');
-                handleSendButtonClick();
-              }}
+              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation select-none"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
               title="Send message"
               data-testid="button-send-message"
             >
