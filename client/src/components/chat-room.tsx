@@ -117,16 +117,25 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
+    console.log('🔧 Enter key send:', { 
+      messageText: messageText.trim(),
+      currentMemberId,
+      userGamertag: currentUser?.gamertag
+    });
+    
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     
-    if (!messageText.trim() || isSending) return;
+    if (!messageText.trim() || isSending) {
+      console.log('🔧 Enter blocked:', { noMessage: !messageText.trim(), isSending });
+      return;
+    }
 
     setIsSending(true);
     try {
-      // Direct API call for better mobile reliability
+      console.log('🔧 Enter API call...');
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
         method: 'POST',
         headers: {
@@ -138,6 +147,8 @@ export default function ChatRoomComponent({
         }),
       });
       
+      console.log('🔧 Enter response:', response.status);
+      
       if (response.ok) {
         setMessageText("");
         if (onMessageDraftChange) {
@@ -145,7 +156,7 @@ export default function ChatRoomComponent({
         }
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('🔧 Enter error:', error);
     } finally {
       setTimeout(() => setIsSending(false), 300);
     }
@@ -153,10 +164,26 @@ export default function ChatRoomComponent({
 
   // Mobile-friendly send handler
   const handleSendButtonClick = async () => {
-    if (!messageText.trim() || isSending || !currentMemberId) return;
+    console.log('🔧 Send attempt:', { 
+      messageText: messageText.trim(),
+      currentMemberId,
+      hasMessage: !!messageText.trim(),
+      isSending,
+      userGamertag: currentUser?.gamertag
+    });
+    
+    if (!messageText.trim() || isSending || !currentMemberId) {
+      console.log('🔧 Send blocked - reason:', {
+        noMessage: !messageText.trim(),
+        isSending,
+        noMemberId: !currentMemberId
+      });
+      return;
+    }
     
     setIsSending(true);
     try {
+      console.log('🔧 Making API call...');
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
         method: 'POST',
         headers: {
@@ -168,14 +195,20 @@ export default function ChatRoomComponent({
         }),
       });
       
+      console.log('🔧 Response status:', response.status);
+      
       if (response.ok) {
+        console.log('🔧 Success! Clearing input');
         setMessageText("");
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
+      } else {
+        const errorText = await response.text();
+        console.log('🔧 API failed:', response.status, errorText);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('🔧 Network error:', error);
     } finally {
       setTimeout(() => setIsSending(false), 300);
     }
