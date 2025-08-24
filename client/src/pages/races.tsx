@@ -11,6 +11,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { getCurrentMemberId } from "@/lib/memberSession";
 import championship1Image from "@assets/championship1.png";
 import championship2Image from "@assets/championship2.png";
+import xboxSeriesXLogo from "@assets/4c1488526880b575b0a40944ea1f13d2 - Copy (2)_1756046859441.jpg";
+import xboxSeriesSLogo from "@assets/4c1488526880b575b0a40944ea1f13d2_1756046859441.jpg";
 import type { RaceWithStats } from "@shared/schema";
 
 export default function Races() {
@@ -116,6 +118,21 @@ export default function Races() {
               : 'Register for racing events and join the competition'
             }
           </p>
+          
+          {/* Xbox Logos */}
+          <div className="flex justify-center items-center gap-8 mt-6 mb-4">
+            <img 
+              src={xboxSeriesXLogo} 
+              alt="Xbox Series X" 
+              className="h-12 object-contain"
+            />
+            <img 
+              src={xboxSeriesSLogo} 
+              alt="Xbox Series S" 
+              className="h-12 object-contain"
+            />
+          </div>
+          
           {selectedChampionship && (
             <Button 
               variant="outline" 
