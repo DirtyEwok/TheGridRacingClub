@@ -142,12 +142,18 @@ export default function ChatRoomComponent({
   };
 
   // Explicit send button handler for mobile compatibility
-  const handleSendButtonClick = async (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleSendButtonClick = async () => {
+    console.log('Admin debug:', { 
+      messageText: messageText.trim(), 
+      isSending, 
+      isConnected, 
+      currentMemberId,
+      currentUser: currentUser,
+      gamertag: currentUser?.gamertag 
+    });
     
     // Direct API call for better mobile reliability
-    if (!messageText.trim() || isSending || !isConnected) return;
+    if (!messageText.trim() || isSending || !isConnected || !currentMemberId) return;
     
     setIsSending(true);
     try {
@@ -171,7 +177,7 @@ export default function ChatRoomComponent({
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
-      setTimeout(() => setIsSending(false), 500);
+      setTimeout(() => setIsSending(false), 300);
     }
   };
 
@@ -497,12 +503,12 @@ export default function ChatRoomComponent({
             >
               <Image className="w-4 h-4" />
             </ObjectUploader>
-            <Button 
+            <button
               type="button"
-              size="icon"
               disabled={!messageText.trim() || !isConnected || isSending}
-              className="bg-racing-green hover:bg-racing-green/80 touch-manipulation min-h-10 min-w-10 active:bg-racing-green/60"
-              onPointerDown={handleSendButtonClick}
+              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation active:bg-racing-green/60 transition-colors"
+              onClick={handleSendButtonClick}
+              onTouchStart={handleSendButtonClick}
               title="Send message"
               data-testid="button-send-message"
             >
@@ -511,7 +517,7 @@ export default function ChatRoomComponent({
               ) : (
                 <Send className="w-4 h-4" />
               )}
-            </Button>
+            </button>
           </div>
           
           {/* Quick Actions */}
