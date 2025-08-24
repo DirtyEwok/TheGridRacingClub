@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema } from "@shared/schema";
+import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema, insertMessageLikeSchema } from "@shared/schema";
 import { z } from "zod";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
@@ -504,8 +504,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      const currentUserId = req.query.currentUserId as string;
       
-      const messages = await storage.getChatMessages(id, limit);
+      const messages = await storage.getChatMessages(id, limit, currentUserId);
       res.json(messages);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch messages" });
@@ -591,6 +592,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Delete message error:', error);
       res.status(500).json({ message: "Failed to delete message" });
+    }
+  });
+
+  // Like a message
+  app.post("/api/messages/:messageId/like", async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const { memberId } = req.body;
+
+      if (!memberId) {
+        return res.status(400).json({ message: "Member ID is required" });
+      }
+
+      // Check if member exists
+      const member = await storage.getMember(memberId);
+      if (!member) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+
+      const success = await storage.likeMessage(messageId, memberId);
+      if (!success) {
+        return res.status(409).json({ message: "Message already liked" });
+      }
+
+      res.status(200).json({ message: "Message liked successfully" });
+    } catch (error) {
+      console.error('Like message error:', error);
+      res.status(500).json({ message: "Failed to like message" });
+    }
+  });
+
+  // Unlike a message
+  app.delete("/api/messages/:messageId/like", async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const { memberId } = req.body;
+
+      if (!memberId) {
+        return res.status(400).json({ message: "Member ID is required" });
+      }
+
+      const success = await storage.unlikeMessage(messageId, memberId);
+      if (!success) {
+        return res.status(404).json({ message: "Like not found" });
+      }
+
+      res.status(200).json({ message: "Message unliked successfully" });
+    } catch (error) {
+      console.error('Unlike message error:', error);
+      res.status(500).json({ message: "Failed to unlike message" });
     }
   });
 

@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type ChatMessageWithMember, type ChatRoomWithStats, members, championships, races, registrations, chatRooms, chatMessages } from "@shared/schema";
+import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, members, championships, races, registrations, chatRooms, chatMessages, messageLikes } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -45,9 +45,14 @@ export interface IStorage {
   getChatRoomsWithStats(): Promise<ChatRoomWithStats[]>;
 
   // Chat Messages
-  getChatMessages(chatRoomId: string, limit?: number): Promise<ChatMessageWithMember[]>;
+  getChatMessages(chatRoomId: string, limit?: number, currentUserId?: string): Promise<ChatMessageWithMember[]>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   deleteChatMessage(messageId: string, deletedBy: string): Promise<boolean>;
+
+  // Message Likes
+  likeMessage(messageId: string, memberId: string): Promise<boolean>;
+  unlikeMessage(messageId: string, memberId: string): Promise<boolean>;
+  getMessageLikes(messageId: string): Promise<MessageLike[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -331,6 +336,7 @@ export class MemStorage implements IStorage {
   private registrations: Map<string, Registration>;
   private chatRooms: Map<string, ChatRoom>;
   private chatMessages: Map<string, ChatMessage>;
+  private messageLikes: Map<string, MessageLike>;
 
   constructor() {
     this.members = new Map();
@@ -339,6 +345,7 @@ export class MemStorage implements IStorage {
     this.registrations = new Map();
     this.chatRooms = new Map();
     this.chatMessages = new Map();
+    this.messageLikes = new Map();
     this.initializeData();
   }
 
@@ -874,7 +881,7 @@ Server goes live at 20:00`,
   }
 
   // Chat Messages
-  async getChatMessages(chatRoomId: string, limit = 50): Promise<ChatMessageWithMember[]> {
+  async getChatMessages(chatRoomId: string, limit = 50, currentUserId?: string): Promise<ChatMessageWithMember[]> {
     const messages = Array.from(this.chatMessages.values())
       .filter(msg => msg.chatRoomId === chatRoomId && !msg.isDeleted)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
@@ -885,9 +892,20 @@ Server goes live at 20:00`,
     for (const message of messages) {
       const member = this.members.get(message.memberId);
       if (member) {
+        // Get like count for this message
+        const likes = await this.getMessageLikes(message.id);
+        const likeCount = likes.length;
+        
+        // Check if current user liked this message
+        const isLikedByCurrentUser = currentUserId 
+          ? likes.some(like => like.memberId === currentUserId)
+          : false;
+
         messagesWithMembers.push({
           ...message,
           member,
+          likeCount,
+          isLikedByCurrentUser,
         });
       }
     }
@@ -922,6 +940,41 @@ Server goes live at 20:00`,
     
     this.chatMessages.set(messageId, updatedMessage);
     return true;
+  }
+
+  // Message Likes
+  async likeMessage(messageId: string, memberId: string): Promise<boolean> {
+    // Check if already liked
+    const existingLike = Array.from(this.messageLikes.values())
+      .find(like => like.messageId === messageId && like.memberId === memberId);
+    
+    if (existingLike) return false; // Already liked
+
+    const id = randomUUID();
+    const like: MessageLike = {
+      id,
+      messageId,
+      memberId,
+      createdAt: new Date(),
+    };
+    
+    this.messageLikes.set(id, like);
+    return true;
+  }
+
+  async unlikeMessage(messageId: string, memberId: string): Promise<boolean> {
+    const existingLike = Array.from(this.messageLikes.entries())
+      .find(([_, like]) => like.messageId === messageId && like.memberId === memberId);
+    
+    if (!existingLike) return false; // Not liked yet
+
+    this.messageLikes.delete(existingLike[0]);
+    return true;
+  }
+
+  async getMessageLikes(messageId: string): Promise<MessageLike[]> {
+    return Array.from(this.messageLikes.values())
+      .filter(like => like.messageId === messageId);
   }
 }
 

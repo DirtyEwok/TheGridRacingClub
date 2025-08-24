@@ -4,7 +4,7 @@ import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2, Image, Link, Play } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link, Play, Heart } from "lucide-react";
 import { ObjectUploader } from "./ObjectUploader";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
@@ -30,6 +30,16 @@ export default function ChatRoomComponent({
   // Fetch initial messages
   const { data: initialMessages } = useQuery<ChatMessageWithMember[]>({
     queryKey: ['/api/chat-rooms', chatRoom.id, 'messages'],
+    queryFn: async () => {
+      const currentUser = getCurrentMember();
+      const params = new URLSearchParams();
+      if (currentUser?.id) {
+        params.append('currentUserId', currentUser.id);
+      }
+      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch messages');
+      return response.json();
+    },
   });
 
   // Fetch all members for the member list
@@ -40,7 +50,43 @@ export default function ChatRoomComponent({
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
-  
+
+  // Like/Unlike message function
+  const handleLikeMessage = async (messageId: string, isCurrentlyLiked: boolean) => {
+    if (!currentUser?.id) return;
+
+    try {
+      const url = `/api/messages/${messageId}/like`;
+      const method = isCurrentlyLiked ? 'DELETE' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ memberId: currentUser.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update like status');
+      }
+
+      // Update the messages to reflect the new like status
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === messageId 
+            ? {
+                ...msg,
+                likeCount: isCurrentlyLiked ? msg.likeCount - 1 : msg.likeCount + 1,
+                isLikedByCurrentUser: !isCurrentlyLiked
+              }
+            : msg
+        )
+      );
+    } catch (error) {
+      console.error('Error updating like status:', error);
+    }
+  };
 
 
   // Set initial messages when they load
@@ -335,6 +381,32 @@ export default function ChatRoomComponent({
                       />
                     </div>
                   ))}
+
+                  {/* Like button and count */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`h-8 px-2 gap-1 hover:bg-gray-800 transition-colors ${
+                        message.isLikedByCurrentUser 
+                          ? 'text-red-500 hover:text-red-400' 
+                          : 'text-gray-400 hover:text-red-400'
+                      }`}
+                      onClick={() => handleLikeMessage(message.id, message.isLikedByCurrentUser)}
+                      disabled={!currentUser?.id}
+                      title={message.isLikedByCurrentUser ? "Unlike message" : "Like message"}
+                      data-testid="button-like-message"
+                    >
+                      <Heart 
+                        className={`w-4 h-4 ${
+                          message.isLikedByCurrentUser ? 'fill-current' : ''
+                        }`} 
+                      />
+                      {message.likeCount > 0 && (
+                        <span className="text-xs">{message.likeCount}</span>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

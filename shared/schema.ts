@@ -78,6 +78,13 @@ export const chatMessages = pgTable("chat_messages", {
   createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const messageLikes = pgTable("message_likes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  messageId: varchar("message_id").notNull(),
+  memberId: varchar("member_id").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const insertMemberSchema = createInsertSchema(members).pick({
   displayName: true,
   gamertag: true,
@@ -177,6 +184,11 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
   message: true,
 });
 
+export const insertMessageLikeSchema = createInsertSchema(messageLikes).pick({
+  messageId: true,
+  memberId: true,
+});
+
 export type InsertMember = z.infer<typeof insertMemberSchema>;
 export type UpdateMemberProfile = z.infer<typeof updateMemberProfileSchema>;
 export type ApproveMember = z.infer<typeof approveMemberSchema>;
@@ -193,6 +205,8 @@ export type InsertChatRoom = z.infer<typeof insertChatRoomSchema>;
 export type ChatRoom = typeof chatRooms.$inferSelect;
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type ChatMessage = typeof chatMessages.$inferSelect;
+export type InsertMessageLike = z.infer<typeof insertMessageLikeSchema>;
+export type MessageLike = typeof messageLikes.$inferSelect;
 
 export type RegistrationWithMember = Registration & {
   member?: Member;
@@ -212,6 +226,8 @@ export type ChampionshipWithStats = Championship & {
 
 export type ChatMessageWithMember = ChatMessage & {
   member: Member;
+  likeCount: number;
+  isLikedByCurrentUser: boolean;
 };
 
 export type ChatRoomWithStats = ChatRoom & {
