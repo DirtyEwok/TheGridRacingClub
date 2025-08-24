@@ -44,6 +44,23 @@ export const registrations = pgTable("registrations", {
   registeredAt: timestamp("registered_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const chatRooms = pgTable("chat_rooms", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // "general" or "championship"
+  championshipId: varchar("championship_id"), // null for general chat
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const chatMessages = pgTable("chat_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  chatRoomId: varchar("chat_room_id").notNull(),
+  memberId: varchar("member_id").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const insertMemberSchema = createInsertSchema(members).pick({
   displayName: true,
   gamertag: true,
@@ -114,6 +131,18 @@ export const insertRegistrationSchema = createInsertSchema(registrations).pick({
   memberId: true,
 });
 
+export const insertChatRoomSchema = createInsertSchema(chatRooms).pick({
+  name: true,
+  type: true,
+  championshipId: true,
+});
+
+export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
+  chatRoomId: true,
+  memberId: true,
+  message: true,
+});
+
 export type InsertMember = z.infer<typeof insertMemberSchema>;
 export type Member = typeof members.$inferSelect;
 export type InsertChampionship = z.infer<typeof insertChampionshipSchema>;
@@ -124,6 +153,10 @@ export type UpdateRace = z.infer<typeof updateRaceSchema>;
 export type Race = typeof races.$inferSelect;
 export type InsertRegistration = z.infer<typeof insertRegistrationSchema>;
 export type Registration = typeof registrations.$inferSelect;
+export type InsertChatRoom = z.infer<typeof insertChatRoomSchema>;
+export type ChatRoom = typeof chatRooms.$inferSelect;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
+export type ChatMessage = typeof chatMessages.$inferSelect;
 
 export type RegistrationWithMember = Registration & {
   member?: Member;
@@ -139,4 +172,13 @@ export type RaceWithStats = Race & {
 export type ChampionshipWithStats = Championship & {
   raceCount: number;
   totalRegistrations: number;
+};
+
+export type ChatMessageWithMember = ChatMessage & {
+  member: Member;
+};
+
+export type ChatRoomWithStats = ChatRoom & {
+  messageCount: number;
+  lastMessage?: ChatMessageWithMember;
 };

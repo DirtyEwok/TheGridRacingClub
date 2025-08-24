@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema } from "@shared/schema";
+import { insertMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -128,6 +129,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const championshipData = insertChampionshipSchema.parse(req.body);
       const championship = await storage.createChampionship(championshipData);
+      
+      // Automatically create a chat room for this championship
+      try {
+        await storage.createChatRoom({
+          name: `${championship.name} Chat`,
+          type: 'championship',
+          championshipId: championship.id,
+        });
+      } catch (error) {
+        console.warn('Failed to create chat room for championship:', error);
+      }
+      
       res.status(201).json(championship);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -326,6 +339,176 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============ CHAT API ROUTES ============
+
+  // Get all chat rooms
+  app.get("/api/chat-rooms", async (req, res) => {
+    try {
+      const chatRooms = await storage.getChatRoomsWithStats();
+      res.json(chatRooms);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch chat rooms" });
+    }
+  });
+
+  // Get specific chat room
+  app.get("/api/chat-rooms/:id", async (req, res) => {
+    try {
+      const chatRoom = await storage.getChatRoom(req.params.id);
+      if (!chatRoom) {
+        return res.status(404).json({ message: "Chat room not found" });
+      }
+      res.json(chatRoom);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch chat room" });
+    }
+  });
+
+  // Create new chat room (admin only)
+  app.post("/api/chat-rooms", async (req, res) => {
+    try {
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const chatRoomData = insertChatRoomSchema.parse(req.body);
+      const chatRoom = await storage.createChatRoom(chatRoomData);
+      res.status(201).json(chatRoom);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid chat room data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create chat room" });
+    }
+  });
+
+  // Get messages for a chat room
+  app.get("/api/chat-rooms/:id/messages", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      
+      const messages = await storage.getChatMessages(id, limit);
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  // Send message to chat room
+  app.post("/api/chat-rooms/:id/messages", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const messageData = insertChatMessageSchema.parse({
+        ...req.body,
+        chatRoomId: id,
+      });
+
+      // Check if chat room exists
+      const chatRoom = await storage.getChatRoom(id);
+      if (!chatRoom) {
+        return res.status(404).json({ message: "Chat room not found" });
+      }
+
+      // Check if member exists
+      const member = await storage.getMember(messageData.memberId);
+      if (!member) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+
+      const message = await storage.createChatMessage(messageData);
+      
+      // Get the complete message with member info for WebSocket broadcast
+      const messages = await storage.getChatMessages(id, 1);
+      const messageWithMember = messages[0];
+
+      // Broadcast to WebSocket clients
+      broadcastMessage(id, messageWithMember);
+
+      res.status(201).json(message);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid message data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
   const httpServer = createServer(app);
+
+  // ============ WEBSOCKET SETUP ============
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws' 
+  });
+
+  // Store WebSocket connections by chat room
+  const chatRoomConnections = new Map<string, Set<WebSocket>>();
+
+  // Broadcast message to all clients in a chat room
+  function broadcastMessage(chatRoomId: string, message: any) {
+    const connections = chatRoomConnections.get(chatRoomId);
+    if (connections) {
+      const messageData = JSON.stringify({
+        type: 'new-message',
+        chatRoomId,
+        message,
+      });
+
+      connections.forEach((ws) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(messageData);
+        }
+      });
+    }
+  }
+
+  wss.on('connection', (ws) => {
+    let currentChatRoom: string | null = null;
+
+    ws.on('message', (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        
+        if (message.type === 'join-chat-room') {
+          // Leave previous room
+          if (currentChatRoom) {
+            const connections = chatRoomConnections.get(currentChatRoom);
+            if (connections) {
+              connections.delete(ws);
+              if (connections.size === 0) {
+                chatRoomConnections.delete(currentChatRoom);
+              }
+            }
+          }
+
+          // Join new room
+          currentChatRoom = message.chatRoomId;
+          if (currentChatRoom) {
+            if (!chatRoomConnections.has(currentChatRoom)) {
+              chatRoomConnections.set(currentChatRoom, new Set());
+            }
+            chatRoomConnections.get(currentChatRoom)!.add(ws);
+          }
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+
+    ws.on('close', () => {
+      if (currentChatRoom) {
+        const connections = chatRoomConnections.get(currentChatRoom);
+        if (connections) {
+          connections.delete(ws);
+          if (connections.size === 0) {
+            chatRoomConnections.delete(currentChatRoom);
+          }
+        }
+      }
+    });
+  });
+
   return httpServer;
 }

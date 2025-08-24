@@ -1,7 +1,7 @@
-import { type Member, type InsertMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, members, championships, races, registrations } from "@shared/schema";
+import { type Member, type InsertMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type ChatMessageWithMember, type ChatRoomWithStats, members, championships, races, registrations, chatRooms, chatMessages } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Members
@@ -32,6 +32,17 @@ export interface IStorage {
   getAllRegistrations(): Promise<Registration[]>;
   createRegistration(registration: InsertRegistration): Promise<Registration>;
   deleteRegistration(raceId: string, memberId: string): Promise<boolean>;
+
+  // Chat Rooms
+  getAllChatRooms(): Promise<ChatRoom[]>;
+  getChatRoom(id: string): Promise<ChatRoom | undefined>;
+  getChatRoomByChampionship(championshipId: string): Promise<ChatRoom | undefined>;
+  createChatRoom(chatRoom: InsertChatRoom): Promise<ChatRoom>;
+  getChatRoomsWithStats(): Promise<ChatRoomWithStats[]>;
+
+  // Chat Messages
+  getChatMessages(chatRoomId: string, limit?: number): Promise<ChatMessageWithMember[]>;
+  createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -182,6 +193,73 @@ export class DatabaseStorage implements IStorage {
     );
     return (result.rowCount ?? 0) > 0;
   }
+
+  // Chat Rooms
+  async getAllChatRooms(): Promise<ChatRoom[]> {
+    return await db.select().from(chatRooms).where(eq(chatRooms.isActive, true));
+  }
+
+  async getChatRoom(id: string): Promise<ChatRoom | undefined> {
+    const [chatRoom] = await db.select().from(chatRooms).where(eq(chatRooms.id, id));
+    return chatRoom || undefined;
+  }
+
+  async getChatRoomByChampionship(championshipId: string): Promise<ChatRoom | undefined> {
+    const [chatRoom] = await db.select().from(chatRooms).where(eq(chatRooms.championshipId, championshipId));
+    return chatRoom || undefined;
+  }
+
+  async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
+    const [chatRoom] = await db.insert(chatRooms).values(insertChatRoom).returning();
+    return chatRoom;
+  }
+
+  async getChatRoomsWithStats(): Promise<ChatRoomWithStats[]> {
+    const rooms = await this.getAllChatRooms();
+    const roomsWithStats: ChatRoomWithStats[] = [];
+
+    for (const room of rooms) {
+      const messages = await this.getChatMessages(room.id, 1);
+      roomsWithStats.push({
+        ...room,
+        messageCount: messages.length,
+        lastMessage: messages[0] || undefined,
+      });
+    }
+
+    return roomsWithStats;
+  }
+
+  // Chat Messages
+  async getChatMessages(chatRoomId: string, limit = 50): Promise<ChatMessageWithMember[]> {
+    const messages = await db
+      .select({
+        id: chatMessages.id,
+        chatRoomId: chatMessages.chatRoomId,
+        memberId: chatMessages.memberId,
+        message: chatMessages.message,
+        createdAt: chatMessages.createdAt,
+        member: {
+          id: members.id,
+          displayName: members.displayName,
+          gamertag: members.gamertag,
+          experienceLevel: members.experienceLevel,
+          isAdmin: members.isAdmin,
+        },
+      })
+      .from(chatMessages)
+      .innerJoin(members, eq(chatMessages.memberId, members.id))
+      .where(eq(chatMessages.chatRoomId, chatRoomId))
+      .orderBy(desc(chatMessages.createdAt))
+      .limit(limit);
+
+    return messages.reverse(); // Reverse to show oldest first
+  }
+
+  async createChatMessage(insertChatMessage: InsertChatMessage): Promise<ChatMessage> {
+    const [message] = await db.insert(chatMessages).values(insertChatMessage).returning();
+    return message;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -189,12 +267,16 @@ export class MemStorage implements IStorage {
   private championships: Map<string, Championship>;
   private races: Map<string, Race>;
   private registrations: Map<string, Registration>;
+  private chatRooms: Map<string, ChatRoom>;
+  private chatMessages: Map<string, ChatMessage>;
 
   constructor() {
     this.members = new Map();
     this.championships = new Map();
     this.races = new Map();
     this.registrations = new Map();
+    this.chatRooms = new Map();
+    this.chatMessages = new Map();
     this.initializeData();
   }
 
@@ -681,6 +763,81 @@ Server goes live at 20:00`,
       return true;
     }
     return false;
+  }
+
+  // Chat Rooms
+  async getAllChatRooms(): Promise<ChatRoom[]> {
+    return Array.from(this.chatRooms.values()).filter(room => room.isActive);
+  }
+
+  async getChatRoom(id: string): Promise<ChatRoom | undefined> {
+    return this.chatRooms.get(id);
+  }
+
+  async getChatRoomByChampionship(championshipId: string): Promise<ChatRoom | undefined> {
+    return Array.from(this.chatRooms.values()).find(room => room.championshipId === championshipId);
+  }
+
+  async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
+    const id = randomUUID();
+    const chatRoom: ChatRoom = {
+      ...insertChatRoom,
+      id,
+      isActive: true,
+      createdAt: new Date(),
+      championshipId: insertChatRoom.championshipId || null,
+    };
+    this.chatRooms.set(id, chatRoom);
+    return chatRoom;
+  }
+
+  async getChatRoomsWithStats(): Promise<ChatRoomWithStats[]> {
+    const rooms = await this.getAllChatRooms();
+    const roomsWithStats: ChatRoomWithStats[] = [];
+
+    for (const room of rooms) {
+      const messages = await this.getChatMessages(room.id, 1);
+      roomsWithStats.push({
+        ...room,
+        messageCount: messages.length,
+        lastMessage: messages[0] || undefined,
+      });
+    }
+
+    return roomsWithStats;
+  }
+
+  // Chat Messages
+  async getChatMessages(chatRoomId: string, limit = 50): Promise<ChatMessageWithMember[]> {
+    const messages = Array.from(this.chatMessages.values())
+      .filter(msg => msg.chatRoomId === chatRoomId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, limit)
+      .reverse();
+
+    const messagesWithMembers: ChatMessageWithMember[] = [];
+    for (const message of messages) {
+      const member = this.members.get(message.memberId);
+      if (member) {
+        messagesWithMembers.push({
+          ...message,
+          member,
+        });
+      }
+    }
+
+    return messagesWithMembers;
+  }
+
+  async createChatMessage(insertChatMessage: InsertChatMessage): Promise<ChatMessage> {
+    const id = randomUUID();
+    const message: ChatMessage = {
+      ...insertChatMessage,
+      id,
+      createdAt: new Date(),
+    };
+    this.chatMessages.set(id, message);
+    return message;
   }
 }
 

@@ -18,6 +18,7 @@ export default function MemberHeader() {
     { name: "Races", href: "/races" },
     { name: "Championships", href: "/championships" },
     { name: "Leaderboards", href: "/leaderboards" },
+    { name: "Chat", href: "/chat" },
     { name: "Coming Soon", href: "/coming-soon" },
   ];
 
