@@ -154,64 +154,83 @@ Neil Broom aka Neilb`;
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
-          {/* Chat Room List Sidebar */}
-          <div className="lg:col-span-1">
+        <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-200px)]">
+          {/* Club Admin Team Sidebar - Hidden on mobile */}
+          <div className="hidden lg:block w-80 flex-shrink-0">
             <Card className="bg-gray-900 border-gray-800 h-full">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5" />
-                  Chat Rooms
+                  <Crown className="w-5 h-5 text-racing-green" />
+                  Club Admin Team
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
-                {/* Club Admin Team */}
-                <div className="border-b border-gray-700 p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Crown className="w-4 h-4 text-racing-green" />
-                    <h3 className="text-sm font-semibold text-white">Club Admin Team</h3>
-                  </div>
-                  <div className="space-y-1">
-                    {clubAdminText.split('\n').map((line, index) => {
-                      if (line.trim() === '') return <div key={index} className="h-1"></div>;
-                      
-                      // Check if this line contains CJ DirtyEwok
-                      if (line.includes('CJ DirtyEwok')) {
-                        return (
-                          <div key={index} className="text-lime-400 text-xs font-medium">
-                            {line}
-                          </div>
-                        );
-                      }
-                      
-                      // Check if this line contains admin names (has "aka" or specific gamertags, but not CJ DirtyEwok)
-                      if ((line.includes('aka') || 
-                           line.includes('Adzinski82') || 
-                           line.includes('StalkerBrown') || 
-                           line.includes('NeilB') || 
-                           line.includes('snuffles1983')) && 
-                          !line.includes('CJ DirtyEwok')) {
-                        return (
-                          <div key={index} className="text-yellow-400 text-xs font-medium">
-                            {line}
-                          </div>
-                        );
-                      }
-                      
-                      // Regular text
+              <CardContent>
+                <div className="space-y-1">
+                  {clubAdminText.split('\n').map((line, index) => {
+                    if (line.trim() === '') return <div key={index} className="h-1"></div>;
+                    
+                    // Check if this line contains CJ DirtyEwok
+                    if (line.includes('CJ DirtyEwok')) {
                       return (
-                        <div key={index} className="text-gray-300 text-xs">
+                        <div key={index} className="text-lime-400 text-xs font-medium">
                           {line}
                         </div>
                       );
-                    })}
-                  </div>
+                    }
+                    
+                    // Check if this line contains admin names (has "aka" or specific gamertags, but not CJ DirtyEwok)
+                    if ((line.includes('aka') || 
+                         line.includes('Adzinski82') || 
+                         line.includes('StalkerBrown') || 
+                         line.includes('NeilB') || 
+                         line.includes('snuffles1983')) && 
+                        !line.includes('CJ DirtyEwok')) {
+                      return (
+                        <div key={index} className="text-yellow-400 text-xs font-medium">
+                          {line}
+                        </div>
+                      );
+                    }
+                    
+                    // Regular text
+                    return (
+                      <div key={index} className="text-gray-300 text-xs">
+                        {line}
+                      </div>
+                    );
+                  })}
                 </div>
-                
-                <ScrollArea className="h-[calc(100vh-400px)]">
-                  <div className="space-y-1 p-4">
+
+                {/* Create championship chat rooms */}
+                {championshipsWithoutChat.length > 0 && (
+                  <div className="pt-4 border-t border-gray-700 mt-4">
+                    <p className="text-sm text-gray-400 mb-2">Create Championship Chats:</p>
+                    {championshipsWithoutChat.map((championship) => (
+                      <Button
+                        key={championship.id}
+                        variant="outline"
+                        size="sm"
+                        className="w-full mb-2 text-xs border-gray-600 text-gray-300"
+                        onClick={() => createChatRoomMutation.mutate(championship.id)}
+                        disabled={createChatRoomMutation.isPending}
+                      >
+                        + {championship.name}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Chat Area with Tabs */}
+          <div className="flex-1 min-w-0">
+            <Tabs value={selectedChatRoom || ""} onValueChange={setSelectedChatRoom} className="h-full">
+              {/* Mobile: Horizontal scrolling tabs */}
+              <div className="lg:hidden mb-4">
+                <ScrollArea className="w-full">
+                  <div className="flex gap-2 p-1 bg-gray-800 rounded-lg">
                     {chatRooms?.sort((a, b) => {
-                      // Sort order: General first, then GT4, then GT3, then others
                       if (a.type === 'general') return -1;
                       if (b.type === 'general') return 1;
                       if (a.name.includes('GT4')) return -1;
@@ -223,79 +242,77 @@ Neil Broom aka Neilb`;
                       <Button
                         key={room.id}
                         variant={selectedChatRoom === room.id ? "default" : "ghost"}
-                        className={`w-full justify-start text-left h-auto p-3 ${
+                        className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-md ${
                           selectedChatRoom === room.id 
                             ? "bg-racing-green text-white" 
-                            : "text-gray-300 hover:text-white hover:bg-gray-800"
+                            : "text-gray-300 hover:text-white hover:bg-gray-700"
                         }`}
                         onClick={() => setSelectedChatRoom(room.id)}
                       >
-                        <div className="flex flex-col items-start w-full">
-                          <div className="flex items-center gap-2 w-full">
-                            {room.type === 'general' ? (
-                              <Users className="w-4 h-4 flex-shrink-0" />
-                            ) : (
-                              <Settings className="w-4 h-4 flex-shrink-0" />
-                            )}
-                            <span className="font-medium truncate">{room.name}</span>
-                          </div>
-                          {room.lastMessage && (
-                            <p className="text-xs text-gray-400 truncate w-full mt-1">
-                              {room.lastMessage.member.gamertag}: {room.lastMessage.message}
-                            </p>
-                          )}
-                        </div>
+                        {room.type === 'general' ? (
+                          <Users className="w-4 h-4 flex-shrink-0" />
+                        ) : (
+                          <Settings className="w-4 h-4 flex-shrink-0" />
+                        )}
+                        <span className="font-medium text-sm">{room.name}</span>
                       </Button>
                     ))}
-
-                    {/* Create championship chat rooms */}
-                    {championshipsWithoutChat.length > 0 && (
-                      <div className="pt-4 border-t border-gray-700">
-                        <p className="text-sm text-gray-400 mb-2">Create Championship Chats:</p>
-                        {championshipsWithoutChat.map((championship) => (
-                          <Button
-                            key={championship.id}
-                            variant="outline"
-                            size="sm"
-                            className="w-full mb-2 text-xs border-gray-600 text-gray-300"
-                            onClick={() => createChatRoomMutation.mutate(championship.id)}
-                            disabled={createChatRoomMutation.isPending}
-                          >
-                            + {championship.name}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </ScrollArea>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
 
-          {/* Chat Area */}
-          <div className="lg:col-span-3">
-            <Card className="bg-gray-900 border-gray-800 h-full">
-              {selectedRoom ? (
-                <ChatRoomComponent 
-                  chatRoom={selectedRoom} 
-                  currentMemberId={currentMemberId}
-                  messageDraft={messageDrafts[selectedRoom.id] || ""}
-                  onMessageDraftChange={(draft) => {
-                    setMessageDrafts(prev => ({
-                      ...prev,
-                      [selectedRoom.id]: draft
-                    }));
-                  }}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center text-gray-400">
-                    <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Select a chat room to start messaging</p>
-                  </div>
-                </div>
-              )}
-            </Card>
+              {/* Desktop: Grid tabs */}
+              <TabsList className="hidden lg:grid w-full bg-gray-800 border-b border-gray-700" style={{ gridTemplateColumns: `repeat(${chatRooms?.length || 1}, minmax(0, 1fr))` }}>
+                {chatRooms?.sort((a, b) => {
+                  // Sort order: General first, then GT4, then GT3, then others
+                  if (a.type === 'general') return -1;
+                  if (b.type === 'general') return 1;
+                  if (a.name.includes('GT4')) return -1;
+                  if (b.name.includes('GT4')) return 1;
+                  if (a.name.includes('GT3')) return -1;
+                  if (b.name.includes('GT3')) return 1;
+                  return a.name.localeCompare(b.name);
+                }).map((room) => (
+                  <TabsTrigger
+                    key={room.id}
+                    value={room.id}
+                    className="flex flex-col items-center gap-1 p-3 h-auto data-[state=active]:bg-racing-green data-[state=active]:text-white text-gray-300 hover:text-white"
+                  >
+                    <div className="flex items-center gap-2">
+                      {room.type === 'general' ? (
+                        <Users className="w-4 h-4 flex-shrink-0" />
+                      ) : (
+                        <Settings className="w-4 h-4 flex-shrink-0" />
+                      )}
+                      <span className="font-medium text-sm">{room.name}</span>
+                    </div>
+                    {room.lastMessage && (
+                      <p className="text-xs opacity-70 truncate max-w-full">
+                        {room.lastMessage.member.gamertag}: {room.lastMessage.message}
+                      </p>
+                    )}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {chatRooms?.map((room) => (
+                <TabsContent key={room.id} value={room.id} className="lg:h-[calc(100%-80px)] h-[calc(100%-60px)] mt-0">
+                  <Card className="bg-gray-900 border-gray-800 h-full">
+                    <ChatRoomComponent 
+                      chatRoom={room} 
+                      currentMemberId={currentMemberId}
+                      messageDraft={messageDrafts[room.id] || ""}
+                      onMessageDraftChange={(draft) => {
+                        setMessageDrafts(prev => ({
+                          ...prev,
+                          [room.id]: draft
+                        }));
+                      }}
+                    />
+                  </Card>
+                </TabsContent>
+              ))}
+            </Tabs>
           </div>
         </div>
       </div>
