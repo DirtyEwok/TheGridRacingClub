@@ -109,7 +109,7 @@ export default function Chat() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen carbon-fiber">
         <MemberHeader />
         <div className="flex items-center justify-center h-96">
           <div className="text-white">Loading chat...</div>
@@ -120,7 +120,7 @@ export default function Chat() {
 
   if (!currentMember) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen carbon-fiber">
         <MemberHeader />
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
@@ -133,7 +133,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen carbon-fiber">
       <MemberHeader />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">

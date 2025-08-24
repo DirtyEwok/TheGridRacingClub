@@ -17,7 +17,7 @@ export default function ComingSoon() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen carbon-fiber">
       <MemberHeader />
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Hero Section */}

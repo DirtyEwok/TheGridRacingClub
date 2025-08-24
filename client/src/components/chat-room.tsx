@@ -374,7 +374,7 @@ export default function ChatRoomComponent({
                       <img
                         src={imageUrl}
                         alt="Shared image"
-                        className="max-w-32 sm:max-w-48 md:max-w-xs w-auto max-h-32 sm:max-h-48 md:max-h-64 rounded-lg border border-gray-700 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                        className="max-w-20 sm:max-w-32 md:max-w-48 lg:max-w-xs w-auto max-h-20 sm:max-h-32 md:max-h-48 lg:max-h-64 rounded border border-gray-700 object-cover cursor-pointer hover:opacity-90 transition-opacity"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}

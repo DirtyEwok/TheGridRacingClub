@@ -112,7 +112,7 @@ function AdminMemberApproval() {
 
   if (isLoadingPending || (viewMode === "all" && isLoadingAll)) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen carbon-fiber">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-64">
@@ -124,7 +124,7 @@ function AdminMemberApproval() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen carbon-fiber">
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
