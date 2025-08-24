@@ -17,7 +17,9 @@ function AdminMemberApproval() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
-  const { data: pendingMembers, isLoading } = useQuery({
+  const [viewMode, setViewMode] = useState<"pending" | "all">("pending");
+
+  const { data: pendingMembers, isLoading: isLoadingPending } = useQuery({
     queryKey: ["/api/admin/pending-members"],
     queryFn: async () => {
       const response = await fetch("/api/admin/pending-members", {
@@ -26,6 +28,16 @@ function AdminMemberApproval() {
       if (!response.ok) throw new Error("Failed to fetch pending members");
       return response.json();
     },
+  });
+
+  const { data: allMembers, isLoading: isLoadingAll } = useQuery({
+    queryKey: ["/api/members"],
+    queryFn: async () => {
+      const response = await fetch("/api/members");
+      if (!response.ok) throw new Error("Failed to fetch all members");
+      return response.json();
+    },
+    enabled: viewMode === "all"
   });
 
   const approveMutation = useMutation({
@@ -98,7 +110,7 @@ function AdminMemberApproval() {
     }
   };
 
-  if (isLoading) {
+  if (isLoadingPending || (viewMode === "all" && isLoadingAll)) {
     return (
       <div className="min-h-screen bg-black">
         <Header />
@@ -116,34 +128,77 @@ function AdminMemberApproval() {
       <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Crown className="w-6 h-6 text-orange-500" />
-            <h1 className="text-3xl font-bold text-white">Member Approval</h1>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Crown className="w-6 h-6 text-orange-500" />
+                <h1 className="text-3xl font-bold text-white">Member Management</h1>
+              </div>
+              <p className="text-gray-400">
+                {viewMode === "pending" ? "Review and approve new member registrations" : "View and manage all club members"}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setViewMode("pending")}
+                variant={viewMode === "pending" ? "default" : "outline"}
+                className={viewMode === "pending" ? "bg-orange-600 hover:bg-orange-700" : "border-gray-600 text-white hover:bg-gray-800"}
+              >
+                Pending ({pendingMembers?.length || 0})
+              </Button>
+              <Button
+                onClick={() => setViewMode("all")}
+                variant={viewMode === "all" ? "default" : "outline"}
+                className={viewMode === "all" ? "bg-orange-600 hover:bg-orange-700" : "border-gray-600 text-white hover:bg-gray-800"}
+              >
+                All Members
+              </Button>
+            </div>
           </div>
-          <p className="text-gray-400">Review and approve new member registrations</p>
         </div>
 
-        {!pendingMembers || pendingMembers.length === 0 ? (
-          <Card className="bg-gray-900 border-gray-800">
-            <CardContent className="py-12">
-              <div className="text-center">
-                <UserCheck className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-white mb-2">No Pending Approvals</h3>
-                <p className="text-gray-400">All member registrations have been reviewed.</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-6">
-            {pendingMembers.map((member: Member) => (
+        {(() => {
+          const displayMembers = viewMode === "pending" ? pendingMembers : allMembers;
+          const isEmpty = !displayMembers || displayMembers.length === 0;
+          
+          return isEmpty ? (
+            <Card className="bg-gray-900 border-gray-800">
+              <CardContent className="py-12">
+                <div className="text-center">
+                  <UserCheck className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {viewMode === "pending" ? "No Pending Approvals" : "No Members Found"}
+                  </h3>
+                  <p className="text-gray-400">
+                    {viewMode === "pending" 
+                      ? "All member registrations have been reviewed." 
+                      : "No members have been registered yet."
+                    }
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-6">
+              {displayMembers.map((member: Member) => (
               <Card key={member.id} className="bg-gray-900 border-gray-800 hover:border-gray-700 transition-colors">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-white flex items-center gap-2">
                         {member.displayName}
-                        <Badge variant="outline" className="text-orange-500 border-orange-500">
-                          Pending
+                        <Badge 
+                          variant="outline" 
+                          className={
+                            member.status === "pending" 
+                              ? "text-orange-500 border-orange-500"
+                              : member.status === "approved"
+                              ? "text-green-500 border-green-500"
+                              : "text-red-500 border-red-500"
+                          }
+                        >
+                          {member.status === "pending" ? "Pending" : 
+                           member.status === "approved" ? "Approved" : "Rejected"}
                         </Badge>
                       </CardTitle>
                       <CardDescription className="text-gray-400">
@@ -165,60 +220,75 @@ function AdminMemberApproval() {
                   
                   <div className="flex gap-3">
                     <Button
-                      onClick={() => handleApprove(member)}
-                      disabled={approveMutation.isPending}
-                      className="bg-racing-green hover:bg-racing-green/80 text-white"
-                      data-testid={`button-approve-${member.id}`}
+                      onClick={() => window.location.href = `/members/${member.id}/profile`}
+                      variant="outline"
+                      className="border-gray-600 text-white hover:bg-gray-800"
+                      data-testid={`button-view-profile-${member.id}`}
                     >
-                      <UserCheck className="w-4 h-4 mr-2" />
-                      Approve
+                      <User className="w-4 h-4 mr-2" />
+                      View Profile
                     </Button>
                     
-                    <Dialog>
-                      <DialogTrigger asChild>
+                    {member.status === "pending" && (
+                      <>
                         <Button
-                          variant="destructive"
+                          onClick={() => handleApprove(member)}
                           disabled={approveMutation.isPending}
-                          onClick={() => setSelectedMember(member)}
-                          data-testid={`button-reject-${member.id}`}
+                          className="bg-racing-green hover:bg-racing-green/80 text-white"
+                          data-testid={`button-approve-${member.id}`}
                         >
-                          <UserX className="w-4 h-4 mr-2" />
-                          Reject
+                          <UserCheck className="w-4 h-4 mr-2" />
+                          Approve
                         </Button>
-                      </DialogTrigger>
-                      <DialogContent className="bg-gray-900 border-gray-800">
-                        <DialogHeader>
-                          <DialogTitle className="text-white">Reject Member</DialogTitle>
-                          <DialogDescription className="text-gray-400">
-                            Are you sure you want to reject {selectedMember?.displayName}? 
-                            Please provide a reason for rejection.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <Textarea
-                          placeholder="Reason for rejection (optional)"
-                          value={rejectionReason}
-                          onChange={(e) => setRejectionReason(e.target.value)}
-                          className="bg-gray-800 border-gray-700 text-white"
-                          data-testid="textarea-rejection-reason"
-                        />
-                        <DialogFooter>
-                          <Button
-                            onClick={() => selectedMember && handleReject(selectedMember)}
-                            disabled={approveMutation.isPending}
-                            variant="destructive"
-                            data-testid="button-confirm-reject"
-                          >
-                            Confirm Rejection
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
+                        
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              disabled={approveMutation.isPending}
+                              onClick={() => setSelectedMember(member)}
+                              data-testid={`button-reject-${member.id}`}
+                            >
+                              <UserX className="w-4 h-4 mr-2" />
+                              Reject
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="bg-gray-900 border-gray-800">
+                            <DialogHeader>
+                              <DialogTitle className="text-white">Reject Member</DialogTitle>
+                              <DialogDescription className="text-gray-400">
+                                Are you sure you want to reject {selectedMember?.displayName}? 
+                                Please provide a reason for rejection.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <Textarea
+                              placeholder="Reason for rejection (optional)"
+                              value={rejectionReason}
+                              onChange={(e) => setRejectionReason(e.target.value)}
+                              className="bg-gray-800 border-gray-700 text-white"
+                              data-testid="textarea-rejection-reason"
+                            />
+                            <DialogFooter>
+                              <Button
+                                onClick={() => selectedMember && handleReject(selectedMember)}
+                                disabled={approveMutation.isPending}
+                                variant="destructive"
+                                data-testid="button-confirm-reject"
+                              >
+                                Confirm Rejection
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
