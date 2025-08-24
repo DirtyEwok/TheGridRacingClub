@@ -520,7 +520,8 @@ export default function ChatRoomComponent({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  handleSendMessage();
+                  alert('KeyDown Enter detected!');
+                  handleSendMessage(e);
                 }
               }}
               placeholder="Type a message, paste image URL, or share a link..."
