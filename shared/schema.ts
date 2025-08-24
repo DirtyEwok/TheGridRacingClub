@@ -100,6 +100,7 @@ export const updateMemberProfileSchema = createInsertSchema(members).pick({
   profileImageUrl: true,
   streamLink: true,
   streamLink2: true,
+  experienceLevel: true,
 });
 
 export const approveMemberSchema = z.object({
