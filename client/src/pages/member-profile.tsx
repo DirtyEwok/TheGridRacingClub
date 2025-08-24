@@ -306,8 +306,8 @@ function MemberProfile() {
                         
                         {/* Car Number */}
                         {isEditing ? (
-                          <div className="flex flex-col">
-                            <span className="text-white text-sm font-medium mb-1">Race No</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-white text-sm font-medium">Race No</span>
                             <FormField
                               control={form.control}
                               name="carNumber"
