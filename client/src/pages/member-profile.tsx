@@ -95,7 +95,9 @@ function MemberProfile() {
   });
 
   const handleImageUpload = (objectPath: string) => {
-    console.log('handleImageUpload called with path:', objectPath);
+    console.log('🔴 CRITICAL: handleImageUpload called with path:', objectPath);
+    console.log('🔴 This should only happen AFTER file upload completes');
+    console.trace('Call stack:');
     
     // Only proceed if we have a valid object path
     if (!objectPath || objectPath === '') {

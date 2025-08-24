@@ -135,6 +135,7 @@ export function ObjectUploader({
         reset();
         
         // Then call completion callback
+        console.log('🟢 Calling onComplete with path:', objectPath);
         onComplete?.(objectPath);
       } catch (normalizeError) {
         console.error('Path normalization error:', normalizeError);
