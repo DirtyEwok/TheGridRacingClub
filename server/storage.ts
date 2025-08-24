@@ -63,7 +63,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllMembers(): Promise<Member[]> {
-    return await db.select().from(members).where(eq(members.status, "approved"));
+    return await db.select().from(members);
   }
 
   async getPendingMembers(): Promise<Member[]> {
