@@ -103,6 +103,9 @@ export function ObjectUploader({
       setUploadProgress(100);
       console.log('Upload successful');
       
+      // Wait a moment for the upload to be processed
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Use the object storage service to normalize the path correctly
       try {
         const normalizeResponse = await fetch('/api/objects/normalize-path', {
@@ -120,6 +123,10 @@ export function ObjectUploader({
         const { objectPath } = await normalizeResponse.json();
         console.log('Upload URL:', uploadURL);
         console.log('Normalized object path:', objectPath);
+        
+        // Verify the file exists before proceeding
+        const verifyResponse = await fetch(objectPath, { method: 'HEAD' });
+        console.log('File verification status:', verifyResponse.status);
         
         // Close modal and reset state first
         setIsOpen(false);
