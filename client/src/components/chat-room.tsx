@@ -117,70 +117,16 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
-    console.log('🔧 Enter handler - Current state:', {
-      messageText: messageText.trim(),
-      currentMemberId,
-      isConnected,
-      isSending,
-      userGamertag: currentUser?.gamertag
-    });
-    
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     
-    if (!messageText.trim() || isSending || !isConnected) {
-      console.log('🔧 Enter blocked because:', {
-        noMessage: !messageText.trim(),
-        isSending,
-        notConnected: !isConnected
-      });
-      return;
-    }
+    if (!messageText.trim() || isSending) return;
 
     setIsSending(true);
     try {
-      const success = sendMessage(messageText.trim(), currentMemberId);
-      console.log('🔧 WebSocket send result:', success);
-      if (success) {
-        setMessageText("");
-        if (onMessageDraftChange) {
-          onMessageDraftChange("");
-        }
-        console.log('🔧 Message cleared');
-      }
-    } catch (error) {
-      console.error('🔧 Error sending message:', error);
-    } finally {
-      setTimeout(() => setIsSending(false), 500);
-    }
-  };
-
-  // Explicit send button handler for mobile compatibility
-  const handleSendButtonClick = async () => {
-    console.log('🔧 Button click - Current state:', {
-      messageText: messageText.trim(),
-      currentMemberId,
-      isConnected,
-      isSending,
-      userGamertag: currentUser?.gamertag,
-      chatRoomId: chatRoom.id
-    });
-    
-    if (!messageText.trim() || isSending || !isConnected || !currentMemberId) {
-      console.log('🔧 Button blocked because:', {
-        noMessage: !messageText.trim(),
-        isSending,
-        notConnected: !isConnected,
-        noMemberId: !currentMemberId
-      });
-      return;
-    }
-    
-    setIsSending(true);
-    try {
-      console.log('🔧 Making API request...');
+      // Direct API call for better mobile reliability
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
         method: 'POST',
         headers: {
@@ -192,20 +138,44 @@ export default function ChatRoomComponent({
         }),
       });
       
-      console.log('🔧 API response status:', response.status);
-      
       if (response.ok) {
-        console.log('🔧 Success - clearing message');
         setMessageText("");
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
-      } else {
-        const errorText = await response.text();
-        console.log('🔧 API error:', response.status, errorText);
       }
     } catch (error) {
-      console.error('🔧 Network error:', error);
+      console.error('Error sending message:', error);
+    } finally {
+      setTimeout(() => setIsSending(false), 300);
+    }
+  };
+
+  // Mobile-friendly send handler
+  const handleSendButtonClick = async () => {
+    if (!messageText.trim() || isSending || !currentMemberId) return;
+    
+    setIsSending(true);
+    try {
+      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: messageText.trim(),
+          memberId: currentMemberId,
+        }),
+      });
+      
+      if (response.ok) {
+        setMessageText("");
+        if (onMessageDraftChange) {
+          onMessageDraftChange("");
+        }
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
     } finally {
       setTimeout(() => setIsSending(false), 300);
     }
@@ -508,6 +478,8 @@ export default function ChatRoomComponent({
         <form onSubmit={handleSendMessage} className="space-y-3">
           <div className="flex gap-2">
             <Input
+              id="chat-message-input"
+              name="messageText"
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               onKeyDown={(e) => {
@@ -516,33 +488,15 @@ export default function ChatRoomComponent({
                   handleSendMessage();
                 }
               }}
-              placeholder={
-                !isConnected 
-                  ? "Connecting to chat..." 
-                  : isSending 
-                    ? "Sending..." 
-                    : "Type a message, paste image URL, or share a link..."
-              }
-              className={`flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation ${
-                (!isConnected || isSending) ? 'cursor-not-allowed' : ''
-              }`}
+              placeholder="Type a message, paste image URL, or share a link..."
+              className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
               maxLength={500}
-              disabled={!isConnected || isSending}
+              disabled={isSending}
               autoComplete="off"
               autoCorrect="off"
               spellCheck="false"
               data-testid="input-chat-message"
             />
-            {!isConnected && (
-              <div className="text-xs text-red-400 mt-1">
-                🔧 Debug: WebSocket not connected - check console
-              </div>
-            )}
-            {isSending && (
-              <div className="text-xs text-yellow-400 mt-1">
-                🔧 Debug: Currently sending message
-              </div>
-            )}
             <ObjectUploader
               onComplete={(imageUrl) => {
                 setMessageText(prev => prev + ` ${imageUrl}`);
@@ -553,7 +507,7 @@ export default function ChatRoomComponent({
             </ObjectUploader>
             <button
               type="button"
-              disabled={!messageText.trim() || !isConnected || isSending}
+              disabled={!messageText.trim() || isSending}
               className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation active:bg-racing-green/60 transition-colors"
               onTouchEnd={(e) => {
                 e.preventDefault();
