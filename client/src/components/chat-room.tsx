@@ -537,8 +537,16 @@ export default function ChatRoomComponent({
               type="button"
               disabled={!messageText.trim() || !isConnected || isSending}
               className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation active:bg-racing-green/60 transition-colors"
-              onClick={handleSendButtonClick}
-              onTouchStart={handleSendButtonClick}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSendButtonClick();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSendButtonClick();
+              }}
               title="Send message"
               data-testid="button-send-message"
             >
