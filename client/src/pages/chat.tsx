@@ -226,38 +226,38 @@ Neil Broom aka Neilb`;
           {/* Chat Area with Tabs */}
           <div className="flex-1 min-w-0">
             <Tabs value={selectedChatRoom || ""} onValueChange={setSelectedChatRoom} className="h-full flex flex-col">
-              {/* Mobile: Horizontal scrolling tabs */}
+              {/* Mobile: Fixed width tabs */}
               <div className="lg:hidden mb-4">
-                <div className="overflow-x-auto pb-2">
-                  <div className="flex gap-2 p-2 bg-gray-800 rounded-lg min-w-max">
-                    {chatRooms?.sort((a, b) => {
-                      if (a.type === 'general') return -1;
-                      if (b.type === 'general') return 1;
-                      if (a.name.includes('GT4')) return -1;
-                      if (b.name.includes('GT4')) return 1;
-                      if (a.name.includes('GT3')) return -1;
-                      if (b.name.includes('GT3')) return 1;
-                      return a.name.localeCompare(b.name);
-                    }).map((room) => (
-                      <Button
-                        key={room.id}
-                        variant={selectedChatRoom === room.id ? "default" : "ghost"}
-                        className={`flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-md flex-shrink-0 ${
-                          selectedChatRoom === room.id 
-                            ? "bg-racing-green text-white" 
-                            : "text-gray-300 hover:text-white hover:bg-gray-700"
-                        }`}
-                        onClick={() => setSelectedChatRoom(room.id)}
-                      >
-                        {room.type === 'general' ? (
-                          <Users className="w-4 h-4 flex-shrink-0" />
-                        ) : (
-                          <Settings className="w-4 h-4 flex-shrink-0" />
-                        )}
-                        <span className="font-medium text-sm">{room.name}</span>
-                      </Button>
-                    ))}
-                  </div>
+                <div className="grid grid-cols-3 gap-1 p-1 bg-gray-800 rounded-lg">
+                  {chatRooms?.sort((a, b) => {
+                    if (a.type === 'general') return -1;
+                    if (b.type === 'general') return 1;
+                    if (a.name.includes('GT4')) return -1;
+                    if (b.name.includes('GT4')) return 1;
+                    if (a.name.includes('GT3')) return -1;
+                    if (b.name.includes('GT3')) return 1;
+                    return a.name.localeCompare(b.name);
+                  }).map((room) => (
+                    <Button
+                      key={room.id}
+                      variant={selectedChatRoom === room.id ? "default" : "ghost"}
+                      className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs ${
+                        selectedChatRoom === room.id 
+                          ? "bg-racing-green text-white" 
+                          : "text-gray-300 hover:text-white hover:bg-gray-700"
+                      }`}
+                      onClick={() => setSelectedChatRoom(room.id)}
+                    >
+                      {room.type === 'general' ? (
+                        <Users className="w-3 h-3 flex-shrink-0" />
+                      ) : (
+                        <Settings className="w-3 h-3 flex-shrink-0" />
+                      )}
+                      <span className="font-medium truncate">
+                        {room.name.replace(' Chat', '').replace('Discussion', '')}
+                      </span>
+                    </Button>
+                  ))}
                 </div>
               </div>
 
