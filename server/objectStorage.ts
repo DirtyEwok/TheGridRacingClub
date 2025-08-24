@@ -145,25 +145,39 @@ export class ObjectStorageService {
 
   // Gets the object entity file from the object path.
   async getObjectEntityFile(objectPath: string): Promise<File> {
+    console.log('Getting object entity file for path:', objectPath);
+    
     if (!objectPath.startsWith("/objects/")) {
+      console.log('Path does not start with /objects/, throwing error');
       throw new ObjectNotFoundError();
     }
 
     const parts = objectPath.slice(1).split("/");
     if (parts.length < 2) {
+      console.log('Path parts too short:', parts);
       throw new ObjectNotFoundError();
     }
 
     const entityId = parts.slice(1).join("/");
+    console.log('Entity ID:', entityId);
+    
     let entityDir = this.getPrivateObjectDir();
     if (!entityDir.endsWith("/")) {
       entityDir = `${entityDir}/`;
     }
+    console.log('Entity dir:', entityDir);
+    
     const objectEntityPath = `${entityDir}${entityId}`;
+    console.log('Full object entity path:', objectEntityPath);
+    
     const { bucketName, objectName } = parseObjectPath(objectEntityPath);
+    console.log('Bucket name:', bucketName, 'Object name:', objectName);
+    
     const bucket = objectStorageClient.bucket(bucketName);
     const objectFile = bucket.file(objectName);
     const [exists] = await objectFile.exists();
+    console.log('File exists:', exists);
+    
     if (!exists) {
       throw new ObjectNotFoundError();
     }
@@ -173,26 +187,34 @@ export class ObjectStorageService {
   normalizeObjectEntityPath(
     rawPath: string,
   ): string {
+    console.log('Normalizing path:', rawPath);
+    
     if (!rawPath.startsWith("https://storage.googleapis.com/")) {
+      console.log('Not a GCS URL, returning as-is');
       return rawPath;
     }
   
     // Extract the path from the URL by removing query parameters and domain
     const url = new URL(rawPath);
     const rawObjectPath = url.pathname;
+    console.log('Extracted pathname:', rawObjectPath);
   
     let objectEntityDir = this.getPrivateObjectDir();
     if (!objectEntityDir.endsWith("/")) {
       objectEntityDir = `${objectEntityDir}/`;
     }
+    console.log('Private object dir:', objectEntityDir);
   
     if (!rawObjectPath.startsWith(objectEntityDir)) {
+      console.log('Path does not start with private dir, returning pathname');
       return rawObjectPath;
     }
   
     // Extract the entity ID from the path
     const entityId = rawObjectPath.slice(objectEntityDir.length);
-    return `/objects/${entityId}`;
+    const normalizedPath = `/objects/${entityId}`;
+    console.log('Final normalized path:', normalizedPath);
+    return normalizedPath;
   }
 }
 

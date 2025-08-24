@@ -91,8 +91,13 @@ export function ObjectUploader({
         },
       });
 
+      console.log('Upload response status:', uploadResponse.status);
+      console.log('Upload response headers:', [...uploadResponse.headers.entries()]);
+
       if (!uploadResponse.ok) {
-        throw new Error('Failed to upload file');
+        const errorText = await uploadResponse.text();
+        console.error('Upload failed with:', errorText);
+        throw new Error(`Failed to upload file: ${uploadResponse.status} - ${errorText}`);
       }
 
       setUploadProgress(100);
