@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 
 import MemberHeader from "@/components/member-header";
 import RaceCard from "@/components/race-card";
@@ -17,6 +18,13 @@ export default function Races() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [location] = useLocation();
+
+  // Extract championship filter from URL
+  const championshipFilter = useMemo(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('championship');
+  }, [location]);
 
   const { data: races = [], isLoading } = useQuery<RaceWithStats[]>({
     queryKey: ["/api/races"],
@@ -28,6 +36,27 @@ export default function Races() {
       return response.json();
     },
   });
+
+  // Filter races by championship if specified
+  const filteredRaces = useMemo(() => {
+    if (!championshipFilter) return races;
+    return races.filter(race => race.championshipId === championshipFilter);
+  }, [races, championshipFilter]);
+
+  // Get championship info for display
+  const { data: championships = [] } = useQuery({
+    queryKey: ["/api/championships"],
+    queryFn: async () => {
+      const response = await fetch("/api/championships");
+      if (!response.ok) throw new Error("Failed to fetch championships");
+      return response.json();
+    },
+  });
+
+  const selectedChampionship = useMemo(() => {
+    if (!championshipFilter) return null;
+    return championships.find((c: any) => c.id === championshipFilter);
+  }, [championships, championshipFilter]);
 
   const unregisterMutation = useMutation({
     mutationFn: async (raceId: string) => {
@@ -78,8 +107,24 @@ export default function Races() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Upcoming Races</h1>
-          <p className="text-gray-300">Register for racing events and join the competition</p>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {selectedChampionship ? `${selectedChampionship.name} Races` : 'Upcoming Races'}
+          </h1>
+          <p className="text-gray-300">
+            {selectedChampionship 
+              ? `View races for ${selectedChampionship.name}` 
+              : 'Register for racing events and join the competition'
+            }
+          </p>
+          {selectedChampionship && (
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = '/races'} 
+              className="mt-4 bg-gray-700 hover:bg-gray-600 border-gray-600 text-white"
+            >
+              View All Races
+            </Button>
+          )}
         </div>
 
         {/* Main content with championship posters on sides */}
@@ -95,7 +140,7 @@ export default function Races() {
 
           {/* Race Grid */}
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 flex-1 max-w-6xl">
-            {races
+            {filteredRaces
               .sort((a, b) => {
                 // First sort by round number (championship races first)
                 if (a.roundNumber !== null && b.roundNumber !== null) {
@@ -128,10 +173,20 @@ export default function Races() {
           </div>
         </div>
 
-        {races.length === 0 && (
+        {filteredRaces.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-400 text-lg">No races available at the moment.</p>
-            <p className="text-gray-500 mt-2">Check back later for new racing events!</p>
+            <p className="text-gray-400 text-lg">
+              {championshipFilter 
+                ? `No races available for ${selectedChampionship?.name || 'this championship'}.`
+                : 'No races available at the moment.'
+              }
+            </p>
+            <p className="text-gray-500 mt-2">
+              {championshipFilter 
+                ? 'Try viewing all races or check back later!'
+                : 'Check back later for new racing events!'
+              }
+            </p>
           </div>
         )}
 
