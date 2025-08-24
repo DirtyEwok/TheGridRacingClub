@@ -43,6 +43,7 @@ export function ObjectUploader({
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    console.log('File selected:', file?.name, file?.size);
     if (!file) return;
 
     if (file.size > maxFileSize) {
@@ -57,6 +58,7 @@ export function ObjectUploader({
 
     setSelectedFile(file);
     setError(null);
+    console.log('File accepted and set');
   };
 
   const handleUpload = async () => {
@@ -162,7 +164,10 @@ export function ObjectUploader({
     <div>
       <Button 
         className={buttonClassName}
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          console.log('Upload button clicked, opening modal');
+          setIsOpen(true);
+        }}
       >
         {children}
       </Button>

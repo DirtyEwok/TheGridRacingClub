@@ -97,8 +97,20 @@ function MemberProfile() {
   const handleImageUpload = (objectPath: string) => {
     console.log('handleImageUpload called with path:', objectPath);
     
+    // Only proceed if we have a valid object path
+    if (!objectPath || objectPath === '') {
+      console.error('Invalid object path received');
+      return;
+    }
+    
     // Set the form value with the object path
     form.setValue("profileImageUrl", objectPath);
+    
+    // Show immediate feedback
+    toast({
+      title: "Image Uploaded",
+      description: "Profile image uploaded successfully. Saving to profile...",
+    });
     
     // Automatically save the profile with the new image
     const currentValues = form.getValues();
@@ -285,7 +297,18 @@ function MemberProfile() {
                                 Upload Photo
                               </ObjectUploader>
                               {field.value && (
-                                <span className="text-sm text-gray-400">Image uploaded</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-green-400">✓ Image uploaded</span>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => form.setValue("profileImageUrl", "")}
+                                    className="text-red-400 hover:text-red-300"
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
                               )}
                             </div>
                           </FormControl>
