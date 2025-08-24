@@ -117,74 +117,35 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
-    console.log('⌨️ Enter key handler:', { 
-      message: messageText.trim(), 
-      memberId: currentMemberId,
-      isConnected,
-      isSending,
-      currentUser: currentUser?.gamertag 
-    });
-    
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     
-    if (!messageText.trim() || isSending || !isConnected) {
-      console.log('⌨️ Enter blocked:', { 
-        hasMessage: !!messageText.trim(),
-        isSending,
-        isConnected 
-      });
-      return;
-    }
+    if (!messageText.trim() || isSending || !isConnected) return;
 
     setIsSending(true);
     try {
-      console.log('⌨️ Calling sendMessage via WebSocket...');
       const success = sendMessage(messageText.trim(), currentMemberId);
-      console.log('⌨️ WebSocket sendMessage result:', success);
       if (success) {
         setMessageText("");
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
-        console.log('⌨️ Message cleared after successful send');
-      } else {
-        console.log('⌨️ WebSocket send failed, keeping message');
       }
     } catch (error) {
-      console.error('⌨️ Error in Enter handler:', error);
+      console.error('Error sending message:', error);
     } finally {
-      // Add a small delay to prevent rapid clicking on mobile
       setTimeout(() => setIsSending(false), 500);
     }
   };
 
   // Explicit send button handler for mobile compatibility
   const handleSendButtonClick = async () => {
-    console.log('🚀 Send attempt:', { 
-      message: messageText.trim(), 
-      memberId: currentMemberId,
-      chatRoomId: chatRoom.id,
-      isConnected,
-      currentUser: currentUser?.gamertag 
-    });
-    
-    // Direct API call for better mobile reliability
-    if (!messageText.trim() || isSending || !isConnected || !currentMemberId) {
-      console.log('❌ Send blocked:', { 
-        hasMessage: !!messageText.trim(),
-        isSending,
-        isConnected,
-        hasMemberId: !!currentMemberId 
-      });
-      return;
-    }
+    if (!messageText.trim() || isSending || !isConnected || !currentMemberId) return;
     
     setIsSending(true);
     try {
-      console.log('📤 Making API call...');
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
         method: 'POST',
         headers: {
@@ -196,20 +157,14 @@ export default function ChatRoomComponent({
         }),
       });
       
-      console.log('📥 Response status:', response.status);
-      
       if (response.ok) {
-        console.log('✅ Message sent successfully');
         setMessageText("");
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
-      } else {
-        const errorText = await response.text();
-        console.log('❌ Response not OK:', response.status, errorText);
       }
     } catch (error) {
-      console.error('💥 Network error:', error);
+      console.error('Error sending message:', error);
     } finally {
       setTimeout(() => setIsSending(false), 300);
     }
@@ -516,7 +471,6 @@ export default function ChatRoomComponent({
               onChange={(e) => setMessageText(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
-                  console.log('⌨️ Enter key pressed on mobile');
                   e.preventDefault();
                   handleSendMessage();
                 }
