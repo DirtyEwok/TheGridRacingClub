@@ -25,17 +25,21 @@ export function useChat(chatRoomId: string | null) {
     };
 
     ws.onmessage = (event) => {
+      console.log('🔧 WebSocket received:', event.data);
       try {
         const data = JSON.parse(event.data);
+        console.log('🔧 Parsed WebSocket data:', data);
         if (data.chatRoomId === chatRoomId) {
           if (data.type === 'new-message') {
+            console.log('🔧 Adding new message to display');
             setMessages(prev => [...prev, data.message]);
           } else if (data.type === 'message-deleted') {
+            console.log('🔧 Removing deleted message');
             setMessages(prev => prev.filter(msg => msg.id !== data.messageId));
           }
         }
       } catch (error) {
-        console.error('WebSocket message parse error:', error);
+        console.error('🔧 WebSocket message parse error:', error);
         // Don't crash - just log the error
       }
     };
