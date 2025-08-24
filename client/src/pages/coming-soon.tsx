@@ -17,6 +17,16 @@ export default function ComingSoon() {
             Here's what's coming to The Grid Racing Club.
           </p>
           
+          {/* Season 9 Details */}
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <p className="text-lg text-gray-300 leading-relaxed">
+              We return with Season 9 of the Grid's MasterClass and this time its GT2 Porsche 911 RS power.
+            </p>
+            <p className="text-lg text-gray-300 leading-relaxed mt-2">
+              Full details will be announced soon.
+            </p>
+          </div>
+          
           {/* Masterclass Season 9 Image */}
           <div className="flex justify-center mb-8">
             <img 
@@ -37,16 +47,6 @@ export default function ComingSoon() {
             >
               Your browser does not support the video tag.
             </video>
-          </div>
-          
-          {/* Season 9 Details */}
-          <div className="text-center max-w-2xl mx-auto">
-            <p className="text-lg text-gray-300 leading-relaxed">
-              We return with Season 9 of the Grid's MasterClass and this time its GT2 Porsche 911 RS power.
-            </p>
-            <p className="text-lg text-gray-300 leading-relaxed mt-2">
-              Full details will be announced soon.
-            </p>
           </div>
         </div>
 
