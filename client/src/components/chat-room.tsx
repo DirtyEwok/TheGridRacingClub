@@ -272,7 +272,7 @@ export default function ChatRoomComponent({
                     {formatMessageTime(message.createdAt)}
                   </span>
                   {/* Delete button for admin only */}
-                  {currentUser?.isAdmin && (
+                  {(currentUser?.isAdmin || currentUser?.gamertag === 'CJ DirtyEwok') && (
                     <Button
                       variant="ghost"
                       size="sm"
