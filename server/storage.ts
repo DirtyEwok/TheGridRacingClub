@@ -12,6 +12,7 @@ export interface IStorage {
   createMember(member: InsertMember): Promise<Member>;
   updateMemberProfile(id: string, profile: UpdateMemberProfile): Promise<Member | undefined>;
   approveMember(approval: ApproveMember): Promise<Member | undefined>;
+  deleteMember(id: string): Promise<boolean>;
 
   // Championships
   getAllChampionships(): Promise<Championship[]>;
@@ -107,6 +108,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(members.id, approval.memberId))
       .returning();
     return member || undefined;
+  }
+
+  async deleteMember(id: string): Promise<boolean> {
+    const result = await db.delete(members).where(eq(members.id, id));
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Championships

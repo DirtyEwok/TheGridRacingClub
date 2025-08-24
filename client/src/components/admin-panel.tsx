@@ -41,6 +41,15 @@ export default function AdminPanel() {
     },
   });
 
+  const { data: members = [], isLoading: isLoadingMembers } = useQuery({
+    queryKey: ["/api/members"],
+    queryFn: async () => {
+      const response = await fetch("/api/members");
+      if (!response.ok) throw new Error("Failed to fetch members");
+      return response.json();
+    },
+  });
+
   const deleteRaceMutation = useMutation({
     mutationFn: async (raceId: string) => {
       const response = await apiRequest("DELETE", `/api/races/${raceId}`, undefined, {
@@ -88,6 +97,30 @@ export default function AdminPanel() {
     },
   });
 
+  const deleteMemberMutation = useMutation({
+    mutationFn: async (memberId: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/members/${memberId}`, undefined, {
+        headers: { Authorization: "admin-access" }
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/members"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/races"] }); // Refresh races as registrations may be affected
+      toast({
+        title: "Member Deleted",
+        description: "The member and all their registrations have been removed.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to Delete Member",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleDeleteRace = (race: RaceWithStats) => {
     if (confirm(`Are you sure you want to delete "${race.name}"? This will also remove all registrations.`)) {
       deleteRaceMutation.mutate(race.id);
@@ -100,7 +133,13 @@ export default function AdminPanel() {
     }
   };
 
-  if (isLoading || isLoadingChampionships) {
+  const handleDeleteMember = (member: any) => {
+    if (confirm(`Are you sure you want to delete member "${member.displayName}" (${member.gamertag})? This will remove them and all their race registrations permanently.`)) {
+      deleteMemberMutation.mutate(member.id);
+    }
+  };
+
+  if (isLoading || isLoadingChampionships || isLoadingMembers) {
     return (
       <div className="p-6">
         <div className="text-white">Loading admin panel...</div>
@@ -319,6 +358,71 @@ export default function AdminPanel() {
             {championships.length === 0 && (
               <div className="text-center py-8 text-gray-400">
                 No championships created yet. Click "Create Championship" to get started.
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Member Management */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
+            <Users className="w-5 h-5 text-racing-green" />
+            Member Management
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {members.map((member: any) => (
+              <div 
+                key={member.id} 
+                className="flex items-center justify-between p-4 bg-gray-700 rounded-lg border border-gray-600"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="font-semibold text-white">{member.displayName}</h3>
+                    <Badge variant={member.status === "approved" ? "default" : "secondary"}>
+                      {member.status}
+                    </Badge>
+                    {member.isAdmin && (
+                      <Badge className="bg-orange-500">Admin</Badge>
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-300 space-y-1">
+                    <div>Gamertag: {member.gamertag}</div>
+                    <div>Experience: {member.experienceLevel}</div>
+                    {member.carNumber && <div>Car Number: {member.carNumber}</div>}
+                  </div>
+                </div>
+                
+                <div className="flex space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(`/member-profile/${member.id}`, '_blank')}
+                    className="bg-blue-900 hover:bg-blue-800 border-blue-700 text-blue-300"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  {!member.isAdmin && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteMember(member)}
+                      className="bg-red-900 hover:bg-red-800 border-red-700 text-red-300"
+                      disabled={deleteMemberMutation.isPending}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
+            
+            {members.length === 0 && (
+              <div className="text-center py-8 text-gray-400">
+                No members found.
               </div>
             )}
           </div>

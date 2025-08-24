@@ -324,6 +324,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin only: Delete member
+  app.delete("/api/admin/members/:id", async (req, res) => {
+    try {
+      const isAdmin = req.headers.authorization === 'admin-access';
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+
+      const { id } = req.params;
+      
+      // Check if member exists
+      const member = await storage.getMember(id);
+      if (!member) {
+        return res.status(404).json({ error: "Member not found" });
+      }
+
+      // Delete member registrations first
+      const registrations = await storage.getRegistrationsByMember(id);
+      for (const registration of registrations) {
+        await storage.deleteRegistration(registration.raceId, id);
+      }
+
+      // Delete the member
+      const success = await storage.deleteMember(id);
+      if (!success) {
+        return res.status(500).json({ error: "Failed to delete member" });
+      }
+
+      res.json({ message: "Member deleted successfully", deletedMember: member });
+    } catch (error) {
+      console.error("Error deleting member:", error);
+      res.status(500).json({ error: "Failed to delete member" });
+    }
+  });
+
   // Update member profile
   app.put("/api/members/:id/profile", async (req, res) => {
     try {
