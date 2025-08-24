@@ -142,7 +142,12 @@ export default function ChatRoomComponent({
 
   const detectImageUrls = (messageText: string) => {
     const imageRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp))/gi;
-    return messageText.match(imageRegex) || [];
+    const objectPathRegex = /\/objects\/[^\s]+/gi;
+    
+    const webUrls = messageText.match(imageRegex) || [];
+    const objectPaths = messageText.match(objectPathRegex) || [];
+    
+    return [...webUrls, ...objectPaths];
   };
 
   const detectVideoUrls = (messageText: string) => {
