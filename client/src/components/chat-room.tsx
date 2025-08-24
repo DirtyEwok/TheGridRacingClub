@@ -250,7 +250,7 @@ export default function ChatRoomComponent({
         <ScrollArea className="h-full p-4">
           <div className="space-y-4 max-w-full">
             {messages.map((message) => (
-            <div key={message.id} className="flex gap-3 w-full">
+            <div key={message.id} className="flex gap-3 w-full bg-gray-900/50 rounded-lg p-3 hover:bg-gray-900/70 transition-colors">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-white">
@@ -258,7 +258,7 @@ export default function ChatRoomComponent({
                   </span>
                 </div>
               </div>
-              <div className="flex-1 min-w-0 max-w-full overflow-hidden">
+              <div className="flex-1 min-w-0 w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
                     className={`font-semibold px-2 py-1 rounded text-sm ${
@@ -301,18 +301,18 @@ export default function ChatRoomComponent({
                     </Button>
                   )}
                 </div>
-                <div className="text-gray-300 break-words word-wrap max-w-full overflow-hidden">
-                  <p className="mb-2 break-all">
+                <div className="text-gray-300 w-full">
+                  <p className="mb-2 break-words overflow-wrap-anywhere">
                     {renderMessageWithMentions(message.message)}
                   </p>
                   
                   {/* Show embedded images */}
                   {detectImageUrls(message.message).map((imageUrl, imgIndex) => (
-                    <div key={imgIndex} className="mt-2 max-w-full">
+                    <div key={imgIndex} className="mt-2 w-full">
                       <img
                         src={imageUrl}
                         alt="Shared image"
-                        className="max-w-full sm:max-w-xs max-h-64 rounded-lg border border-gray-700 object-cover"
+                        className="max-w-full w-full sm:max-w-xs max-h-64 rounded-lg border border-gray-700 object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
