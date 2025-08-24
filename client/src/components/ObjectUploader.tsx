@@ -99,10 +99,12 @@ export function ObjectUploader({
       // Extract object path from upload URL for display
       const objectPath = `/objects/uploads/${uploadURL.split('/uploads/')[1].split('?')[0]}`;
       
-      onComplete?.(objectPath);
+      // Close modal and reset state first
       setIsOpen(false);
-      setSelectedFile(null);
-      setUploadProgress(0);
+      reset();
+      
+      // Then call completion callback
+      onComplete?.(objectPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
@@ -117,6 +119,11 @@ export function ObjectUploader({
     setIsUploading(false);
   };
 
+  const closeModal = () => {
+    setIsOpen(false);
+    reset();
+  };
+
   return (
     <div>
       <Button 
@@ -127,14 +134,14 @@ export function ObjectUploader({
       </Button>
       
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setIsOpen(false)}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={closeModal}>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-black dark:text-white">Upload Image</h3>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsOpen(false)}
+                onClick={closeModal}
                 className="h-6 w-6 p-0"
               >
                 <X className="w-4 h-4" />
