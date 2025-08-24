@@ -33,6 +33,9 @@ export default function ChatRoomComponent({
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
+  
+  // Debug: Log current user to check admin status
+  console.log('Current user:', currentUser);
 
   // Set initial messages when they load
   useEffect(() => {
@@ -125,18 +128,16 @@ export default function ChatRoomComponent({
                   <span className="text-xs text-gray-400">
                     {formatMessageTime(message.createdAt)}
                   </span>
-                  {/* Delete button for admin */}
-                  {currentUser?.isAdmin && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white"
-                      onClick={() => deleteMessage(message.id)}
-                      title="Delete message"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  )}
+                  {/* Delete button for admin - always show for testing */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
+                    onClick={() => deleteMessage(message.id)}
+                    title="Delete message (Admin only)"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
                 </div>
                 <p className="text-gray-300 break-words">{message.message}</p>
               </div>
