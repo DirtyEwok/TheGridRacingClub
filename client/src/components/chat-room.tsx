@@ -142,9 +142,13 @@ export default function ChatRoomComponent({
   };
 
   // Explicit send button handler for mobile compatibility
-  const handleSendButtonClick = (e: React.MouseEvent) => {
+  const handleSendButtonClick = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Send button clicked/tapped - Mobile debug');
+    console.log('Message text:', messageText);
+    console.log('Is connected:', isConnected);
+    console.log('Is sending:', isSending);
     handleSendMessage();
   };
 
@@ -471,12 +475,12 @@ export default function ChatRoomComponent({
               <Image className="w-4 h-4" />
             </ObjectUploader>
             <Button 
-              type="submit" 
+              type="button"
               size="icon"
               disabled={!messageText.trim() || !isConnected || isSending}
-              className="bg-racing-green hover:bg-racing-green/80 touch-manipulation min-h-10 min-w-10"
+              className="bg-racing-green hover:bg-racing-green/80 touch-manipulation min-h-10 min-w-10 active:bg-racing-green/60"
               onClick={handleSendButtonClick}
-              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={handleSendButtonClick}
               title="Send message"
               data-testid="button-send-message"
             >
