@@ -276,21 +276,14 @@ Neil Broom aka Neilb`;
                   <TabsTrigger
                     key={room.id}
                     value={room.id}
-                    className="flex flex-col items-center gap-1 p-3 h-auto data-[state=active]:bg-racing-green data-[state=active]:text-white text-gray-300 hover:text-white"
+                    className="flex items-center gap-2 p-3 data-[state=active]:bg-racing-green data-[state=active]:text-white text-gray-300 hover:text-white"
                   >
-                    <div className="flex items-center gap-2">
-                      {room.type === 'general' ? (
-                        <Users className="w-4 h-4 flex-shrink-0" />
-                      ) : (
-                        <Settings className="w-4 h-4 flex-shrink-0" />
-                      )}
-                      <span className="font-medium text-sm">{room.name}</span>
-                    </div>
-                    {room.lastMessage && (
-                      <p className="text-xs opacity-70 truncate max-w-full">
-                        {room.lastMessage.member.gamertag}: {room.lastMessage.message}
-                      </p>
+                    {room.type === 'general' ? (
+                      <Users className="w-4 h-4 flex-shrink-0" />
+                    ) : (
+                      <Settings className="w-4 h-4 flex-shrink-0" />
                     )}
+                    <span className="font-medium text-sm">{room.name}</span>
                   </TabsTrigger>
                 ))}
               </TabsList>
