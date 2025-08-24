@@ -117,6 +117,7 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
+    alert('Enter key working!'); // Test if enter actually works
     console.log('🔧 Enter key send:', { 
       messageText: messageText.trim(),
       currentMemberId,
@@ -542,17 +543,15 @@ export default function ChatRoomComponent({
             <button
               type="button"
               disabled={!messageText.trim() || isSending}
-              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation active:bg-racing-green/60 transition-colors"
-              onTouchEnd={(e) => {
+              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              onMouseDown={(e) => {
                 e.preventDefault();
-                e.stopPropagation();
-                alert('Touch detected!');
+                alert('Mouse down!');
                 handleSendButtonClick();
               }}
-              onClick={(e) => {
+              onTouchStart={(e) => {
                 e.preventDefault();
-                e.stopPropagation();
-                alert('Click detected!');
+                alert('Touch start!');
                 handleSendButtonClick();
               }}
               title="Send message"
