@@ -78,6 +78,33 @@ export default function ChatRoomComponent({
     return format(new Date(date), "HH:mm");
   };
 
+  const renderMessageWithMentions = (messageText: string) => {
+    // Split message by @mentions
+    const parts = messageText.split(/(@\w+)/g);
+    
+    return parts.map((part, index) => {
+      if (part.startsWith('@')) {
+        const mentionedGamertag = part.substring(1);
+        // Check if this mention matches the current user's gamertag
+        const isCurrentUser = currentUser?.gamertag.toLowerCase() === mentionedGamertag.toLowerCase();
+        
+        return (
+          <span
+            key={index}
+            className={`font-semibold px-1 rounded ${
+              isCurrentUser 
+                ? 'bg-orange-500 text-white' 
+                : 'text-orange-400 hover:text-orange-300'
+            }`}
+          >
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Chat Header */}
@@ -139,7 +166,9 @@ export default function ChatRoomComponent({
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>
-                <p className="text-gray-300 break-words">{message.message}</p>
+                <p className="text-gray-300 break-words">
+                  {renderMessageWithMentions(message.message)}
+                </p>
               </div>
             </div>
           ))}
