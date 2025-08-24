@@ -124,19 +124,19 @@ export default function Races() {
             <img 
               src={xboxSeriesXLogo} 
               alt="Xbox Series X" 
-              className="h-12 object-contain opacity-80"
+              className="h-12 object-contain opacity-50"
               style={{ 
-                mixBlendMode: 'luminosity',
-                filter: 'brightness(1.2) contrast(1.1)'
+                mixBlendMode: 'overlay',
+                filter: 'brightness(0.7) contrast(0.9)'
               }}
             />
             <img 
               src={xboxSeriesSLogo} 
               alt="Xbox Series S" 
-              className="h-12 object-contain opacity-80"
+              className="h-12 object-contain opacity-50"
               style={{ 
-                mixBlendMode: 'luminosity',
-                filter: 'brightness(1.2) contrast(1.1)'
+                mixBlendMode: 'overlay',
+                filter: 'brightness(0.7) contrast(0.9)'
               }}
             />
           </div>
