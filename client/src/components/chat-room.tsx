@@ -343,11 +343,11 @@ export default function ChatRoomComponent({
         </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-hidden bg-transparent">
+      <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="space-y-4 max-w-none p-4 bg-transparent">
+          <div className="space-y-4 max-w-none p-4">
             {messages.map((message) => (
-            <div key={message.id} className="flex gap-3 w-full bg-gray-900/50 rounded-lg p-4 hover:bg-gray-900/70 transition-colors max-w-4xl">
+            <div key={message.id} className="flex gap-3 w-full p-4 max-w-4xl">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-white">
