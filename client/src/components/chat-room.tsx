@@ -143,15 +143,6 @@ export default function ChatRoomComponent({
 
   // Explicit send button handler for mobile compatibility
   const handleSendButtonClick = async () => {
-    console.log('Admin debug:', { 
-      messageText: messageText.trim(), 
-      isSending, 
-      isConnected, 
-      currentMemberId,
-      currentUser: currentUser,
-      gamertag: currentUser?.gamertag 
-    });
-    
     // Direct API call for better mobile reliability
     if (!messageText.trim() || isSending || !isConnected || !currentMemberId) return;
     
