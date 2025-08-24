@@ -311,12 +311,11 @@ export default function ChatRoomComponent({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
-                    className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
+                    className={`font-semibold text-sm cursor-pointer hover:opacity-80 transition-opacity ${
                       message.member.isAdmin 
-                        ? "text-white" 
+                        ? "text-orange-400" 
                         : "text-white"
                     }`}
-                    style={message.member.isAdmin ? { backgroundColor: '#f97316' } : {}}
                     onDoubleClick={() => {
                       window.open(`/members/${message.member.id}/profile`, '_blank');
                     }}
