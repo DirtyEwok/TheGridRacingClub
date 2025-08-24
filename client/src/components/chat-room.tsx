@@ -195,7 +195,11 @@ export default function ChatRoomComponent({
             {allMembers.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center gap-3 p-2 rounded hover:bg-gray-800/50 transition-colors"
+                className="flex items-center gap-3 p-2 rounded hover:bg-gray-800/50 transition-colors cursor-pointer"
+                onDoubleClick={() => {
+                  window.open(`/members/${member.id}/profile`, '_blank');
+                }}
+                title="Double-click to view profile"
               >
                 <div className="w-6 h-6 bg-racing-green rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-xs font-semibold text-white">
@@ -261,12 +265,16 @@ export default function ChatRoomComponent({
               <div className="flex-1 min-w-0 w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
-                    className={`font-semibold px-2 py-1 rounded text-sm ${
+                    className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
                       message.member.isAdmin 
                         ? "text-white" 
                         : "text-white"
                     }`}
                     style={message.member.isAdmin ? { backgroundColor: '#f97316' } : {}}
+                    onDoubleClick={() => {
+                      window.open(`/members/${message.member.id}/profile`, '_blank');
+                    }}
+                    title="Double-click to view profile"
                   >
                     {message.member.gamertag}
                   </span>
