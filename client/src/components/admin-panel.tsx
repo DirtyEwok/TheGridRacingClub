@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, Trash2, Plus, Calendar, Users, Trophy, UserCheck } from "lucide-react";
+import { Edit, Trash2, Plus, Calendar, Users, Trophy, UserCheck, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,13 @@ export default function AdminPanel() {
   const [editingRace, setEditingRace] = useState<RaceWithStats | null>(null);
   const [editingChampionship, setEditingChampionship] = useState<ChampionshipWithStats | null>(null);
   const [viewingDriversRace, setViewingDriversRace] = useState<RaceWithStats | null>(null);
+  const [clubAdminText, setClubAdminText] = useState(`Add our admin to your Xbox friends list.
+CJ Carmichael aka CJ DirtyEwok (Founder and Owner)
+Adam Beazley aka Adzinski82 (Club Manager)
+Alex Luke aka Alexcdl18
+Neil Brown aka Stalker Brown
+Dan Gray aka Snuffles1983
+Neil Broom aka Neilb`);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -152,8 +159,29 @@ export default function AdminPanel() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Admin Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Tabs defaultValue="dashboard" className="w-full">
+        <TabsList className="grid w-full grid-cols-5 bg-gray-800 border-gray-700">
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="races" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
+            Races
+          </TabsTrigger>
+          <TabsTrigger value="championships" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
+            Championships
+          </TabsTrigger>
+          <TabsTrigger value="members" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
+            Members
+          </TabsTrigger>
+          <TabsTrigger value="clubadmin" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
+            <Crown className="w-4 h-4 mr-1" />
+            Club Admin
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="dashboard" className="space-y-6">
+          {/* Admin Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-300">Total Races</CardTitle>
@@ -187,11 +215,13 @@ export default function AdminPanel() {
             </div>
             <p className="text-xs text-gray-400">Per race</p>
           </CardContent>
-        </Card>
-      </div>
+            </Card>
+          </div>
+        </TabsContent>
 
-      {/* Race Management */}
-      <Card className="bg-gray-800 border-gray-700">
+        <TabsContent value="races" className="space-y-6">
+          {/* Race Management */}
+          <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl font-bold text-white">Race Management</CardTitle>
@@ -292,9 +322,11 @@ export default function AdminPanel() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
 
-      {/* Championship Management */}
-      <Card className="bg-gray-800 border-gray-700">
+        <TabsContent value="championships" className="space-y-6">
+          {/* Championship Management */}
+          <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
             <Trophy className="w-5 h-5 text-racing-green" />
@@ -363,9 +395,11 @@ export default function AdminPanel() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
 
-      {/* Member Management */}
-      <Card className="bg-gray-800 border-gray-700">
+        <TabsContent value="members" className="space-y-6">
+          {/* Member Management */}
+          <Card className="bg-gray-800 border-gray-700">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
             <Users className="w-5 h-5 text-racing-green" />
@@ -428,6 +462,64 @@ export default function AdminPanel() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="clubadmin" className="space-y-6">
+          {/* Club Admin Team */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
+                <Crown className="w-5 h-5 text-racing-green" />
+                Club Admin Team
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <textarea
+                  value={clubAdminText}
+                  onChange={(e) => setClubAdminText(e.target.value)}
+                  className="w-full h-48 p-4 bg-gray-700 border border-gray-600 rounded-lg text-white resize-none focus:outline-none focus:ring-2 focus:ring-racing-green"
+                  placeholder="Enter club admin information..."
+                />
+                
+                <div className="bg-gray-700 p-4 rounded-lg border border-gray-600">
+                  <div className="text-sm text-gray-300 mb-3">Preview:</div>
+                  <div className="space-y-2">
+                    {clubAdminText.split('\n').map((line, index) => {
+                      if (line.trim() === '') return <div key={index} className="h-2"></div>;
+                      
+                      // Check if this line contains CJ DirtyEwok
+                      if (line.includes('CJ DirtyEwok')) {
+                        return (
+                          <div key={index} className="text-lime-400 font-semibold">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Check if this line contains admin names (has "aka" but not CJ DirtyEwok)
+                      if (line.includes('aka') && !line.includes('CJ DirtyEwok')) {
+                        return (
+                          <div key={index} className="text-yellow-400 font-semibold">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Regular text
+                      return (
+                        <div key={index} className="text-gray-300">
+                          {line}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Modals */}
       <CreateRaceModal 
