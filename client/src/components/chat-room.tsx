@@ -462,6 +462,7 @@ export default function ChatRoomComponent({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
+                  alert('PC KeyDown Enter!');
                   handleSendMessage(e);
                 }
               }}
@@ -469,7 +470,14 @@ export default function ChatRoomComponent({
                 // Mobile backup - some mobile browsers prefer keyup
                 if (e.key === 'Enter' && !e.shiftKey && /Mobi|Android/i.test(navigator.userAgent)) {
                   e.preventDefault();
+                  alert('Mobile KeyUp Enter!');
                   handleSendMessage(e);
+                }
+              }}
+              onInput={(e) => {
+                // Debug all input events on mobile
+                if (/Mobi|Android/i.test(navigator.userAgent)) {
+                  console.log('Mobile input event:', e.type);
                 }
               }}
               placeholder="Type a message, paste image URL, or share a link..."
@@ -494,6 +502,11 @@ export default function ChatRoomComponent({
               disabled={!messageText.trim() || isSending}
               className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation select-none"
               style={{ WebkitTapHighlightColor: 'transparent' }}
+              onClick={(e) => {
+                e.preventDefault();
+                alert('Mobile button clicked!');
+                handleSendMessage(e);
+              }}
               title="Send message"
               data-testid="button-send-message"
             >
