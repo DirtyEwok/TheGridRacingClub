@@ -9,6 +9,18 @@ export const members = pgTable("members", {
   gamertag: text("gamertag").notNull().unique(),
   experienceLevel: text("experience_level").notNull(), // "Beginner", "Intermediate", "Advanced", "Professional"
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Profile fields
+  bio: text("bio"),
+  favoriteTrack: text("favorite_track"),
+  favoriteCarClass: text("favorite_car_class"),
+  carNumber: text("car_number"),
+  profileImageUrl: text("profile_image_url"),
+  // Approval system
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  approvedBy: varchar("approved_by"),
+  approvedAt: timestamp("approved_at"),
+  rejectionReason: text("rejection_reason"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const championships = pgTable("championships", {
@@ -68,6 +80,21 @@ export const insertMemberSchema = createInsertSchema(members).pick({
   displayName: true,
   gamertag: true,
   experienceLevel: true,
+});
+
+export const updateMemberProfileSchema = createInsertSchema(members).pick({
+  displayName: true,
+  bio: true,
+  favoriteTrack: true,
+  favoriteCarClass: true,
+  carNumber: true,
+  profileImageUrl: true,
+});
+
+export const approveMemberSchema = z.object({
+  memberId: z.string(),
+  approved: z.boolean(),
+  rejectionReason: z.string().optional(),
 });
 
 export const updateChampionshipSchema = createInsertSchema(championships).pick({
@@ -147,6 +174,8 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
 });
 
 export type InsertMember = z.infer<typeof insertMemberSchema>;
+export type UpdateMemberProfile = z.infer<typeof updateMemberProfileSchema>;
+export type ApproveMember = z.infer<typeof approveMemberSchema>;
 export type Member = typeof members.$inferSelect;
 export type InsertChampionship = z.infer<typeof insertChampionshipSchema>;
 export type UpdateChampionship = z.infer<typeof updateChampionshipSchema>;

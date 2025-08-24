@@ -10,6 +10,8 @@ import Leaderboards from "@/pages/leaderboards";
 import ComingSoon from "@/pages/coming-soon";
 import Chat from "@/pages/chat";
 import Admin from "@/pages/admin";
+import AdminMemberApproval from "@/pages/admin-members";
+import MemberProfile from "@/pages/member-profile";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +24,8 @@ function Router() {
       <Route path="/coming-soon" component={ComingSoon} />
       <Route path="/chat" component={Chat} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/members" component={AdminMemberApproval} />
+      <Route path="/members/:id/profile" component={MemberProfile} />
       <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>

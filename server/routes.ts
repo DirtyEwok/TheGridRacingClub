@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema } from "@shared/schema";
+import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema } from "@shared/schema";
 import { z } from "zod";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
@@ -218,7 +218,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new member
+  // Get member by ID
+  app.get("/api/members/:id", async (req, res) => {
+    try {
+      const member = await storage.getMember(req.params.id);
+      if (!member) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+      res.json(member);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch member" });
+    }
+  });
+
+  // Create new member (requires approval)
   app.post("/api/members", async (req, res) => {
     try {
       const memberData = insertMemberSchema.parse(req.body);
@@ -230,12 +243,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const member = await storage.createMember(memberData);
-      res.status(201).json(member);
+      res.status(201).json({ 
+        ...member, 
+        message: "Registration submitted! Your membership is pending approval." 
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid member data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create member" });
+    }
+  });
+
+  // Admin only: Get pending members for approval
+  app.get("/api/admin/pending-members", async (req, res) => {
+    try {
+      const isAdmin = req.headers.authorization === 'admin-access';
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+      
+      const pendingMembers = await storage.getPendingMembers();
+      res.json(pendingMembers);
+    } catch (error) {
+      console.error("Error fetching pending members:", error);
+      res.status(500).json({ error: "Failed to fetch pending members" });
+    }
+  });
+
+  // Admin only: Approve/reject member
+  app.post("/api/admin/approve-member", async (req, res) => {
+    try {
+      const isAdmin = req.headers.authorization === 'admin-access';
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+
+      const validation = approveMemberSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ error: "Invalid approval data", details: validation.error.issues });
+      }
+
+      const member = await storage.approveMember(validation.data);
+      if (!member) {
+        return res.status(404).json({ error: "Member not found" });
+      }
+
+      res.json(member);
+    } catch (error) {
+      console.error("Error approving member:", error);
+      res.status(500).json({ error: "Failed to approve member" });
+    }
+  });
+
+  // Update member profile
+  app.put("/api/members/:id/profile", async (req, res) => {
+    try {
+      const validation = updateMemberProfileSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ error: "Invalid profile data", details: validation.error.issues });
+      }
+
+      const member = await storage.updateMemberProfile(req.params.id, validation.data);
+      if (!member) {
+        return res.status(404).json({ error: "Member not found" });
+      }
+
+      res.json(member);
+    } catch (error) {
+      console.error("Error updating member profile:", error);
+      res.status(500).json({ error: "Failed to update member profile" });
     }
   });
 

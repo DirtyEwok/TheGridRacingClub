@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type ChatMessageWithMember, type ChatRoomWithStats, members, championships, races, registrations, chatRooms, chatMessages } from "@shared/schema";
+import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type ChatMessageWithMember, type ChatRoomWithStats, members, championships, races, registrations, chatRooms, chatMessages } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -8,7 +8,10 @@ export interface IStorage {
   getMember(id: string): Promise<Member | undefined>;
   getMemberByGamertag(gamertag: string): Promise<Member | undefined>;
   getAllMembers(): Promise<Member[]>;
+  getPendingMembers(): Promise<Member[]>;
   createMember(member: InsertMember): Promise<Member>;
+  updateMemberProfile(id: string, profile: UpdateMemberProfile): Promise<Member | undefined>;
+  approveMember(approval: ApproveMember): Promise<Member | undefined>;
 
   // Championships
   getAllChampionships(): Promise<Championship[]>;
@@ -60,12 +63,45 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllMembers(): Promise<Member[]> {
-    return await db.select().from(members);
+    return await db.select().from(members).where(eq(members.status, "approved"));
+  }
+
+  async getPendingMembers(): Promise<Member[]> {
+    return await db.select().from(members).where(eq(members.status, "pending"));
   }
 
   async createMember(insertMember: InsertMember): Promise<Member> {
-    const [member] = await db.insert(members).values(insertMember).returning();
+    const [member] = await db.insert(members).values({
+      ...insertMember,
+      status: "pending", // All new members need approval
+    }).returning();
     return member;
+  }
+
+  async updateMemberProfile(id: string, profile: UpdateMemberProfile): Promise<Member | undefined> {
+    const [member] = await db.update(members)
+      .set(profile)
+      .where(eq(members.id, id))
+      .returning();
+    return member || undefined;
+  }
+
+  async approveMember(approval: ApproveMember): Promise<Member | undefined> {
+    const updateData: any = {
+      status: approval.approved ? "approved" : "rejected",
+      approvedBy: "CJ DirtyEwok", // Admin gamertag
+      approvedAt: new Date(),
+    };
+
+    if (!approval.approved && approval.rejectionReason) {
+      updateData.rejectionReason = approval.rejectionReason;
+    }
+
+    const [member] = await db.update(members)
+      .set(updateData)
+      .where(eq(members.id, approval.memberId))
+      .returning();
+    return member || undefined;
   }
 
   // Championships

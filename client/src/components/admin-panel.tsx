@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, Trash2, Plus, Calendar, Users, Trophy } from "lucide-react";
+import { Edit, Trash2, Plus, Calendar, Users, Trophy, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -170,6 +170,13 @@ export default function AdminPanel() {
               >
                 <Trophy className="mr-2 w-4 h-4" />
                 Create Championship
+              </Button>
+              <Button 
+                onClick={() => window.location.href = '/admin/members'}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                <UserCheck className="mr-2 w-4 h-4" />
+                Member Approval
               </Button>
             </div>
           </div>
