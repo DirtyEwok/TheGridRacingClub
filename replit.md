@@ -16,6 +16,7 @@ Admin navigation: Discreet settings icon in member header provides quick admin a
 Welcome messages: New users see "Welcome to your race registration with The Grid" instead of hardcoded names.
 Championship branding: Races page features championship posters on left (GT4 Mornings S2) and right (GT3 Mid Evo Masters) sides of race grid without borders for clean look.
 Championship rules: Completely removed rules section from championship display to eliminate unwanted points systems and text clutter.
+Chat system: Members identified by gamertags instead of display names. Admin gamertag (user) displayed in white text on orange background, regular members in white text only.
 
 ## CRITICAL RACE TIME REQUIREMENTS (NEVER CHANGE):
 - GT4 Mornings Season 2: 6 races starting August 21st, 2025 - ALL races at 20:00 UK time (8:00pm) - FIXED REQUIREMENT

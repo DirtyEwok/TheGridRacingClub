@@ -183,7 +183,7 @@ export default function Chat() {
                           </div>
                           {room.lastMessage && (
                             <p className="text-xs text-gray-400 truncate w-full mt-1">
-                              {room.lastMessage.member.displayName}: {room.lastMessage.message}
+                              {room.lastMessage.member.gamertag}: {room.lastMessage.message}
                             </p>
                           )}
                         </div>

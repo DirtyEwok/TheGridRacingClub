@@ -79,14 +79,18 @@ export default function ChatRoomComponent({ chatRoom, currentMemberId }: ChatRoo
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-white">
-                    {message.member.displayName.charAt(0).toUpperCase()}
+                    {message.member.gamertag.charAt(0).toUpperCase()}
                   </span>
                 </div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-white">
-                    {message.member.displayName}
+                  <span className={`font-semibold px-2 py-1 rounded text-sm ${
+                    message.member.isAdmin 
+                      ? "bg-orange-500 text-white" 
+                      : "text-white"
+                  }`}>
+                    {message.member.gamertag}
                   </span>
                   {message.member.isAdmin && (
                     <Crown className="w-4 h-4 text-orange-500" />
