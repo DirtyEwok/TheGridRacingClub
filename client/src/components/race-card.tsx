@@ -42,24 +42,26 @@ export default function RaceCard({ race, onRegister, onUnregister }: RaceCardPro
   return (
     <div className={`bg-gray-800 rounded-xl border transition-colors ${getBorderColor()}`}>
       <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center">
-            <StatusIcon className="text-lg mr-2" style={{ color: status.color.replace('bg-', '') }} />
-            <span className={`${status.color} text-white text-xs px-2 py-1 rounded-full font-medium`}>
-              {status.text}
-            </span>
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex flex-col">
+            <div className="flex items-center mb-2">
+              <StatusIcon className="text-lg mr-2" style={{ color: status.color.replace('bg-', '') }} />
+              <span className={`${status.color} text-white text-xs px-2 py-1 rounded-full font-medium`}>
+                {status.text}
+              </span>
+            </div>
+            <div className="text-sm text-gray-400">
+              {raceDate.toLocaleDateString("en-GB", {timeZone: "Europe/London"})}
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors group"
+              className="p-2 hover:bg-gray-700 rounded-lg transition-colors group flex-shrink-0"
               title="View Circuit Preview"
             >
               <Eye className="w-4 h-4 text-gray-400 group-hover:text-green-400" />
             </button>
-            <div className="text-right text-sm text-gray-400">
-              <div>{raceDate.toLocaleDateString("en-GB", {timeZone: "Europe/London"})}</div>
-            </div>
           </div>
         </div>
 
