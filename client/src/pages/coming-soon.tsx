@@ -71,7 +71,7 @@ export default function ComingSoon() {
                   onClick={handlePlayVideo}
                 >
                   <div className="bg-racing-green/80 hover:bg-racing-green/90 transition-all duration-300 rounded-full p-8 shadow-xl border-4 border-orange-500">
-                    <Play className="w-20 h-20 text-white fill-white" />
+                    <Play className="w-20 h-20 text-white fill-white" style={{ stroke: '#f97316', strokeWidth: '2px' }} />
                   </div>
                 </div>
               )}
