@@ -302,18 +302,21 @@ export default function ChatRoomComponent({
             {messages.map((message) => (
             <div key={message.id} className="flex gap-3 w-full bg-gray-900/50 rounded-lg p-4 hover:bg-gray-900/70 transition-colors max-w-4xl">
               <div className="flex-shrink-0">
-                <span className="text-xs font-semibold text-white mr-2">
-                  {message.member.gamertag.charAt(0).toUpperCase()}
-                </span>
+                <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
+                  <span className="text-xs font-semibold text-white">
+                    {message.member.gamertag.charAt(0).toUpperCase()}
+                  </span>
+                </div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
-                    className={`font-semibold text-sm cursor-pointer hover:opacity-80 transition-opacity ${
+                    className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
                       message.member.isAdmin 
-                        ? "text-orange-400" 
+                        ? "text-white" 
                         : "text-white"
                     }`}
+                    style={message.member.isAdmin ? { backgroundColor: '#f97316' } : {}}
                     onDoubleClick={() => {
                       window.open(`/members/${message.member.id}/profile`, '_blank');
                     }}
