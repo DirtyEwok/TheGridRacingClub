@@ -125,11 +125,13 @@ export default function Races() {
               src={xboxSeriesXLogo} 
               alt="Xbox Series X" 
               className="h-12 object-contain"
+              style={{ mixBlendMode: 'screen' }}
             />
             <img 
               src={xboxSeriesSLogo} 
               alt="Xbox Series S" 
               className="h-12 object-contain"
+              style={{ mixBlendMode: 'screen' }}
             />
           </div>
           
