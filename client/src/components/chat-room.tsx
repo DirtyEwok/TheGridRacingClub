@@ -370,14 +370,18 @@ export default function ChatRoomComponent({
                   
                   {/* Show embedded images */}
                   {detectImageUrls(message.message).map((imageUrl, imgIndex) => (
-                    <div key={imgIndex} className="mt-2 w-full">
+                    <div key={imgIndex} className="mt-2">
                       <img
                         src={imageUrl}
                         alt="Shared image"
-                        className="max-w-full w-full sm:max-w-xs max-h-64 rounded-lg border border-gray-700 object-cover"
+                        className="max-w-xs w-auto max-h-48 sm:max-h-64 rounded-lg border border-gray-700 object-cover cursor-pointer hover:opacity-90 transition-opacity"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
+                        onClick={() => {
+                          window.open(imageUrl, '_blank');
+                        }}
+                        title="Click to view full size"
                       />
                     </div>
                   ))}
