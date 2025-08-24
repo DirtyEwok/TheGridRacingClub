@@ -257,6 +257,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
+    // Check if a chat room for this championship already exists
+    if (insertChatRoom.championshipId) {
+      const existingRoom = await this.getChatRoomByChampionship(insertChatRoom.championshipId);
+      if (existingRoom) {
+        return existingRoom; // Return existing room instead of creating duplicate
+      }
+    }
+
     const [chatRoom] = await db.insert(chatRooms).values(insertChatRoom).returning();
     return chatRoom;
   }
@@ -921,6 +929,14 @@ Server goes live at 20:00`,
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
+    // Check if a chat room for this championship already exists
+    if (insertChatRoom.championshipId) {
+      const existingRoom = await this.getChatRoomByChampionship(insertChatRoom.championshipId);
+      if (existingRoom) {
+        return existingRoom; // Return existing room instead of creating duplicate
+      }
+    }
+
     const id = randomUUID();
     const chatRoom: ChatRoom = {
       ...insertChatRoom,

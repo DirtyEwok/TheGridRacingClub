@@ -28,6 +28,7 @@ Chat system: Members identified by gamertags instead of display names. Admin gam
 
 ## Recent Changes (August 24, 2025)
 - **Profile Image Upload**: Temporarily disabled profile image upload feature due to object storage callback issues. The upload button was triggering completion callbacks without proper file selection. Feature will be re-enabled once upload flow is debugged and fixed.
+- **Chat Duplicates Issue**: Multiple duplicate "GT4 Mornings Chat" rooms were created in database causing flickering. Fixed by adding duplicate prevention logic in createChatRoom method. Need to clean existing duplicates from database.
 
 ## System Architecture
 
