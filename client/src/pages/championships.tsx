@@ -38,6 +38,39 @@ export default function Championships() {
           <p className="text-gray-300">View active racing championships, seasons, and club regulations</p>
         </div>
 
+        {/* Club Rules Card */}
+        <Card className="bg-blue-900 border-blue-700 hover:border-blue-500 transition-colors mb-6">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-400" />
+              Club Rules & Regulations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-gray-300 space-y-3">
+              <p className="text-blue-300 font-medium">Essential guidelines for all Grid Racing Club members:</p>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <h4 className="text-white font-semibold">Racing Conduct</h4>
+                  <ul className="text-sm text-gray-300 space-y-1">
+                    <li>• Clean racing at all times</li>
+                    <li>• Respect other drivers</li>
+                    <li>• Follow race director instructions</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="text-white font-semibold">Registration</h4>
+                  <ul className="text-sm text-gray-300 space-y-1">
+                    <li>• Register before deadline</li>
+                    <li>• Commit to races you join</li>
+                    <li>• Notify if unable to attend</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {championships.length === 0 ? (
           <Card className="bg-gray-800 border-gray-700">
             <CardContent className="flex flex-col items-center justify-center py-12 text-center">
