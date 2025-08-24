@@ -225,7 +225,7 @@ Neil Broom aka Neilb`;
 
           {/* Chat Area with Tabs */}
           <div className="flex-1 min-w-0">
-            <Tabs value={selectedChatRoom || ""} onValueChange={setSelectedChatRoom} className="h-full">
+            <Tabs value={selectedChatRoom || ""} onValueChange={setSelectedChatRoom} className="h-full flex flex-col">
               {/* Mobile: Horizontal scrolling tabs */}
               <div className="lg:hidden mb-4">
                 <ScrollArea className="w-full">
@@ -261,8 +261,8 @@ Neil Broom aka Neilb`;
                 </ScrollArea>
               </div>
 
-              {/* Desktop: Grid tabs */}
-              <TabsList className="hidden lg:grid w-full bg-gray-800 border-b border-gray-700" style={{ gridTemplateColumns: `repeat(${chatRooms?.length || 1}, minmax(0, 1fr))` }}>
+              {/* Desktop: Grid tabs at top */}
+              <TabsList className="hidden lg:grid w-full bg-gray-800 border-b border-gray-700 mb-4" style={{ gridTemplateColumns: `repeat(${chatRooms?.length || 1}, minmax(0, 1fr))` }}>
                 {chatRooms?.sort((a, b) => {
                   // Sort order: General first, then GT4, then GT3, then others
                   if (a.type === 'general') return -1;
@@ -296,7 +296,7 @@ Neil Broom aka Neilb`;
               </TabsList>
 
               {chatRooms?.map((room) => (
-                <TabsContent key={room.id} value={room.id} className="lg:h-[calc(100%-80px)] h-[calc(100%-60px)] mt-0">
+                <TabsContent key={room.id} value={room.id} className="flex-1">
                   <Card className="bg-gray-900 border-gray-800 h-full">
                     <ChatRoomComponent 
                       chatRoom={room} 
