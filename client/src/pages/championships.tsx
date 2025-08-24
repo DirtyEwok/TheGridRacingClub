@@ -96,6 +96,37 @@ export default function Championships() {
           </CardContent>
         </Card>
 
+        {/* Document Links Section */}
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <Card className="bg-gray-800 border-gray-700 hover:border-yellow-400 transition-colors">
+            <CardContent className="p-6 text-center">
+              <h3 className="text-xl font-bold text-yellow-400 mb-4">Club Rules</h3>
+              <a 
+                href="https://docs.google.com/document/d/1gd3zZD4ZfmqpluwsHoibrjJ6MCsCoj4bomb2yIGkrQI/edit?usp=sharing" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-yellow-400 font-bold hover:text-yellow-300 transition-colors text-lg underline"
+              >
+                View Club Rules Document
+              </a>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700 hover:border-yellow-400 transition-colors">
+            <CardContent className="p-6 text-center">
+              <h3 className="text-xl font-bold text-yellow-400 mb-4">Race review and appeal guide</h3>
+              <a 
+                href="https://docs.google.com/document/d/1i05Wd_TffL9HhO04ZdhJDe3420H12tLnUnWsmIf8li0/edit?usp=sharing" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-yellow-400 font-bold hover:text-yellow-300 transition-colors text-lg underline"
+              >
+                View Appeal Guide Document
+              </a>
+            </CardContent>
+          </Card>
+        </div>
+
         {championships.length === 0 ? (
           <Card className="bg-gray-800 border-gray-700">
             <CardContent className="flex flex-col items-center justify-center py-12 text-center">
