@@ -70,6 +70,15 @@ export default function MemberHeader() {
                   <Button
                     variant="outline"
                     size="sm"
+                    onClick={() => window.location.href = `/members/${currentMember.id}/profile`}
+                    className="border-gray-600 text-white hover:bg-gray-700"
+                  >
+                    <User className="w-4 h-4 mr-1" />
+                    Profile
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => {
                       clearCurrentMember();
                       queryClient.invalidateQueries({ queryKey: ["/api/races"] });

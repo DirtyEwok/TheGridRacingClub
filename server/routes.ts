@@ -296,6 +296,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug endpoint: Auto-approve admin member by gamertag
+  app.post("/api/admin/auto-approve", async (req, res) => {
+    try {
+      const isAdmin = req.headers.authorization === 'admin-access';
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Admin access required" });
+      }
+
+      // Find admin member by gamertag and auto-approve
+      const adminMember = await storage.getMemberByGamertag("CJ DirtyEwok");
+      if (adminMember && adminMember.status !== "approved") {
+        const approvedMember = await storage.approveMember({
+          memberId: adminMember.id,
+          approved: true,
+          rejectionReason: undefined
+        });
+        res.json({ message: "Admin member auto-approved", member: approvedMember });
+      } else if (adminMember?.status === "approved") {
+        res.json({ message: "Admin member already approved", member: adminMember });
+      } else {
+        res.status(404).json({ error: "Admin member not found" });
+      }
+    } catch (error) {
+      console.error("Error auto-approving admin:", error);
+      res.status(500).json({ error: "Failed to auto-approve admin" });
+    }
+  });
+
   // Update member profile
   app.put("/api/members/:id/profile", async (req, res) => {
     try {

@@ -32,9 +32,10 @@ export default function ChatRoomComponent({
     queryKey: ['/api/chat-rooms', chatRoom.id, 'messages'],
   });
 
-  // Fetch all members for the member list
+  // Fetch all approved members for the member list
   const { data: allMembers = [] } = useQuery<Member[]>({
     queryKey: ['/api/members'],
+    select: (data: Member[]) => data.filter(member => member.status === 'approved')
   });
 
   // Use WebSocket hook for real-time messages
