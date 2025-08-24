@@ -157,7 +157,16 @@ export default function Chat() {
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-300px)]">
                   <div className="space-y-1 p-4">
-                    {chatRooms?.map((room) => (
+                    {chatRooms?.sort((a, b) => {
+                      // Sort order: General first, then GT4, then GT3, then others
+                      if (a.type === 'general') return -1;
+                      if (b.type === 'general') return 1;
+                      if (a.name.includes('GT4')) return -1;
+                      if (b.name.includes('GT4')) return 1;
+                      if (a.name.includes('GT3')) return -1;
+                      if (b.name.includes('GT3')) return 1;
+                      return a.name.localeCompare(b.name);
+                    }).map((room) => (
                       <Button
                         key={room.id}
                         variant={selectedChatRoom === room.id ? "default" : "ghost"}
