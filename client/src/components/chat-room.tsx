@@ -25,6 +25,7 @@ export default function ChatRoomComponent({
   onMessageDraftChange 
 }: ChatRoomProps) {
   const [messageText, setMessageText] = useState(messageDraft);
+  const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Fetch initial messages
@@ -115,17 +116,36 @@ export default function ChatRoomComponent({
     }
   }, [messages]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!messageText.trim()) return;
-
-    const success = sendMessage(messageText.trim(), currentMemberId);
-    if (success) {
-      setMessageText("");
-      if (onMessageDraftChange) {
-        onMessageDraftChange("");
-      }
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    
+    if (!messageText.trim() || isSending || !isConnected) return;
+
+    setIsSending(true);
+    try {
+      const success = sendMessage(messageText.trim(), currentMemberId);
+      if (success) {
+        setMessageText("");
+        if (onMessageDraftChange) {
+          onMessageDraftChange("");
+        }
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      // Add a small delay to prevent rapid clicking on mobile
+      setTimeout(() => setIsSending(false), 500);
+    }
+  };
+
+  // Explicit send button handler for mobile compatibility
+  const handleSendButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleSendMessage();
   };
 
   const formatMessageTime = (date: Date) => {
@@ -427,10 +447,20 @@ export default function ChatRoomComponent({
             <Input
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
               placeholder="Type a message, paste image URL, or share a link..."
-              className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400"
+              className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
               maxLength={500}
-              disabled={!isConnected}
+              disabled={!isConnected || isSending}
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
+              data-testid="input-chat-message"
             />
             <ObjectUploader
               onComplete={(imageUrl) => {
@@ -443,10 +473,18 @@ export default function ChatRoomComponent({
             <Button 
               type="submit" 
               size="icon"
-              disabled={!messageText.trim() || !isConnected}
-              className="bg-racing-green hover:bg-racing-green/80"
+              disabled={!messageText.trim() || !isConnected || isSending}
+              className="bg-racing-green hover:bg-racing-green/80 touch-manipulation min-h-10 min-w-10"
+              onClick={handleSendButtonClick}
+              onTouchStart={(e) => e.stopPropagation()}
+              title="Send message"
+              data-testid="button-send-message"
             >
-              <Send className="w-4 h-4" />
+              {isSending ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
             </Button>
           </div>
           
