@@ -73,32 +73,32 @@ export default function MemberHeader() {
                   <span className="text-sm text-gray-300">Welcome, {currentMember.displayName}</span>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => window.location.href = `/members/${currentMember.id}/profile`}
-                    className="border-gray-600 text-white hover:bg-gray-700"
+                    className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
                   >
-                    <User className="w-4 h-4 mr-1" />
+                    <User className="w-3 h-3 mr-1" />
                     Profile
                   </Button>
                   {isAdmin && (
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => window.location.href = "/admin"}
-                      className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white"
+                      className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white h-6 px-2 text-xs"
                     >
-                      <Settings className="w-4 h-4 mr-1" />
+                      <Settings className="w-3 h-3 mr-1" />
                       Admin
                     </Button>
                   )}
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => {
                       clearCurrentMember();
                       queryClient.invalidateQueries({ queryKey: ["/api/races"] });
                     }}
-                    className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700"
+                    className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 h-6 px-2 text-xs"
                   >
                     Sign Out
                   </Button>
@@ -106,11 +106,11 @@ export default function MemberHeader() {
               ) : (
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="xs"
                   onClick={() => setIsSignInOpen(true)}
-                  className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700"
+                  className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 h-6 px-2 text-xs"
                 >
-                  <User className="h-4 w-4 mr-2" />
+                  <User className="h-3 w-3 mr-1" />
                   Sign In
                 </Button>
               )}
