@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2 } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link } from "lucide-react";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
 import { type ChatRoom, type ChatMessageWithMember } from "@shared/schema";
@@ -79,34 +79,62 @@ export default function ChatRoomComponent({
   };
 
   const renderMessageWithMentions = (messageText: string) => {
-    // Split message by @mentions
-    const parts = messageText.split(/(@\w+)/g);
+    // Split message by @mentions and URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const mentionRegex = /(@\w+)/g;
+    
+    // First split by URLs, then by mentions
+    const urlParts = messageText.split(urlRegex);
     
     return (
       <>
-        {parts.map((part, index) => {
-          if (part.startsWith('@')) {
-            const mentionedGamertag = part.substring(1);
-            // Check if this mention matches the current user's gamertag
-            const isCurrentUser = currentUser?.gamertag.toLowerCase() === mentionedGamertag.toLowerCase();
-            
+        {urlParts.map((urlPart, urlIndex) => {
+          // Check if this part is a URL
+          if (urlRegex.test(urlPart)) {
             return (
-              <span
-                key={index}
-                className={`font-semibold px-1 rounded ${
-                  isCurrentUser 
-                    ? 'bg-orange-500 text-white' 
-                    : 'text-orange-400 hover:text-orange-300'
-                }`}
+              <a
+                key={urlIndex}
+                href={urlPart}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 underline break-all"
               >
-                {part}
-              </span>
+                {urlPart}
+              </a>
             );
           }
-          return <span key={index}>{part}</span>;
+          
+          // Split by mentions
+          const mentionParts = urlPart.split(mentionRegex);
+          
+          return mentionParts.map((part, mentionIndex) => {
+            if (part.startsWith('@')) {
+              const mentionedGamertag = part.substring(1);
+              const isCurrentUser = currentUser?.gamertag.toLowerCase() === mentionedGamertag.toLowerCase();
+              
+              return (
+                <span
+                  key={`${urlIndex}-${mentionIndex}`}
+                  className={`font-semibold px-1 rounded ${
+                    isCurrentUser 
+                      ? 'bg-orange-500 text-white' 
+                      : 'text-orange-400 hover:text-orange-300'
+                  }`}
+                >
+                  {part}
+                </span>
+              );
+            }
+            return <span key={`${urlIndex}-${mentionIndex}`}>{part}</span>;
+          });
         })}
       </>
     );
+  };
+
+  const detectImageUrls = (messageText: string) => {
+    const imageRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp))/gi;
+    return messageText.match(imageRegex) || [];
   };
 
   return (
@@ -170,9 +198,25 @@ export default function ChatRoomComponent({
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>
-                <p className="text-gray-300 break-words">
-                  {renderMessageWithMentions(message.message)}
-                </p>
+                <div className="text-gray-300 break-words">
+                  <p className="mb-2">
+                    {renderMessageWithMentions(message.message)}
+                  </p>
+                  
+                  {/* Show embedded images */}
+                  {detectImageUrls(message.message).map((imageUrl, imgIndex) => (
+                    <div key={imgIndex} className="mt-2">
+                      <img
+                        src={imageUrl}
+                        alt="Shared image"
+                        className="max-w-xs max-h-64 rounded-lg border border-gray-700 object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
@@ -182,27 +226,45 @@ export default function ChatRoomComponent({
 
       {/* Message Input */}
       <div className="border-t border-gray-800 p-4">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
-          <Input
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400"
-            maxLength={500}
-            disabled={!isConnected}
-          />
-          <Button 
-            type="submit" 
-            size="icon"
-            disabled={!messageText.trim() || !isConnected}
-            className="bg-racing-green hover:bg-racing-green/80"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+        <form onSubmit={handleSendMessage} className="space-y-3">
+          <div className="flex gap-2">
+            <Input
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              placeholder="Type a message, paste image URL, or share a link..."
+              className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400"
+              maxLength={500}
+              disabled={!isConnected}
+            />
+            <Button 
+              type="submit" 
+              size="icon"
+              disabled={!messageText.trim() || !isConnected}
+              className="bg-racing-green hover:bg-racing-green/80"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+          
+          {/* Quick Actions */}
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <span className="flex items-center gap-1">
+              <Link className="w-3 h-3" />
+              Paste links
+            </span>
+            <span className="flex items-center gap-1">
+              <Image className="w-3 h-3" />
+              Paste image URLs
+            </span>
+            <span className="flex items-center gap-1">
+              <span>@</span>
+              Mention members
+            </span>
+            <span className="ml-auto">
+              {messageText.length}/500 characters
+            </span>
+          </div>
         </form>
-        <p className="text-xs text-gray-500 mt-1">
-          {messageText.length}/500 characters
-        </p>
       </div>
     </div>
   );
