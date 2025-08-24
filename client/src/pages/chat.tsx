@@ -228,8 +228,8 @@ Neil Broom aka Neilb`;
             <Tabs value={selectedChatRoom || ""} onValueChange={setSelectedChatRoom} className="h-full flex flex-col">
               {/* Mobile: Horizontal scrolling tabs */}
               <div className="lg:hidden mb-4">
-                <ScrollArea className="w-full">
-                  <div className="flex gap-2 p-1 bg-gray-800 rounded-lg">
+                <div className="overflow-x-auto pb-2">
+                  <div className="flex gap-2 p-2 bg-gray-800 rounded-lg min-w-max">
                     {chatRooms?.sort((a, b) => {
                       if (a.type === 'general') return -1;
                       if (b.type === 'general') return 1;
@@ -242,7 +242,7 @@ Neil Broom aka Neilb`;
                       <Button
                         key={room.id}
                         variant={selectedChatRoom === room.id ? "default" : "ghost"}
-                        className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-md ${
+                        className={`flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-md flex-shrink-0 ${
                           selectedChatRoom === room.id 
                             ? "bg-racing-green text-white" 
                             : "text-gray-300 hover:text-white hover:bg-gray-700"
@@ -258,7 +258,7 @@ Neil Broom aka Neilb`;
                       </Button>
                     ))}
                   </div>
-                </ScrollArea>
+                </div>
               </div>
 
               {/* Desktop: Grid tabs at top */}
