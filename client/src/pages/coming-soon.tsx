@@ -70,8 +70,8 @@ export default function ComingSoon() {
                   className="absolute inset-0 flex items-center justify-center cursor-pointer rounded-lg"
                   onClick={handlePlayVideo}
                 >
-                  <div className="bg-racing-green/80 hover:bg-racing-green/90 transition-all duration-300 rounded-full p-6 shadow-xl">
-                    <Play className="w-16 h-16 text-white fill-white" />
+                  <div className="bg-racing-green/80 hover:bg-racing-green/90 transition-all duration-300 rounded-full p-8 shadow-xl border-4 border-orange-500">
+                    <Play className="w-20 h-20 text-white fill-white" />
                   </div>
                 </div>
               )}
