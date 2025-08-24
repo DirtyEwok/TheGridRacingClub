@@ -117,24 +117,44 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
+    console.log('⌨️ Enter key handler:', { 
+      message: messageText.trim(), 
+      memberId: currentMemberId,
+      isConnected,
+      isSending,
+      currentUser: currentUser?.gamertag 
+    });
+    
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     
-    if (!messageText.trim() || isSending || !isConnected) return;
+    if (!messageText.trim() || isSending || !isConnected) {
+      console.log('⌨️ Enter blocked:', { 
+        hasMessage: !!messageText.trim(),
+        isSending,
+        isConnected 
+      });
+      return;
+    }
 
     setIsSending(true);
     try {
+      console.log('⌨️ Calling sendMessage via WebSocket...');
       const success = sendMessage(messageText.trim(), currentMemberId);
+      console.log('⌨️ WebSocket sendMessage result:', success);
       if (success) {
         setMessageText("");
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
+        console.log('⌨️ Message cleared after successful send');
+      } else {
+        console.log('⌨️ WebSocket send failed, keeping message');
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('⌨️ Error in Enter handler:', error);
     } finally {
       // Add a small delay to prevent rapid clicking on mobile
       setTimeout(() => setIsSending(false), 500);
@@ -496,6 +516,7 @@ export default function ChatRoomComponent({
               onChange={(e) => setMessageText(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
+                  console.log('⌨️ Enter key pressed on mobile');
                   e.preventDefault();
                   handleSendMessage();
                 }
