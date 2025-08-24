@@ -306,22 +306,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(chatMessages.createdAt))
       .limit(limit);
 
-    // Add like count and current user like status
-    const messagesWithLikes: ChatMessageWithMember[] = [];
-    for (const message of messages) {
-      const likes = await this.getMessageLikes(message.id);
-      const likeCount = likes.length;
-      const isLikedByCurrentUser = currentUserId ? 
-        likes.some(like => like.memberId === currentUserId) : false;
-
-      messagesWithLikes.push({
-        ...message,
-        likeCount,
-        isLikedByCurrentUser,
-      });
-    }
-
-    return messagesWithLikes.reverse(); // Reverse to show oldest first
+    return messages.reverse(); // Reverse to show oldest first
   }
 
   async createChatMessage(insertChatMessage: InsertChatMessage): Promise<ChatMessage> {
@@ -347,10 +332,8 @@ export class DatabaseStorage implements IStorage {
   async likeMessage(messageId: string, memberId: string): Promise<boolean> {
     try {
       const insertLike: InsertMessageLike = {
-        id: randomUUID(),
         messageId,
         memberId,
-        createdAt: new Date(),
       };
       
       await db.insert(messageLikes).values(insertLike);
@@ -675,9 +658,51 @@ Server goes live at 20:00`,
     return Array.from(this.members.values());
   }
 
+  async getPendingMembers(): Promise<Member[]> {
+    return Array.from(this.members.values()).filter(member => member.status === "pending");
+  }
+
+  async updateMemberProfile(id: string, updates: UpdateMemberProfile): Promise<Member | undefined> {
+    const member = this.members.get(id);
+    if (!member) return undefined;
+    
+    const updatedMember = { ...member, ...updates, updatedAt: new Date() };
+    this.members.set(id, updatedMember);
+    return updatedMember;
+  }
+
+  async approveMember(approval: ApproveMember): Promise<Member | undefined> {
+    const member = this.members.get(approval.id);
+    if (!member) return undefined;
+    
+    const updatedMember = { 
+      ...member, 
+      status: approval.approved ? "approved" : "rejected",
+      rejectionReason: approval.approved ? null : (approval.rejectionReason || null),
+      updatedAt: new Date()
+    };
+    this.members.set(approval.id, updatedMember);
+    return updatedMember;
+  }
+
   async createMember(insertMember: InsertMember): Promise<Member> {
     const id = randomUUID();
-    const member: Member = { ...insertMember, id, isAdmin: false };
+    const member: Member = { 
+      ...insertMember, 
+      id, 
+      isAdmin: false,
+      bio: null,
+      favoriteTrack: null,
+      favoriteCarClass: null,
+      carNumber: null,
+      streamLink1: null,
+      streamLink2: null,
+      profileImageUrl: null,
+      status: "approved",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      rejectionReason: null
+    };
     this.members.set(id, member);
     return member;
   }
@@ -936,20 +961,11 @@ Server goes live at 20:00`,
     for (const message of messages) {
       const member = this.members.get(message.memberId);
       if (member) {
-        // Get like count for this message
-        const likes = await this.getMessageLikes(message.id);
-        const likeCount = likes.length;
-        
-        // Check if current user liked this message
-        const isLikedByCurrentUser = currentUserId 
-          ? likes.some(like => like.memberId === currentUserId)
-          : false;
-
         messagesWithMembers.push({
           ...message,
           member,
-          likeCount,
-          isLikedByCurrentUser,
+          likeCount: 0,
+          isLikedByCurrentUser: false,
         });
       }
     }
