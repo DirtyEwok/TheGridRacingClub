@@ -516,8 +516,16 @@ export default function ChatRoomComponent({
                   handleSendMessage();
                 }
               }}
-              placeholder="Type a message, paste image URL, or share a link..."
-              className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
+              placeholder={
+                !isConnected 
+                  ? "Connecting to chat..." 
+                  : isSending 
+                    ? "Sending..." 
+                    : "Type a message, paste image URL, or share a link..."
+              }
+              className={`flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation ${
+                (!isConnected || isSending) ? 'cursor-not-allowed' : ''
+              }`}
               maxLength={500}
               disabled={!isConnected || isSending}
               autoComplete="off"
@@ -525,6 +533,16 @@ export default function ChatRoomComponent({
               spellCheck="false"
               data-testid="input-chat-message"
             />
+            {!isConnected && (
+              <div className="text-xs text-red-400 mt-1">
+                🔧 Debug: WebSocket not connected - check console
+              </div>
+            )}
+            {isSending && (
+              <div className="text-xs text-yellow-400 mt-1">
+                🔧 Debug: Currently sending message
+              </div>
+            )}
             <ObjectUploader
               onComplete={(imageUrl) => {
                 setMessageText(prev => prev + ` ${imageUrl}`);
