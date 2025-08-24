@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
-import { User, Edit3, Save, Camera, MapPin, Car, Hash } from "lucide-react";
+import { User, Edit3, Save, Camera, MapPin, Car, Hash, Video } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateMemberProfileSchema } from "@shared/schema";
@@ -43,6 +43,7 @@ function MemberProfile() {
       favoriteCarClass: "",
       carNumber: "",
       profileImageUrl: "",
+      streamLink: "",
     },
   });
 
@@ -56,6 +57,7 @@ function MemberProfile() {
         favoriteCarClass: member.favoriteCarClass || "",
         carNumber: member.carNumber || "",
         profileImageUrl: member.profileImageUrl || "",
+        streamLink: member.streamLink || "",
       });
     }
   }, [member, form]);
@@ -219,6 +221,17 @@ function MemberProfile() {
                       <Badge variant="outline" className="text-racing-green border-racing-green">
                         #{member.carNumber}
                       </Badge>
+                    )}
+                    {member.streamLink && (
+                      <a 
+                        href={member.streamLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-racing-green hover:text-green-400 inline-flex items-center gap-1 text-sm"
+                      >
+                        <Video className="w-4 h-4" />
+                        Watch Stream
+                      </a>
                     )}
                     <span className="text-sm text-gray-400">
                       Member since {formatDate(member.createdAt)}
@@ -403,6 +416,30 @@ function MemberProfile() {
                             placeholder="Your preferred racing number"
                             className="bg-gray-800 border-gray-700 text-white disabled:bg-gray-900 disabled:text-gray-400"
                             data-testid="input-car-number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Stream Link */}
+                  <FormField
+                    control={form.control}
+                    name="streamLink"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white flex items-center gap-2">
+                          <Video className="w-4 h-4" />
+                          Stream Link
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            disabled={!isEditing}
+                            placeholder="Your streaming channel URL (Twitch, YouTube, etc.)"
+                            className="bg-gray-800 border-gray-700 text-white disabled:bg-gray-900 disabled:text-gray-400"
+                            data-testid="input-stream-link"
                           />
                         </FormControl>
                         <FormMessage />
