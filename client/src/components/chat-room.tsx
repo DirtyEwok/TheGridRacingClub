@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,11 @@ export default function ChatRoomComponent({
   // Fetch initial messages
   const { data: initialMessages } = useQuery<ChatMessageWithMember[]>({
     queryKey: ['/api/chat-rooms', chatRoom.id, 'messages'],
+  });
+
+  // Fetch all members for the member list
+  const { data: allMembers = [] } = useQuery<Member[]>({
+    queryKey: ['/api/members'],
   });
 
   // Use WebSocket hook for real-time messages
@@ -138,24 +144,70 @@ export default function ChatRoomComponent({
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="border-b border-gray-800 p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-white">{chatRoom.name}</h3>
-            <p className="text-sm text-gray-400">
-              {chatRoom.type === "general" ? "General Discussion" : "Championship Chat"}
-            </p>
+    <div className="flex h-full">
+      {/* Member List Sidebar */}
+      <div className="w-64 border-r border-gray-800 flex flex-col">
+        {/* Member List Header */}
+        <div className="border-b border-gray-800 p-4">
+          <h4 className="text-sm font-semibold text-white mb-1">Members</h4>
+          <p className="text-xs text-gray-400">{allMembers.length} registered</p>
+        </div>
+        
+        {/* Member List */}
+        <ScrollArea className="flex-1">
+          <div className="p-3 space-y-2">
+            {allMembers.map((member) => (
+              <div
+                key={member.id}
+                className="flex items-center gap-3 p-2 rounded hover:bg-gray-800/50 transition-colors"
+              >
+                <div className="w-6 h-6 bg-racing-green rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs font-semibold text-white">
+                    {member.gamertag.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-sm font-medium truncate ${
+                        member.isAdmin ? 'text-orange-400' : 'text-white'
+                      }`}
+                    >
+                      {member.gamertag}
+                    </span>
+                    {member.isAdmin && (
+                      <Crown className="w-3 h-3 text-orange-500 flex-shrink-0" />
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 truncate">
+                    {member.experienceLevel}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-racing-green' : 'bg-red-500'}`} />
-            <span className="text-sm text-gray-400">
-              {isConnected ? "Connected" : "Disconnected"}
-            </span>
+        </ScrollArea>
+      </div>
+
+      {/* Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Chat Header */}
+        <div className="border-b border-gray-800 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-white">{chatRoom.name}</h3>
+              <p className="text-sm text-gray-400">
+                {chatRoom.type === "general" ? "General Discussion" : "Championship Chat"}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-racing-green' : 'bg-red-500'}`} />
+              <span className="text-sm text-gray-400">
+                {isConnected ? "Connected" : "Disconnected"}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Messages Area */}
       <ScrollArea className="flex-1 p-4">
@@ -265,6 +317,7 @@ export default function ChatRoomComponent({
             </span>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );
