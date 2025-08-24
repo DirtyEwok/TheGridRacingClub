@@ -300,7 +300,7 @@ export default function ChatRoomComponent({
         <ScrollArea className="h-full p-4">
           <div className="space-y-4 max-w-none">
             {messages.map((message) => (
-            <div key={message.id} className="flex gap-3 w-full bg-gray-900/50 rounded-lg p-4 hover:bg-gray-900/70 transition-colors max-w-4xl">
+            <div key={message.id} className="flex gap-3 w-full max-w-4xl py-2">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-white">
