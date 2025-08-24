@@ -30,7 +30,7 @@ export default function ComingSoon() {
           </p>
           
           {/* Season 9 Details */}
-          <div className="text-center max-w-2xl mx-auto mb-8">
+          <div className="text-center max-w-4xl mx-auto mb-8">
             <p className="text-lg text-gray-300 leading-relaxed">
               We return with Season 9 of the Grid's MasterClass and this time its GT2 Porsche 911 RS power.
             </p>
