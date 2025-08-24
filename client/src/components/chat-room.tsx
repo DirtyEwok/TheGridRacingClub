@@ -143,11 +143,28 @@ export default function ChatRoomComponent({
 
   // Explicit send button handler for mobile compatibility
   const handleSendButtonClick = async () => {
+    console.log('🚀 Send attempt:', { 
+      message: messageText.trim(), 
+      memberId: currentMemberId,
+      chatRoomId: chatRoom.id,
+      isConnected,
+      currentUser: currentUser?.gamertag 
+    });
+    
     // Direct API call for better mobile reliability
-    if (!messageText.trim() || isSending || !isConnected || !currentMemberId) return;
+    if (!messageText.trim() || isSending || !isConnected || !currentMemberId) {
+      console.log('❌ Send blocked:', { 
+        hasMessage: !!messageText.trim(),
+        isSending,
+        isConnected,
+        hasMemberId: !!currentMemberId 
+      });
+      return;
+    }
     
     setIsSending(true);
     try {
+      console.log('📤 Making API call...');
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
         method: 'POST',
         headers: {
@@ -159,14 +176,20 @@ export default function ChatRoomComponent({
         }),
       });
       
+      console.log('📥 Response status:', response.status);
+      
       if (response.ok) {
+        console.log('✅ Message sent successfully');
         setMessageText("");
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
+      } else {
+        const errorText = await response.text();
+        console.log('❌ Response not OK:', response.status, errorText);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('💥 Network error:', error);
     } finally {
       setTimeout(() => setIsSending(false), 300);
     }
