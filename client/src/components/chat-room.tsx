@@ -302,11 +302,9 @@ export default function ChatRoomComponent({
             {messages.map((message) => (
             <div key={message.id} className="flex gap-3 w-full max-w-4xl py-2">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <span className="text-xs font-semibold text-white">
-                    {message.member.gamertag.charAt(0).toUpperCase()}
-                  </span>
-                </div>
+                <span className="text-xs font-semibold text-white mr-2">
+                  {message.member.gamertag.charAt(0).toUpperCase()}
+                </span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
