@@ -332,6 +332,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid profile data", details: validation.error.issues });
       }
 
+      // Check if car number is already taken by another member
+      if (validation.data.carNumber) {
+        const allMembers = await storage.getAllMembers();
+        const existingMemberWithCarNumber = allMembers.find(
+          member => member.carNumber === validation.data.carNumber && member.id !== req.params.id
+        );
+        
+        if (existingMemberWithCarNumber) {
+          return res.status(409).json({ 
+            error: "Car number already taken", 
+            message: `Car number ${validation.data.carNumber} is already used by ${existingMemberWithCarNumber.displayName} (${existingMemberWithCarNumber.gamertag}). Please choose a different number.` 
+          });
+        }
+      }
+
       const member = await storage.updateMemberProfile(req.params.id, validation.data);
       if (!member) {
         return res.status(404).json({ error: "Member not found" });

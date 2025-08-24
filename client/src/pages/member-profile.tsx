@@ -71,7 +71,10 @@ function MemberProfile() {
         },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update profile");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update profile");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -86,9 +89,11 @@ function MemberProfile() {
       setIsEditing(false);
     },
     onError: (error) => {
+      const isCarNumberConflict = error.message.includes("Car number") && error.message.includes("already used");
+      
       toast({
-        title: "Error",
-        description: `Failed to update profile: ${error.message}`,
+        title: isCarNumberConflict ? "Car Number Already Taken" : "Profile Update Failed",
+        description: error.message,
         variant: "destructive",
       });
     },
