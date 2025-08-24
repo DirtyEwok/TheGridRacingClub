@@ -94,35 +94,10 @@ function MemberProfile() {
     },
   });
 
-  const handleImageUpload = (objectPath: string) => {
-    console.log('🔴 CRITICAL: handleImageUpload called with path:', objectPath);
-    console.log('🔴 This should only happen AFTER file upload completes');
-    console.trace('Call stack:');
-    
-    // Only proceed if we have a valid object path
-    if (!objectPath || objectPath === '') {
-      console.error('Invalid object path received');
-      return;
-    }
-    
-    // Set the form value with the object path
-    form.setValue("profileImageUrl", objectPath);
-    
-    // Show immediate feedback
-    toast({
-      title: "Image Uploaded",
-      description: "Profile image uploaded successfully. Saving to profile...",
-    });
-    
-    // Automatically save the profile with the new image
-    const currentValues = form.getValues();
-    console.log('Updating profile with values:', currentValues);
-    
-    updateProfileMutation.mutate({
-      ...currentValues,
-      profileImageUrl: objectPath
-    });
-  };
+  // Profile image upload temporarily disabled
+  // const handleImageUpload = (objectPath: string) => {
+  //   // Implementation removed - will be re-enabled when upload issues are resolved
+  // };
 
   const onSubmit = (data: UpdateMemberProfile) => {
     updateProfileMutation.mutate(data);
@@ -281,8 +256,8 @@ function MemberProfile() {
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Profile Image */}
-                  {isEditing && (
+                  {/* Profile Image - Temporarily Disabled */}
+                  {false && isEditing && (
                     <FormField
                       control={form.control}
                       name="profileImageUrl"
@@ -291,27 +266,14 @@ function MemberProfile() {
                           <FormLabel className="text-white">Profile Image</FormLabel>
                           <FormControl>
                             <div className="flex items-center gap-4">
-                              <ObjectUploader
-                                onComplete={handleImageUpload}
-                                buttonClassName="bg-gray-800 hover:bg-gray-700 text-white border border-gray-600"
+                              <Button
+                                type="button"
+                                disabled
+                                className="bg-gray-600 text-gray-400 cursor-not-allowed"
                               >
                                 <Camera className="w-4 h-4 mr-2" />
-                                Upload Photo
-                              </ObjectUploader>
-                              {field.value && (
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-green-400">✓ Image uploaded</span>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => form.setValue("profileImageUrl", "")}
-                                    className="text-red-400 hover:text-red-300"
-                                  >
-                                    Remove
-                                  </Button>
-                                </div>
-                              )}
+                                Upload Photo (Coming Soon)
+                              </Button>
                             </div>
                           </FormControl>
                           <FormMessage />

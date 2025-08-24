@@ -26,6 +26,9 @@ Chat system: Members identified by gamertags instead of display names. Admin gam
 - Database stability: PostgreSQL DatabaseStorage implemented to prevent data loss on server restarts (switched from unreliable MemStorage)
 - System status: Working correctly with all 10 registered drivers and race registrations preserved in database
 
+## Recent Changes (August 24, 2025)
+- **Profile Image Upload**: Temporarily disabled profile image upload feature due to object storage callback issues. The upload button was triggering completion callbacks without proper file selection. Feature will be re-enabled once upload flow is debugged and fixed.
+
 ## System Architecture
 
 ### Frontend Architecture
