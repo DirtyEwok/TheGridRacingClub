@@ -320,7 +320,27 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(chatMessages.createdAt))
       .limit(limit);
 
-    return messages.reverse(); // Reverse to show oldest first
+    // Add like information to each message
+    const messagesWithLikes = await Promise.all(
+      messages.map(async (message) => {
+        // Get total like count
+        const likes = await db.select().from(messageLikes).where(eq(messageLikes.messageId, message.id));
+        const likeCount = likes.length;
+        
+        // Check if current user liked this message
+        const isLikedByCurrentUser = currentUserId 
+          ? likes.some(like => like.memberId === currentUserId)
+          : false;
+
+        return {
+          ...message,
+          likeCount,
+          isLikedByCurrentUser,
+        };
+      })
+    );
+
+    return messagesWithLikes.reverse(); // Reverse to show oldest first
   }
 
   async createChatMessage(insertChatMessage: InsertChatMessage): Promise<ChatMessage> {
