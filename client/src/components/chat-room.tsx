@@ -302,9 +302,17 @@ export default function ChatRoomComponent({
                   )}
                 </div>
                 <div className="text-gray-300 w-full">
-                  <p className="mb-2 break-words overflow-wrap-anywhere">
-                    {renderMessageWithMentions(message.message)}
-                  </p>
+                  {/* Only show text if there are no images or if text has content beyond image URLs */}
+                  {(() => {
+                    const imageUrls = detectImageUrls(message.message);
+                    const messageWithoutImages = imageUrls.reduce((text, url) => text.replace(url, '').trim(), message.message);
+                    
+                    return messageWithoutImages && (
+                      <p className="mb-2 break-words overflow-wrap-anywhere">
+                        {renderMessageWithMentions(messageWithoutImages)}
+                      </p>
+                    );
+                  })()}
                   
                   {/* Show embedded images */}
                   {detectImageUrls(message.message).map((imageUrl, imgIndex) => (
