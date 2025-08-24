@@ -435,7 +435,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const messageWithMember = messages[0];
 
       // Broadcast to WebSocket clients
-      broadcastMessage(id, messageWithMember);
+      broadcastMessage(id, {
+        type: 'new-message',
+        message: messageWithMember,
+      });
 
       res.status(201).json(message);
     } catch (error) {
@@ -522,9 +525,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const connections = chatRoomConnections.get(chatRoomId);
     if (connections) {
       const messageData = JSON.stringify({
-        type: 'new-message',
         chatRoomId,
-        message,
+        ...message,
       });
 
       connections.forEach((ws) => {

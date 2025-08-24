@@ -277,7 +277,13 @@ export default function ChatRoomComponent({
                       variant="ghost"
                       size="sm"
                       className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
-                      onClick={() => deleteMessage(message.id)}
+                      onClick={async () => {
+                        try {
+                          await deleteMessage(message.id);
+                        } catch (error) {
+                          console.error('Delete message error:', error);
+                        }
+                      }}
                       title="Delete message"
                       data-testid="button-delete-message"
                     >

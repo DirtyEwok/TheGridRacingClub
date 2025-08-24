@@ -36,6 +36,7 @@ export function useChat(chatRoomId: string | null) {
         }
       } catch (error) {
         console.error('WebSocket message parse error:', error);
+        // Don't crash - just log the error
       }
     };
 
@@ -84,14 +85,21 @@ export function useChat(chatRoomId: string | null) {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'authorization': 'admin', // Replace with proper admin auth
+          'authorization': 'admin',
         },
         body: JSON.stringify({
-          deletedBy: 'admin', // Replace with actual user ID
+          deletedBy: 'admin',
         }),
       });
 
-      return response.ok;
+      if (response.ok) {
+        // Optimistically remove from local state immediately
+        setMessages(prev => prev.filter(msg => msg.id !== messageId));
+        return true;
+      } else {
+        console.error('Delete response not ok:', response.status);
+        return false;
+      }
     } catch (error) {
       console.error('Failed to delete message:', error);
       return false;
