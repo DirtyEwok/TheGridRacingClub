@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Crown, Trash2, Image, Link, Play } from "lucide-react";
+import { ObjectUploader } from "./ObjectUploader";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
 import { type ChatRoom, type ChatMessageWithMember } from "@shared/schema";
@@ -40,8 +41,7 @@ export default function ChatRoomComponent({
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
   
-  // Debug current user admin status
-  console.log('Current user in chat:', currentUser?.gamertag, 'isAdmin:', currentUser?.isAdmin);
+
 
   // Set initial messages when they load
   useEffect(() => {
@@ -324,6 +324,14 @@ export default function ChatRoomComponent({
               maxLength={500}
               disabled={!isConnected}
             />
+            <ObjectUploader
+              onComplete={(imageUrl) => {
+                setMessageText(prev => prev + ` ${imageUrl}`);
+              }}
+              buttonClassName="h-10 w-10 p-0 bg-gray-700 hover:bg-gray-600"
+            >
+              <Image className="w-4 h-4" />
+            </ObjectUploader>
             <Button 
               type="submit" 
               size="icon"
