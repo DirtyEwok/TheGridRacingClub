@@ -9,6 +9,7 @@ export default function Header() {
     { path: "/races", label: "Races" },
     { path: "/championships", label: "Championships" },
     { path: "/leaderboards", label: "Leaderboards" },
+    { path: "/chat", label: "Chat" },
     { path: "/coming-soon", label: "Coming Soon" },
     { path: "/admin", label: "Admin" },
   ];
