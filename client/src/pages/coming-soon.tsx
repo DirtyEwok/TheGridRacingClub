@@ -1,4 +1,5 @@
 import comingSoonImage from "@assets/MC9porsche_1756023122999.png";
+import comingSoonVideo from "@assets/24-08-25_1756024739066.mp4";
 import MemberHeader from "@/components/member-header";
 
 export default function ComingSoon() {
@@ -23,6 +24,19 @@ export default function ComingSoon() {
               alt="Masterclass Season 9 GT2 Porsche - Coming Soon" 
               className="max-w-4xl w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
             />
+          </div>
+          
+          {/* Masterclass Season 9 Video Preview */}
+          <div className="flex justify-center mb-8">
+            <video 
+              src={comingSoonVideo} 
+              className="max-w-4xl w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
+              controls
+              muted
+              poster={comingSoonImage}
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
           
           {/* Season 9 Details */}
