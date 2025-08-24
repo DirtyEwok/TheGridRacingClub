@@ -85,11 +85,14 @@ export default function ChatRoomComponent({ chatRoom, currentMemberId }: ChatRoo
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`font-semibold px-2 py-1 rounded text-sm ${
-                    message.member.isAdmin 
-                      ? "bg-orange-500 text-white" 
-                      : "text-white"
-                  }`}>
+                  <span 
+                    className={`font-semibold px-2 py-1 rounded text-sm ${
+                      message.member.isAdmin 
+                        ? "text-white" 
+                        : "text-white"
+                    }`}
+                    style={message.member.isAdmin ? { backgroundColor: '#f97316' } : {}}
+                  >
                     {message.member.gamertag}
                   </span>
                   {message.member.isAdmin && (
