@@ -1,5 +1,6 @@
 import comingSoonImage from "@assets/MC9porsche_1756023122999.png";
 import comingSoonVideo from "@assets/24-08-25_1756024739066.mp4";
+import videoPlaceholder from "@assets/image_1756025228556.png";
 import MemberHeader from "@/components/member-header";
 import { useState, useRef } from "react";
 import { Play } from "lucide-react";
@@ -56,7 +57,7 @@ export default function ComingSoon() {
                 className="w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
                 controls
                 muted
-                poster={comingSoonImage}
+                poster={videoPlaceholder}
                 onPlay={() => setIsVideoPlaying(true)}
                 onPause={() => setIsVideoPlaying(false)}
               >
