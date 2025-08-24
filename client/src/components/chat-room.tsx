@@ -116,10 +116,11 @@ export default function ChatRoomComponent({
     }
   }, [messages]);
 
-  // Test if JavaScript works on mobile at all
+  // Simple mobile test - no regex
   useEffect(() => {
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-      alert('Mobile JavaScript is working!');
+    const isMobile = window.innerWidth < 768 || navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android');
+    if (isMobile) {
+      setTimeout(() => alert('Mobile JS works!'), 100);
     }
   }, []);
 
@@ -474,17 +475,10 @@ export default function ChatRoomComponent({
                 }
               }}
               onKeyUp={(e) => {
-                // Mobile backup - some mobile browsers prefer keyup
-                if (e.key === 'Enter' && !e.shiftKey && /Mobi|Android/i.test(navigator.userAgent)) {
+                if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  alert('Mobile KeyUp Enter!');
+                  alert('KeyUp Enter!');
                   handleSendMessage(e);
-                }
-              }}
-              onInput={(e) => {
-                // Debug all input events on mobile
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                  console.log('Mobile input event:', e.type);
                 }
               }}
               placeholder="Type a message, paste image URL, or share a link..."
