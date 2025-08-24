@@ -4,7 +4,7 @@ import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2, Image, Link } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link, Play } from "lucide-react";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
 import { type ChatRoom, type ChatMessageWithMember } from "@shared/schema";
@@ -39,9 +39,6 @@ export default function ChatRoomComponent({
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
-  
-  // Debug: Log current user to check admin status
-  console.log('Current user:', currentUser);
 
   // Set initial messages when they load
   useEffect(() => {
@@ -143,6 +140,35 @@ export default function ChatRoomComponent({
     return messageText.match(imageRegex) || [];
   };
 
+  const detectVideoUrls = (messageText: string) => {
+    const videoUrls: Array<{ url: string; platform: string; videoId: string; thumbnail: string }> = [];
+    
+    // YouTube detection
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
+    let match;
+    while ((match = youtubeRegex.exec(messageText)) !== null) {
+      videoUrls.push({
+        url: match[0],
+        platform: 'YouTube',
+        videoId: match[1],
+        thumbnail: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
+      });
+    }
+    
+    // Vimeo detection
+    const vimeoRegex = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/gi;
+    while ((match = vimeoRegex.exec(messageText)) !== null) {
+      videoUrls.push({
+        url: match[0],
+        platform: 'Vimeo',
+        videoId: match[1],
+        thumbnail: `https://vumbnail.com/${match[1]}.jpg`
+      });
+    }
+    
+    return videoUrls;
+  };
+
   return (
     <div className="flex h-full">
       {/* Member List Sidebar */}
@@ -239,16 +265,18 @@ export default function ChatRoomComponent({
                   <span className="text-xs text-gray-400">
                     {formatMessageTime(message.createdAt)}
                   </span>
-                  {/* Delete button for admin - always show for testing */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
-                    onClick={() => deleteMessage(message.id)}
-                    title="Delete message (Admin only)"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
+                  {/* Delete button for admin only */}
+                  {currentUser?.isAdmin && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
+                      onClick={() => deleteMessage(message.id)}
+                      title="Delete message"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  )}
                 </div>
                 <div className="text-gray-300 break-words">
                   <p className="mb-2">

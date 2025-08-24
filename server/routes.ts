@@ -194,6 +194,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all members
+  app.get("/api/members", async (req, res) => {
+    try {
+      const members = await storage.getAllMembers();
+      res.json(members);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch members" });
+    }
+  });
+
   // Get member by gamertag
   app.get("/api/members/by-gamertag/:gamertag", async (req, res) => {
     try {

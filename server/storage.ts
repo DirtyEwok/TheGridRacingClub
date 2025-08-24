@@ -7,6 +7,7 @@ export interface IStorage {
   // Members
   getMember(id: string): Promise<Member | undefined>;
   getMemberByGamertag(gamertag: string): Promise<Member | undefined>;
+  getAllMembers(): Promise<Member[]>;
   createMember(member: InsertMember): Promise<Member>;
 
   // Championships
@@ -56,6 +57,10 @@ export class DatabaseStorage implements IStorage {
   async getMemberByGamertag(gamertag: string): Promise<Member | undefined> {
     const [member] = await db.select().from(members).where(eq(members.gamertag, gamertag));
     return member || undefined;
+  }
+
+  async getAllMembers(): Promise<Member[]> {
+    return await db.select().from(members);
   }
 
   async createMember(insertMember: InsertMember): Promise<Member> {
@@ -577,6 +582,10 @@ Server goes live at 20:00`,
     return Array.from(this.members.values()).find(
       (member) => member.gamertag === gamertag,
     );
+  }
+
+  async getAllMembers(): Promise<Member[]> {
+    return Array.from(this.members.values());
   }
 
   async createMember(insertMember: InsertMember): Promise<Member> {
