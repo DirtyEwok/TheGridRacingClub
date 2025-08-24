@@ -122,6 +122,8 @@ export default function ChatRoomComponent({
       e.stopPropagation();
     }
     
+    console.log('Send attempt:', { messageText: messageText.trim(), isSending, isConnected, currentMemberId });
+    
     if (!messageText.trim() || isSending || !isConnected) return;
 
     setIsSending(true);
@@ -145,6 +147,8 @@ export default function ChatRoomComponent({
   const handleSendButtonClick = async (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    console.log('Button click attempt:', { messageText: messageText.trim(), isSending, isConnected, currentMemberId });
     
     // Direct API call for better mobile reliability
     if (!messageText.trim() || isSending || !isConnected) return;
