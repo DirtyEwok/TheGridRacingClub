@@ -39,6 +39,9 @@ export default function ChatRoomComponent({
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
+  
+  // Debug current user admin status
+  console.log('Current user in chat:', currentUser?.gamertag, 'isAdmin:', currentUser?.isAdmin);
 
   // Set initial messages when they load
   useEffect(() => {
@@ -276,6 +279,7 @@ export default function ChatRoomComponent({
                       className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
                       onClick={() => deleteMessage(message.id)}
                       title="Delete message"
+                      data-testid="button-delete-message"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
