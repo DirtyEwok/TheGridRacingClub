@@ -274,8 +274,8 @@ export default function ChatRoomComponent({
 
   return (
     <div className="flex h-full">
-      {/* Member List Sidebar */}
-      <div className="w-64 border-r border-gray-800 flex flex-col">
+      {/* Member List Sidebar - Hidden on mobile */}
+      <div className="hidden lg:flex w-64 border-r border-gray-800 flex-col">
         {/* Member List Header */}
         <div className="border-b border-gray-800 p-4">
           <h4 className="text-sm font-semibold text-white mb-1">Members</h4>
