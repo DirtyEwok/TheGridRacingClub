@@ -19,7 +19,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-            <img src={logoImage} alt="The Grid" className="h-12 w-auto mr-3" />
+            <img src={logoImage} alt="The Grid" className="h-20 w-auto mr-3" />
             <h1 className="text-xl font-bold text-white">The Grid Racing Club</h1>
           </Link>
           <nav className="flex space-x-6">
