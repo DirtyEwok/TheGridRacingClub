@@ -116,6 +116,13 @@ export default function ChatRoomComponent({
     }
   }, [messages]);
 
+  // Test if JavaScript works on mobile at all
+  useEffect(() => {
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      alert('Mobile JavaScript is working!');
+    }
+  }, []);
+
   const handleSendMessage = async (e?: React.FormEvent) => {
     
     if (e) {
@@ -504,9 +511,11 @@ export default function ChatRoomComponent({
               style={{ WebkitTapHighlightColor: 'transparent' }}
               onClick={(e) => {
                 e.preventDefault();
-                alert('Mobile button clicked!');
+                alert('Button clicked!');
                 handleSendMessage(e);
               }}
+              onTouchStart={() => alert('Touch detected!')}
+              onTouchEnd={() => alert('Touch end!')}
               title="Send message"
               data-testid="button-send-message"
             >
