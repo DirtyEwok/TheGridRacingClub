@@ -164,6 +164,7 @@ export function ObjectUploader({
   return (
     <div>
       <Button 
+        type="button"
         className={buttonClassName}
         onClick={() => {
           console.log('Upload button clicked, opening modal');
