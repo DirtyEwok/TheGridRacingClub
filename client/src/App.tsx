@@ -25,7 +25,7 @@ function Router() {
       <Route path="/chat" component={Chat} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/members" component={AdminMemberApproval} />
-      <Route path="/member-profile/:id" component={MemberProfile} />
+      <Route path="/members/:id/profile" component={MemberProfile} />
       <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
