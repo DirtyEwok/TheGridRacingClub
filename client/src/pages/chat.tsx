@@ -9,20 +9,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Users, Settings } from "lucide-react";
 import { type ChatRoomWithStats, type Championship } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { getCurrentMember } from "@/lib/memberSession";
 
 export default function Chat() {
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
-  const [currentMemberId, setCurrentMemberId] = useState<string>(""); // This should come from auth context
   const queryClient = useQueryClient();
-
-  // Get current member from localStorage (replace with proper auth later)
-  useEffect(() => {
-    const member = localStorage.getItem("currentMember");
-    if (member) {
-      const memberData = JSON.parse(member);
-      setCurrentMemberId(memberData.id);
-    }
-  }, []);
+  const currentMember = getCurrentMember();
+  const currentMemberId = currentMember?.id || "";
 
   // Fetch chat rooms
   const { data: chatRooms, isLoading } = useQuery<ChatRoomWithStats[]>({
@@ -124,12 +117,15 @@ export default function Chat() {
     );
   }
 
-  if (!currentMemberId) {
+  if (!currentMember) {
     return (
       <div className="min-h-screen bg-black">
         <MemberHeader />
         <div className="flex items-center justify-center h-96">
-          <div className="text-white">Please register as a member to access chat.</div>
+          <div className="text-center">
+            <div className="text-white text-xl mb-4">Please register as a member to access chat.</div>
+            <div className="text-gray-400">You need to be registered as a member to participate in The Grid chat rooms.</div>
+          </div>
         </div>
       </div>
     );
