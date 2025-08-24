@@ -435,6 +435,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete message from chat room (admin only)
+  app.delete("/api/chat-rooms/:roomId/messages/:messageId", async (req, res) => {
+    try {
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { roomId, messageId } = req.params;
+      const deletedBy = req.body.deletedBy || "admin"; // Should come from authenticated user
+
+      // Check if chat room exists
+      const chatRoom = await storage.getChatRoom(roomId);
+      if (!chatRoom) {
+        return res.status(404).json({ message: "Chat room not found" });
+      }
+
+      const success = await storage.deleteChatMessage(messageId, deletedBy);
+      if (!success) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      // Broadcast message deletion to WebSocket clients
+      broadcastMessage(roomId, {
+        type: 'message-deleted',
+        messageId,
+      });
+
+      res.status(200).json({ message: "Message deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete message" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // ============ WEBSOCKET SETUP ============

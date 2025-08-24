@@ -43,6 +43,7 @@ export interface IStorage {
   // Chat Messages
   getChatMessages(chatRoomId: string, limit?: number): Promise<ChatMessageWithMember[]>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  deleteChatMessage(messageId: string, deletedBy: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -238,6 +239,9 @@ export class DatabaseStorage implements IStorage {
         chatRoomId: chatMessages.chatRoomId,
         memberId: chatMessages.memberId,
         message: chatMessages.message,
+        isDeleted: chatMessages.isDeleted,
+        deletedBy: chatMessages.deletedBy,
+        deletedAt: chatMessages.deletedAt,
         createdAt: chatMessages.createdAt,
         member: {
           id: members.id,
@@ -249,7 +253,10 @@ export class DatabaseStorage implements IStorage {
       })
       .from(chatMessages)
       .innerJoin(members, eq(chatMessages.memberId, members.id))
-      .where(eq(chatMessages.chatRoomId, chatRoomId))
+      .where(and(
+        eq(chatMessages.chatRoomId, chatRoomId),
+        eq(chatMessages.isDeleted, false)
+      ))
       .orderBy(desc(chatMessages.createdAt))
       .limit(limit);
 
@@ -259,6 +266,20 @@ export class DatabaseStorage implements IStorage {
   async createChatMessage(insertChatMessage: InsertChatMessage): Promise<ChatMessage> {
     const [message] = await db.insert(chatMessages).values(insertChatMessage).returning();
     return message;
+  }
+
+  async deleteChatMessage(messageId: string, deletedBy: string): Promise<boolean> {
+    const [result] = await db
+      .update(chatMessages)
+      .set({
+        isDeleted: true,
+        deletedBy,
+        deletedAt: new Date(),
+      })
+      .where(eq(chatMessages.id, messageId))
+      .returning();
+
+    return !!result;
   }
 }
 
@@ -810,7 +831,7 @@ Server goes live at 20:00`,
   // Chat Messages
   async getChatMessages(chatRoomId: string, limit = 50): Promise<ChatMessageWithMember[]> {
     const messages = Array.from(this.chatMessages.values())
-      .filter(msg => msg.chatRoomId === chatRoomId)
+      .filter(msg => msg.chatRoomId === chatRoomId && !msg.isDeleted)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice(0, limit)
       .reverse();
@@ -834,10 +855,28 @@ Server goes live at 20:00`,
     const message: ChatMessage = {
       ...insertChatMessage,
       id,
+      isDeleted: false,
+      deletedBy: null,
+      deletedAt: null,
       createdAt: new Date(),
     };
     this.chatMessages.set(id, message);
     return message;
+  }
+
+  async deleteChatMessage(messageId: string, deletedBy: string): Promise<boolean> {
+    const message = this.chatMessages.get(messageId);
+    if (!message) return false;
+
+    const updatedMessage: ChatMessage = {
+      ...message,
+      isDeleted: true,
+      deletedBy,
+      deletedAt: new Date(),
+    };
+    
+    this.chatMessages.set(messageId, updatedMessage);
+    return true;
   }
 }
 

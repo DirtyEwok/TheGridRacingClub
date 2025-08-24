@@ -27,8 +27,12 @@ export function useChat(chatRoomId: string | null) {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'new-message' && data.chatRoomId === chatRoomId) {
-          setMessages(prev => [...prev, data.message]);
+        if (data.chatRoomId === chatRoomId) {
+          if (data.type === 'new-message') {
+            setMessages(prev => [...prev, data.message]);
+          } else if (data.type === 'message-deleted') {
+            setMessages(prev => prev.filter(msg => msg.id !== data.messageId));
+          }
         }
       } catch (error) {
         console.error('WebSocket message parse error:', error);
@@ -72,10 +76,33 @@ export function useChat(chatRoomId: string | null) {
     return true;
   };
 
+  const deleteMessage = async (messageId: string) => {
+    if (!chatRoomId) return false;
+
+    try {
+      const response = await fetch(`/api/chat-rooms/${chatRoomId}/messages/${messageId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'admin', // Replace with proper admin auth
+        },
+        body: JSON.stringify({
+          deletedBy: 'admin', // Replace with actual user ID
+        }),
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error('Failed to delete message:', error);
+      return false;
+    }
+  };
+
   return {
     messages,
     setMessages,
     isConnected,
     sendMessage,
+    deleteMessage,
   };
 }

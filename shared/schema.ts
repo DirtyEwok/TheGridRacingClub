@@ -58,6 +58,9 @@ export const chatMessages = pgTable("chat_messages", {
   chatRoomId: varchar("chat_room_id").notNull(),
   memberId: varchar("member_id").notNull(),
   message: text("message").notNull(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  deletedBy: varchar("deleted_by"),
+  deletedAt: timestamp("deleted_at"),
   createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
