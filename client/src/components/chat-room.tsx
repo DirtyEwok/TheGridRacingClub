@@ -116,13 +116,6 @@ export default function ChatRoomComponent({
     }
   }, [messages]);
 
-  // Simple mobile test - no regex
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768 || navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android');
-    if (isMobile) {
-      setTimeout(() => alert('Mobile JS works!'), 100);
-    }
-  }, []);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     
@@ -470,14 +463,6 @@ export default function ChatRoomComponent({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  alert('PC KeyDown Enter!');
-                  handleSendMessage(e);
-                }
-              }}
-              onKeyUp={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  alert('KeyUp Enter!');
                   handleSendMessage(e);
                 }
               }}
@@ -505,11 +490,8 @@ export default function ChatRoomComponent({
               style={{ WebkitTapHighlightColor: 'transparent' }}
               onClick={(e) => {
                 e.preventDefault();
-                alert('Button clicked!');
                 handleSendMessage(e);
               }}
-              onTouchStart={() => alert('Touch detected!')}
-              onTouchEnd={() => alert('Touch end!')}
               title="Send message"
               data-testid="button-send-message"
             >
