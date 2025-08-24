@@ -164,6 +164,7 @@ export default function ChatRoomComponent({
 
   // Mobile-friendly send handler
   const handleSendButtonClick = async () => {
+    alert('Button clicked!'); // Simple test
     console.log('🔧 Send attempt:', { 
       messageText: messageText.trim(),
       currentMemberId,
@@ -545,11 +546,13 @@ export default function ChatRoomComponent({
               onTouchEnd={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                alert('Touch detected!');
                 handleSendButtonClick();
               }}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                alert('Click detected!');
                 handleSendButtonClick();
               }}
               title="Send message"
