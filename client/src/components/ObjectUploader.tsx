@@ -166,7 +166,9 @@ export function ObjectUploader({
       <Button 
         type="button"
         className={buttonClassName}
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
           console.log('Upload button clicked, opening modal');
           setIsOpen(true);
         }}
@@ -180,6 +182,7 @@ export function ObjectUploader({
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-black dark:text-white">Upload Image</h3>
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 onClick={closeModal}
@@ -209,6 +212,7 @@ export function ObjectUploader({
                   {selectedFile.name}
                 </span>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={reset}
@@ -234,6 +238,7 @@ export function ObjectUploader({
               
               {!isUploading && (
                 <Button 
+                  type="button"
                   onClick={handleUpload}
                   className="w-full"
                   disabled={isUploading}
