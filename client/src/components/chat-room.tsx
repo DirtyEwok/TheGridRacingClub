@@ -82,27 +82,31 @@ export default function ChatRoomComponent({
     // Split message by @mentions
     const parts = messageText.split(/(@\w+)/g);
     
-    return parts.map((part, index) => {
-      if (part.startsWith('@')) {
-        const mentionedGamertag = part.substring(1);
-        // Check if this mention matches the current user's gamertag
-        const isCurrentUser = currentUser?.gamertag.toLowerCase() === mentionedGamertag.toLowerCase();
-        
-        return (
-          <span
-            key={index}
-            className={`font-semibold px-1 rounded ${
-              isCurrentUser 
-                ? 'bg-orange-500 text-white' 
-                : 'text-orange-400 hover:text-orange-300'
-            }`}
-          >
-            {part}
-          </span>
-        );
-      }
-      return part;
-    });
+    return (
+      <>
+        {parts.map((part, index) => {
+          if (part.startsWith('@')) {
+            const mentionedGamertag = part.substring(1);
+            // Check if this mention matches the current user's gamertag
+            const isCurrentUser = currentUser?.gamertag.toLowerCase() === mentionedGamertag.toLowerCase();
+            
+            return (
+              <span
+                key={index}
+                className={`font-semibold px-1 rounded ${
+                  isCurrentUser 
+                    ? 'bg-orange-500 text-white' 
+                    : 'text-orange-400 hover:text-orange-300'
+                }`}
+              >
+                {part}
+              </span>
+            );
+          }
+          return <span key={index}>{part}</span>;
+        })}
+      </>
+    );
   };
 
   return (
