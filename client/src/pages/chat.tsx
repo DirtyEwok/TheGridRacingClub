@@ -245,8 +245,13 @@ Neil Broom aka Neilb`;
                         );
                       }
                       
-                      // Check if this line contains admin names (has "aka" but not CJ DirtyEwok)
-                      if (line.includes('aka') && !line.includes('CJ DirtyEwok')) {
+                      // Check if this line contains admin names (has "aka" or specific gamertags, but not CJ DirtyEwok)
+                      if ((line.includes('aka') || 
+                           line.includes('Adzinski82') || 
+                           line.includes('StalkerBrown') || 
+                           line.includes('NeilB') || 
+                           line.includes('snuffles1983')) && 
+                          !line.includes('CJ DirtyEwok')) {
                         return (
                           <div key={index} className="text-yellow-400 text-xs font-medium">
                             {line}
