@@ -47,8 +47,33 @@ export default function Championships() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-gray-300 space-y-3">
+            <div className="text-gray-300 space-y-4">
               <p className="text-blue-300 font-medium">Essential guidelines for all Grid Racing Club members:</p>
+              
+              {/* Document Links */}
+              <div className="bg-blue-800 rounded-lg p-4 space-y-3">
+                <div>
+                  <a 
+                    href="https://docs.google.com/document/d/1gd3zZD4ZfmqpluwsHoibrjJ6MCsCoj4bomb2yIGkrQI/edit?usp=sharing" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-yellow-400 font-bold hover:text-yellow-300 transition-colors"
+                  >
+                    Club Rules
+                  </a>
+                </div>
+                <div>
+                  <a 
+                    href="https://docs.google.com/document/d/1i05Wd_TffL9HhO04ZdhJDe3420H12tLnUnWsmIf8li0/edit?usp=sharing" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-yellow-400 font-bold hover:text-yellow-300 transition-colors"
+                  >
+                    Race review and appeal guide
+                  </a>
+                </div>
+              </div>
+              
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <h4 className="text-white font-semibold">Racing Conduct</h4>
