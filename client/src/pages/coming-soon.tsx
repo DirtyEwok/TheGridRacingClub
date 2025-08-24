@@ -1,8 +1,19 @@
 import comingSoonImage from "@assets/MC9porsche_1756023122999.png";
 import comingSoonVideo from "@assets/24-08-25_1756024739066.mp4";
 import MemberHeader from "@/components/member-header";
+import { useState, useRef } from "react";
+import { Play } from "lucide-react";
 
 export default function ComingSoon() {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handlePlayVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      setIsVideoPlaying(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -38,15 +49,32 @@ export default function ComingSoon() {
           
           {/* Masterclass Season 9 Video Preview */}
           <div className="flex justify-center mb-8">
-            <video 
-              src={comingSoonVideo} 
-              className="max-w-4xl w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
-              controls
-              muted
-              poster={comingSoonImage}
-            >
-              Your browser does not support the video tag.
-            </video>
+            <div className="relative max-w-4xl w-full">
+              <video 
+                ref={videoRef}
+                src={comingSoonVideo} 
+                className="w-full h-auto rounded-lg shadow-lg border-2 border-racing-green"
+                controls
+                muted
+                poster={comingSoonImage}
+                onPlay={() => setIsVideoPlaying(true)}
+                onPause={() => setIsVideoPlaying(false)}
+              >
+                Your browser does not support the video tag.
+              </video>
+              
+              {/* Custom Play Button Overlay */}
+              {!isVideoPlaying && (
+                <div 
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer rounded-lg"
+                  onClick={handlePlayVideo}
+                >
+                  <div className="bg-racing-green/80 hover:bg-racing-green/90 transition-all duration-300 rounded-full p-6 shadow-xl">
+                    <Play className="w-16 h-16 text-white fill-white" />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
