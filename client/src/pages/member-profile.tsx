@@ -562,29 +562,6 @@ function MemberProfile() {
                       </div>
                     </div>
 
-                    {/* Profile Image URL - only in edit mode */}
-                    {isEditing && (
-                      <div>
-                        <h3 className="text-white font-semibold mb-2">Profile Image URL</h3>
-                        <FormField
-                          control={form.control}
-                          name="profileImageUrl"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder="Enter profile image URL"
-                                  className="bg-gray-800 border-gray-700 text-white"
-                                  data-testid="input-profile-image-url"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
 
                     {/* Member Since */}
                     <div>
