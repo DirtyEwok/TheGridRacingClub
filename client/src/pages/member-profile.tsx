@@ -94,8 +94,16 @@ function MemberProfile() {
     },
   });
 
-  const handleImageUpload = (imageUrl: string) => {
-    form.setValue("profileImageUrl", imageUrl);
+  const handleImageUpload = (objectPath: string) => {
+    // Set the form value with the object path
+    form.setValue("profileImageUrl", objectPath);
+    
+    // Automatically save the profile with the new image
+    const currentValues = form.getValues();
+    updateProfileMutation.mutate({
+      ...currentValues,
+      profileImageUrl: objectPath
+    });
   };
 
   const onSubmit = (data: UpdateMemberProfile) => {

@@ -80,8 +80,9 @@ export function ObjectUploader({
       }
 
       const { uploadURL } = await response.json();
+      console.log('Got upload URL:', uploadURL);
 
-      // Upload file
+      // Upload file to the presigned URL
       const uploadResponse = await fetch(uploadURL, {
         method: 'PUT',
         body: selectedFile,
@@ -95,9 +96,15 @@ export function ObjectUploader({
       }
 
       setUploadProgress(100);
+      console.log('Upload successful');
       
       // Extract object path from upload URL for display
-      const objectPath = `/objects/uploads/${uploadURL.split('/uploads/')[1].split('?')[0]}`;
+      // The upload URL contains the full path, we need to extract just the object identifier
+      const urlParts = uploadURL.split('/');
+      const fileName = urlParts[urlParts.length - 1].split('?')[0]; // Remove query params
+      const objectPath = `/objects/uploads/${fileName}`;
+      
+      console.log('Object path:', objectPath);
       
       // Close modal and reset state first
       setIsOpen(false);
@@ -106,6 +113,7 @@ export function ObjectUploader({
       // Then call completion callback
       onComplete?.(objectPath);
     } catch (err) {
+      console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setIsUploading(false);
