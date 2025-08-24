@@ -117,7 +117,7 @@ export default function ChatRoomComponent({
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
-    alert('Enter key working!'); // Test if enter actually works
+    alert(`Enter pressed! Member: ${currentUser?.gamertag}, ID: ${currentMemberId}, Message: "${messageText.trim()}"`);
     console.log('🔧 Enter key send:', { 
       messageText: messageText.trim(),
       currentMemberId,
