@@ -472,13 +472,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Broadcast message deletion to WebSocket clients
-      broadcastMessage(roomId, {
-        type: 'message-deleted',
-        messageId,
-      });
+      try {
+        broadcastMessage(roomId, {
+          type: 'message-deleted',
+          messageId,
+        });
+      } catch (broadcastError) {
+        console.error('Broadcast error:', broadcastError);
+        // Don't fail the deletion if broadcast fails
+      }
 
       res.status(200).json({ message: "Message deleted successfully" });
     } catch (error) {
+      console.error('Delete message error:', error);
       res.status(500).json({ message: "Failed to delete message" });
     }
   });

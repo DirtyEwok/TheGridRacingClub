@@ -93,11 +93,9 @@ export function useChat(chatRoomId: string | null) {
       });
 
       if (response.ok) {
-        // Optimistically remove from local state immediately
-        setMessages(prev => prev.filter(msg => msg.id !== messageId));
         return true;
       } else {
-        console.error('Delete response not ok:', response.status);
+        console.error('Delete response not ok:', response.status, await response.text());
         return false;
       }
     } catch (error) {

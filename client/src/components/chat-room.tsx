@@ -254,7 +254,7 @@ export default function ChatRoomComponent({
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
                     className={`font-semibold px-2 py-1 rounded text-sm ${
                       message.member.isAdmin 
@@ -271,15 +271,20 @@ export default function ChatRoomComponent({
                   <span className="text-xs text-gray-400">
                     {formatMessageTime(message.createdAt)}
                   </span>
-                  {/* Delete button for admin only */}
+                  {/* Delete button for admin only - visible on mobile */}
                   {(currentUser?.isAdmin || currentUser?.gamertag === 'CJ DirtyEwok') && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0 ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
-                      onClick={async () => {
+                      className="h-8 w-8 p-0 ml-auto sm:ml-2 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100 touch-manipulation"
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         try {
-                          await deleteMessage(message.id);
+                          const success = await deleteMessage(message.id);
+                          if (!success) {
+                            console.error('Failed to delete message');
+                          }
                         } catch (error) {
                           console.error('Delete message error:', error);
                         }
@@ -287,7 +292,7 @@ export default function ChatRoomComponent({
                       title="Delete message"
                       data-testid="button-delete-message"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   )}
                 </div>
