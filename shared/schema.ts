@@ -16,6 +16,7 @@ export const members = pgTable("members", {
   carNumber: text("car_number"),
   profileImageUrl: text("profile_image_url"),
   streamLink: text("stream_link"),
+  streamLink2: text("stream_link_2"),
   // Approval system
   status: text("status").notNull().default("pending"), // pending, approved, rejected
   approvedBy: varchar("approved_by"),
@@ -91,6 +92,7 @@ export const updateMemberProfileSchema = createInsertSchema(members).pick({
   carNumber: true,
   profileImageUrl: true,
   streamLink: true,
+  streamLink2: true,
 });
 
 export const approveMemberSchema = z.object({

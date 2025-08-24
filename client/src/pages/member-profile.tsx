@@ -225,16 +225,31 @@ function MemberProfile() {
                         #{member.carNumber}
                       </Badge>
                     )}
-                    {member.streamLink && (
-                      <a 
-                        href={member.streamLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-racing-green hover:text-green-400 inline-flex items-center gap-1 text-sm"
-                      >
-                        <Video className="w-4 h-4" />
-                        Watch Stream
-                      </a>
+                    {(member.streamLink || member.streamLink2) && (
+                      <div className="flex items-center gap-2">
+                        {member.streamLink && (
+                          <a 
+                            href={member.streamLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-racing-green hover:text-green-400 inline-flex items-center gap-1 text-sm"
+                          >
+                            <Video className="w-4 h-4" />
+                            Stream 1
+                          </a>
+                        )}
+                        {member.streamLink2 && (
+                          <a 
+                            href={member.streamLink2}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-racing-green hover:text-green-400 inline-flex items-center gap-1 text-sm"
+                          >
+                            <Video className="w-4 h-4" />
+                            Stream 2
+                          </a>
+                        )}
+                      </div>
                     )}
                     <span className="text-sm text-gray-400">
                       Member since {formatDate(member.createdAt)}
@@ -424,29 +439,54 @@ function MemberProfile() {
                     )}
                   />
 
-                  {/* Stream Link */}
-                  <FormField
-                    control={form.control}
-                    name="streamLink"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-white flex items-center gap-2">
-                          <Video className="w-4 h-4" />
-                          Stream Link
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            disabled={!isEditing}
-                            placeholder="Your streaming channel URL (Twitch, YouTube, etc.)"
-                            className="bg-gray-800 border-gray-700 text-white disabled:bg-gray-900 disabled:text-gray-400"
-                            data-testid="input-stream-link"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {/* Stream Links */}
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="streamLink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white flex items-center gap-2">
+                            <Video className="w-4 h-4" />
+                            Stream Link 1
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              disabled={!isEditing}
+                              placeholder="Your streaming channel URL (Twitch, YouTube, etc.)"
+                              className="bg-gray-800 border-gray-700 text-white disabled:bg-gray-900 disabled:text-gray-400"
+                              data-testid="input-stream-link"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="streamLink2"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-white flex items-center gap-2">
+                            <Video className="w-4 h-4" />
+                            Stream Link 2
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              disabled={!isEditing}
+                              placeholder="Your second streaming channel URL (optional)"
+                              className="bg-gray-800 border-gray-700 text-white disabled:bg-gray-900 disabled:text-gray-400"
+                              data-testid="input-stream-link-2"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   {isEditing && (
                     <div className="flex gap-3 pt-4">
