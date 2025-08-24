@@ -56,18 +56,10 @@ export function useChat(chatRoomId: string | null) {
   }, [chatRoomId]);
 
   const sendMessage = (message: string, memberId: string) => {
-    console.log('SendMessage called - Mobile debug');
-    console.log('Chat room ID:', chatRoomId);
-    console.log('WebSocket state:', wsRef.current?.readyState);
-    console.log('WebSocket OPEN constant:', WebSocket.OPEN);
-    
     if (!chatRoomId || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-      console.log('SendMessage failed - Connection check failed');
       return false;
     }
 
-    console.log('Sending message via API:', message);
-    
     // Send via HTTP API (which will broadcast via WebSocket)
     fetch(`/api/chat-rooms/${chatRoomId}/messages`, {
       method: 'POST',
@@ -78,11 +70,6 @@ export function useChat(chatRoomId: string | null) {
         message,
         memberId,
       }),
-    }).then(response => {
-      console.log('Message API response status:', response.status);
-      return response.json();
-    }).then(data => {
-      console.log('Message sent successfully:', data);
     }).catch(error => {
       console.error('Failed to send message:', error);
     });

@@ -142,14 +142,37 @@ export default function ChatRoomComponent({
   };
 
   // Explicit send button handler for mobile compatibility
-  const handleSendButtonClick = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleSendButtonClick = async (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Send button clicked/tapped - Mobile debug');
-    console.log('Message text:', messageText);
-    console.log('Is connected:', isConnected);
-    console.log('Is sending:', isSending);
-    handleSendMessage();
+    
+    // Direct API call for better mobile reliability
+    if (!messageText.trim() || isSending || !isConnected) return;
+    
+    setIsSending(true);
+    try {
+      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: messageText.trim(),
+          memberId: currentMemberId,
+        }),
+      });
+      
+      if (response.ok) {
+        setMessageText("");
+        if (onMessageDraftChange) {
+          onMessageDraftChange("");
+        }
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setTimeout(() => setIsSending(false), 500);
+    }
   };
 
   const formatMessageTime = (date: Date) => {
