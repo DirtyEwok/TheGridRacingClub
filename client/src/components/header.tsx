@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import logoImage from "@assets/logo.png";
+import logoImage from "@assets/new-grid-logo.png";
 
 export default function Header() {
   const [location] = useLocation();

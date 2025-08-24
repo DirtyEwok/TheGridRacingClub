@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X, User, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoImage from "@assets/logo.png";
+import logoImage from "@assets/new-grid-logo.png";
 import SignInModal from "./sign-in-modal";
 import { getCurrentMember, clearCurrentMember } from "@/lib/memberSession";
 import { useQueryClient } from "@tanstack/react-query";
