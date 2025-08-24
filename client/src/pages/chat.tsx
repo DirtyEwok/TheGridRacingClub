@@ -165,7 +165,50 @@ Neil Broom aka Neilb`;
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <ScrollArea className="h-[calc(100vh-300px)]">
+                {/* Club Admin Team */}
+                <div className="border-b border-gray-700 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Crown className="w-4 h-4 text-racing-green" />
+                    <h3 className="text-sm font-semibold text-white">Club Admin Team</h3>
+                  </div>
+                  <div className="space-y-1">
+                    {clubAdminText.split('\n').map((line, index) => {
+                      if (line.trim() === '') return <div key={index} className="h-1"></div>;
+                      
+                      // Check if this line contains CJ DirtyEwok
+                      if (line.includes('CJ DirtyEwok')) {
+                        return (
+                          <div key={index} className="text-lime-400 text-xs font-medium">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Check if this line contains admin names (has "aka" or specific gamertags, but not CJ DirtyEwok)
+                      if ((line.includes('aka') || 
+                           line.includes('Adzinski82') || 
+                           line.includes('StalkerBrown') || 
+                           line.includes('NeilB') || 
+                           line.includes('snuffles1983')) && 
+                          !line.includes('CJ DirtyEwok')) {
+                        return (
+                          <div key={index} className="text-yellow-400 text-xs font-medium">
+                            {line}
+                          </div>
+                        );
+                      }
+                      
+                      // Regular text
+                      return (
+                        <div key={index} className="text-gray-300 text-xs">
+                          {line}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                <ScrollArea className="h-[calc(100vh-400px)]">
                   <div className="space-y-1 p-4">
                     {chatRooms?.sort((a, b) => {
                       // Sort order: General first, then GT4, then GT3, then others
@@ -225,49 +268,6 @@ Neil Broom aka Neilb`;
                     )}
                   </div>
                 </ScrollArea>
-                
-                {/* Club Admin Team */}
-                <div className="border-t border-gray-700 p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Crown className="w-4 h-4 text-racing-green" />
-                    <h3 className="text-sm font-semibold text-white">Club Admin Team</h3>
-                  </div>
-                  <div className="space-y-1">
-                    {clubAdminText.split('\n').map((line, index) => {
-                      if (line.trim() === '') return <div key={index} className="h-1"></div>;
-                      
-                      // Check if this line contains CJ DirtyEwok
-                      if (line.includes('CJ DirtyEwok')) {
-                        return (
-                          <div key={index} className="text-lime-400 text-xs font-medium">
-                            {line}
-                          </div>
-                        );
-                      }
-                      
-                      // Check if this line contains admin names (has "aka" or specific gamertags, but not CJ DirtyEwok)
-                      if ((line.includes('aka') || 
-                           line.includes('Adzinski82') || 
-                           line.includes('StalkerBrown') || 
-                           line.includes('NeilB') || 
-                           line.includes('snuffles1983')) && 
-                          !line.includes('CJ DirtyEwok')) {
-                        return (
-                          <div key={index} className="text-yellow-400 text-xs font-medium">
-                            {line}
-                          </div>
-                        );
-                      }
-                      
-                      // Regular text
-                      return (
-                        <div key={index} className="text-gray-300 text-xs">
-                          {line}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
