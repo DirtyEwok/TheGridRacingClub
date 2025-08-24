@@ -298,9 +298,9 @@ export default function ChatRoomComponent({
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden bg-transparent">
         <ScrollArea className="h-full">
-          <div className="space-y-4 max-w-none p-4">
+          <div className="space-y-4 max-w-none p-4 bg-transparent">
             {messages.map((message) => (
-            <div key={message.id} className="flex gap-3 w-full max-w-4xl py-2">
+            <div key={message.id} className="flex gap-3 w-full max-w-4xl py-2 bg-transparent">
               <div className="flex-shrink-0">
                 <span className="text-xs font-semibold text-white mr-2">
                   {message.member.gamertag.charAt(0).toUpperCase()}
