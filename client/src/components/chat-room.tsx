@@ -296,9 +296,9 @@ export default function ChatRoomComponent({
         </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full p-4">
-          <div className="space-y-4 max-w-none">
+      <div className="flex-1 overflow-hidden bg-transparent">
+        <ScrollArea className="h-full">
+          <div className="space-y-4 max-w-none p-4">
             {messages.map((message) => (
             <div key={message.id} className="flex gap-3 w-full max-w-4xl py-2">
               <div className="flex-shrink-0">
