@@ -437,6 +437,59 @@ function MemberProfile() {
                       )}
                     </div>
 
+                    {/* Embedded Streams */}
+                    {!isEditing && (member.streamLink || member.streamLink2) && (
+                      <div>
+                        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                          <Video className="w-4 h-4" />
+                          Live Streams
+                        </h3>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          {/* Stream 1 */}
+                          {member.streamLink && (
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-white font-medium">Primary Stream</h4>
+                                <a
+                                  href={member.streamLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-racing-green hover:text-green-400 text-sm inline-flex items-center gap-1"
+                                >
+                                  <Video className="w-4 h-4" />
+                                  Open in new tab
+                                </a>
+                              </div>
+                              <div className="bg-black rounded-lg overflow-hidden aspect-video">
+                                {renderStreamEmbed(member.streamLink, "primary")}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Stream 2 */}
+                          {member.streamLink2 && (
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-white font-medium">Secondary Stream</h4>
+                                <a
+                                  href={member.streamLink2}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-racing-green hover:text-green-400 text-sm inline-flex items-center gap-1"
+                                >
+                                  <Video className="w-4 h-4" />
+                                  Open in new tab
+                                </a>
+                              </div>
+                              <div className="bg-black rounded-lg overflow-hidden aspect-video">
+                                {renderStreamEmbed(member.streamLink2, "secondary")}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Favorite Track */}
                       <div>
@@ -533,62 +586,6 @@ function MemberProfile() {
                 </CardContent>
               </Card>
 
-              {/* Embedded Streams */}
-              {!isEditing && (member.streamLink || member.streamLink2) && (
-                <Card className="bg-gray-900 border-gray-800">
-                  <CardHeader>
-                    <CardTitle className="text-white flex items-center gap-2">
-                      <Video className="w-5 h-5 text-racing-green" />
-                      Live Streams
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {/* Stream 1 */}
-                      {member.streamLink && (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-white font-medium">Primary Stream</h4>
-                            <a
-                              href={member.streamLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-racing-green hover:text-green-400 text-sm inline-flex items-center gap-1"
-                            >
-                              <Video className="w-4 h-4" />
-                              Open in new tab
-                            </a>
-                          </div>
-                          <div className="bg-black rounded-lg overflow-hidden aspect-video">
-                            {renderStreamEmbed(member.streamLink, "primary")}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Stream 2 */}
-                      {member.streamLink2 && (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-white font-medium">Secondary Stream</h4>
-                            <a
-                              href={member.streamLink2}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-racing-green hover:text-green-400 text-sm inline-flex items-center gap-1"
-                            >
-                              <Video className="w-4 h-4" />
-                              Open in new tab
-                            </a>
-                          </div>
-                          <div className="bg-black rounded-lg overflow-hidden aspect-video">
-                            {renderStreamEmbed(member.streamLink2, "secondary")}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
 
               {/* Edit Controls */}
               {isEditing && (
