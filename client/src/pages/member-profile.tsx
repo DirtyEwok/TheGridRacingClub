@@ -99,6 +99,68 @@ function MemberProfile() {
     setIsEditing(false);
   };
 
+  const renderStreamEmbed = (streamUrl: string, streamId: string) => {
+    if (!streamUrl) return null;
+
+    // Twitch embed
+    if (streamUrl.includes('twitch.tv')) {
+      const channelName = streamUrl.split('/').pop();
+      const embedUrl = `https://player.twitch.tv/?channel=${channelName}&parent=${window.location.hostname}&autoplay=false`;
+      return (
+        <iframe
+          src={embedUrl}
+          height="100%"
+          width="100%"
+          allowFullScreen
+          className="w-full h-full"
+          title={`${channelName} Twitch Stream`}
+        />
+      );
+    }
+    
+    // YouTube embed
+    if (streamUrl.includes('youtube.com') || streamUrl.includes('youtu.be')) {
+      let videoId = '';
+      if (streamUrl.includes('watch?v=')) {
+        videoId = streamUrl.split('watch?v=')[1].split('&')[0];
+      } else if (streamUrl.includes('youtu.be/')) {
+        videoId = streamUrl.split('youtu.be/')[1].split('?')[0];
+      }
+      
+      if (videoId) {
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0`;
+        return (
+          <iframe
+            src={embedUrl}
+            width="100%"
+            height="100%"
+            allowFullScreen
+            className="w-full h-full"
+            title="YouTube Stream"
+          />
+        );
+      }
+    }
+
+    // Generic iframe fallback for other streaming platforms
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-400">
+        <div className="text-center">
+          <Video className="w-12 h-12 mx-auto mb-4 opacity-50" />
+          <p className="text-sm">Stream embed not supported</p>
+          <a
+            href={streamUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-racing-green hover:text-green-400 text-sm mt-2 inline-block"
+          >
+            Open stream in new tab
+          </a>
+        </div>
+      </div>
+    );
+  };
+
   const formatDate = (dateString: string | Date | null) => {
     if (!dateString) return "Unknown";
     return new Date(dateString).toLocaleDateString();
@@ -470,6 +532,63 @@ function MemberProfile() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Embedded Streams */}
+              {!isEditing && (member.streamLink || member.streamLink2) && (
+                <Card className="bg-gray-900 border-gray-800">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <Video className="w-5 h-5 text-racing-green" />
+                      Live Streams
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Stream 1 */}
+                      {member.streamLink && (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-white font-medium">Primary Stream</h4>
+                            <a
+                              href={member.streamLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-racing-green hover:text-green-400 text-sm inline-flex items-center gap-1"
+                            >
+                              <Video className="w-4 h-4" />
+                              Open in new tab
+                            </a>
+                          </div>
+                          <div className="bg-black rounded-lg overflow-hidden aspect-video">
+                            {renderStreamEmbed(member.streamLink, "primary")}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Stream 2 */}
+                      {member.streamLink2 && (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-white font-medium">Secondary Stream</h4>
+                            <a
+                              href={member.streamLink2}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-racing-green hover:text-green-400 text-sm inline-flex items-center gap-1"
+                            >
+                              <Video className="w-4 h-4" />
+                              Open in new tab
+                            </a>
+                          </div>
+                          <div className="bg-black rounded-lg overflow-hidden aspect-video">
+                            {renderStreamEmbed(member.streamLink2, "secondary")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Edit Controls */}
               {isEditing && (
