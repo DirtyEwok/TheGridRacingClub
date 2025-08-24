@@ -61,7 +61,9 @@ export default function ChatRoomComponent({
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -236,9 +238,10 @@ export default function ChatRoomComponent({
         </div>
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
-          {messages.map((message) => (
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full p-4">
+          <div className="space-y-4">
+            {messages.map((message) => (
             <div key={message.id} className="flex gap-3">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
@@ -302,7 +305,8 @@ export default function ChatRoomComponent({
           ))}
           <div ref={messagesEndRef} />
         </div>
-      </ScrollArea>
+        </ScrollArea>
+      </div>
 
       {/* Message Input */}
       <div className="border-t border-gray-800 p-4">
