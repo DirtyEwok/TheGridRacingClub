@@ -11,10 +11,17 @@ import { type ChatRoom, type ChatMessageWithMember } from "@shared/schema";
 interface ChatRoomProps {
   chatRoom: ChatRoom;
   currentMemberId: string;
+  messageDraft?: string;
+  onMessageDraftChange?: (draft: string) => void;
 }
 
-export default function ChatRoomComponent({ chatRoom, currentMemberId }: ChatRoomProps) {
-  const [messageText, setMessageText] = useState("");
+export default function ChatRoomComponent({ 
+  chatRoom, 
+  currentMemberId, 
+  messageDraft = "", 
+  onMessageDraftChange 
+}: ChatRoomProps) {
+  const [messageText, setMessageText] = useState(messageDraft);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Fetch initial messages
@@ -32,6 +39,18 @@ export default function ChatRoomComponent({ chatRoom, currentMemberId }: ChatRoo
     }
   }, [initialMessages, setMessages]);
 
+  // Update message text when draft changes
+  useEffect(() => {
+    setMessageText(messageDraft);
+  }, [messageDraft]);
+
+  // Save draft when message text changes
+  useEffect(() => {
+    if (onMessageDraftChange) {
+      onMessageDraftChange(messageText);
+    }
+  }, [messageText, onMessageDraftChange]);
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,6 +63,9 @@ export default function ChatRoomComponent({ chatRoom, currentMemberId }: ChatRoo
     const success = sendMessage(messageText.trim(), currentMemberId);
     if (success) {
       setMessageText("");
+      if (onMessageDraftChange) {
+        onMessageDraftChange("");
+      }
     }
   };
 

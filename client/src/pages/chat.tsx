@@ -13,6 +13,7 @@ import { getCurrentMember } from "@/lib/memberSession";
 
 export default function Chat() {
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
+  const [messageDrafts, setMessageDrafts] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
   const currentMember = getCurrentMember();
   const currentMemberId = currentMember?.id || "";
@@ -226,6 +227,13 @@ export default function Chat() {
                 <ChatRoomComponent 
                   chatRoom={selectedRoom} 
                   currentMemberId={currentMemberId}
+                  messageDraft={messageDrafts[selectedRoom.id] || ""}
+                  onMessageDraftChange={(draft) => {
+                    setMessageDrafts(prev => ({
+                      ...prev,
+                      [selectedRoom.id]: draft
+                    }));
+                  }}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full">
