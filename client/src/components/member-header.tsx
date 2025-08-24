@@ -14,12 +14,16 @@ export default function MemberHeader() {
   const queryClient = useQueryClient();
   const currentMember = getCurrentMember();
 
+  // Check if current member is admin (CJ DirtyEwok)
+  const isAdmin = currentMember?.gamertag === "CJ DirtyEwok";
+
   const navigation = [
     { name: "Races", href: "/races" },
     { name: "Championships", href: "/championships" },
     { name: "Leaderboards", href: "/leaderboards" },
     { name: "Chat", href: "/chat" },
     { name: "Coming Soon", href: "/coming-soon" },
+    ...(isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
   ];
 
   return (
@@ -76,6 +80,17 @@ export default function MemberHeader() {
                     <User className="w-4 h-4 mr-1" />
                     Profile
                   </Button>
+                  {isAdmin && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.location.href = "/admin"}
+                      className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white"
+                    >
+                      <Settings className="w-4 h-4 mr-1" />
+                      Admin
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="sm"
