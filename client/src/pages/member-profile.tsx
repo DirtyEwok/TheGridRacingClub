@@ -306,23 +306,26 @@ function MemberProfile() {
                         
                         {/* Car Number */}
                         {isEditing ? (
-                          <FormField
-                            control={form.control}
-                            name="carNumber"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    {...field}
-                                    placeholder="Car #"
-                                    className="bg-gray-800 border-gray-700 text-white w-20"
-                                    data-testid="input-car-number"
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          <div className="flex flex-col">
+                            <span className="text-white text-sm font-medium mb-1">Race No</span>
+                            <FormField
+                              control={form.control}
+                              name="carNumber"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      placeholder="Car #"
+                                      className="bg-gray-800 border-gray-700 text-white w-20"
+                                      data-testid="input-car-number"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         ) : (
                           member.carNumber && (
                             <Badge variant="outline" className="text-racing-green border-racing-green">
