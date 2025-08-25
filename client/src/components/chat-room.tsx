@@ -343,11 +343,19 @@ export default function ChatRoomComponent({
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
                     className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
-                      message.member.isAdmin 
+                      message.member.gamertag === 'CJ DirtyEwok'
+                        ? "text-lime-400" 
+                        : ['Adzinski82', 'StalkerBrown', 'NeilB', 'snuffles1983'].includes(message.member.gamertag)
+                        ? "text-yellow-400"
+                        : message.member.isAdmin 
                         ? "text-white" 
                         : "text-white"
                     }`}
-                    style={message.member.isAdmin ? { backgroundColor: '#f97316' } : {}}
+                    style={
+                      message.member.gamertag === 'CJ DirtyEwok' ? {} :
+                      ['Adzinski82', 'StalkerBrown', 'NeilB', 'snuffles1983'].includes(message.member.gamertag) ? {} :
+                      message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
+                    }
                     onDoubleClick={() => {
                       window.open(`/members/${message.member.id}/profile`, '_blank');
                     }}
