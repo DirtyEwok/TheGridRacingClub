@@ -345,15 +345,15 @@ export default function ChatRoomComponent({
                     className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
                       message.member.gamertag === 'CJ DirtyEwok'
                         ? "text-lime-400" 
-                        : ['Adzinski82', 'StalkerBrown', 'NeilB', 'snuffles1983'].includes(message.member.gamertag)
-                        ? "text-yellow-400"
+                        : ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
+                        ? "text-orange-500"
                         : message.member.isAdmin 
                         ? "text-white" 
                         : "text-white"
                     }`}
                     style={
                       message.member.gamertag === 'CJ DirtyEwok' ? {} :
-                      ['Adzinski82', 'StalkerBrown', 'NeilB', 'snuffles1983'].includes(message.member.gamertag) ? {} :
+                      ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
                       message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
                     }
                     onDoubleClick={() => {
