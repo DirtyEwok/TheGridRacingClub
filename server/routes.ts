@@ -720,6 +720,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Pin a message (admin only)
+  app.post("/api/messages/:messageId/pin", async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const { pinnedBy } = req.body;
+
+      if (!pinnedBy) {
+        return res.status(400).json({ message: "Pinned by user ID is required" });
+      }
+
+      // Check if user is admin
+      const member = await storage.getMember(pinnedBy);
+      if (!member || !member.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const success = await storage.pinMessage(messageId, pinnedBy);
+      if (!success) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      res.status(200).json({ message: "Message pinned successfully" });
+    } catch (error) {
+      console.error('Pin message error:', error);
+      res.status(500).json({ message: "Failed to pin message" });
+    }
+  });
+
+  // Unpin a message (admin only)
+  app.delete("/api/messages/:messageId/pin", async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const { memberId } = req.body;
+
+      if (!memberId) {
+        return res.status(400).json({ message: "Member ID is required" });
+      }
+
+      // Check if user is admin
+      const member = await storage.getMember(memberId);
+      if (!member || !member.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const success = await storage.unpinMessage(messageId);
+      if (!success) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      res.status(200).json({ message: "Message unpinned successfully" });
+    } catch (error) {
+      console.error('Unpin message error:', error);
+      res.status(500).json({ message: "Failed to unpin message" });
+    }
+  });
+
+  // Get pinned messages for a chat room
+  app.get("/api/chat-rooms/:chatRoomId/pinned-messages", async (req, res) => {
+    try {
+      const { chatRoomId } = req.params;
+      const currentUserId = req.query.currentUserId as string;
+      
+      const pinnedMessages = await storage.getPinnedMessages(chatRoomId, currentUserId);
+      res.json(pinnedMessages);
+    } catch (error) {
+      console.error('Get pinned messages error:', error);
+      res.status(500).json({ message: "Failed to fetch pinned messages" });
+    }
+  });
+
   // Notification endpoints
   app.get("/api/notifications/:memberId", async (req, res) => {
     try {

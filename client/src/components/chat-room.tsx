@@ -4,7 +4,7 @@ import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2, Image, Link, Play, Heart } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff } from "lucide-react";
 import { ObjectUploader } from "./ObjectUploader";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
@@ -53,6 +53,21 @@ export default function ChatRoomComponent({
     },
   });
 
+  // Fetch pinned messages
+  const { data: pinnedMessages = [], refetch: refetchPinnedMessages } = useQuery<ChatMessageWithMember[]>({
+    queryKey: ['/api/chat-rooms', chatRoom.id, 'pinned-messages'],
+    queryFn: async () => {
+      const currentUser = getCurrentMember();
+      const params = new URLSearchParams();
+      if (currentUser?.id) {
+        params.append('currentUserId', currentUser.id);
+      }
+      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/pinned-messages?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch pinned messages');
+      return response.json();
+    },
+  });
+
   // Fetch all members for the member list
   const { data: allMembers = [] } = useQuery<Member[]>({
     queryKey: ['/api/members'],
@@ -61,6 +76,34 @@ export default function ChatRoomComponent({
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
+
+  // Pin/Unpin message function
+  const handlePinMessage = async (messageId: string, isPinned: boolean) => {
+    if (!currentUser?.id || !currentUser.isAdmin) return;
+
+    try {
+      const url = `/api/messages/${messageId}/pin`;
+      const method = isPinned ? 'DELETE' : 'POST';
+      const body = isPinned 
+        ? { memberId: currentUser.id }
+        : { pinnedBy: currentUser.id };
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        // Refetch pinned messages
+        refetchPinnedMessages();
+      }
+    } catch (error) {
+      console.error('Error pinning/unpinning message:', error);
+    }
+  };
 
   // Like/Unlike message function
   const handleLikeMessage = async (messageId: string, isCurrentlyLiked: boolean) => {
@@ -424,6 +467,78 @@ export default function ChatRoomComponent({
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
           <div className="space-y-4 max-w-none p-4">
+            {/* Pinned Messages Section */}
+            {pinnedMessages.length > 0 && (
+              <div className="border-b border-gray-700 pb-4 mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Pin className="w-4 h-4 text-orange-500" />
+                  <span className="text-sm font-semibold text-orange-500">Pinned Messages</span>
+                </div>
+                <div className="space-y-3">
+                  {pinnedMessages.map((message) => (
+                    <div key={`pinned-${message.id}`} className="flex gap-3 w-full p-3 bg-gray-800/50 rounded-lg border-l-4 border-orange-500">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
+                          <span className="text-xs font-semibold text-white">
+                            {message.member.gamertag.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span 
+                            className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
+                              message.member.gamertag === 'CJ DirtyEwok'
+                                ? "text-lime-400" 
+                                : ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
+                                ? "text-orange-500"
+                                : message.member.isAdmin 
+                                ? "text-white" 
+                                : "text-white"
+                            }`}
+                            style={
+                              message.member.gamertag === 'CJ DirtyEwok' ? {} :
+                              ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
+                              message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
+                            }
+                            onDoubleClick={() => {
+                              window.open(`/members/${message.member.id}/profile`, '_blank');
+                            }}
+                            title="Double-click to view profile"
+                          >
+                            {message.member.gamertag}
+                          </span>
+                          {message.member.isAdmin && (
+                            <Crown className="w-4 h-4 text-orange-500" />
+                          )}
+                          <span className="text-xs text-gray-400">
+                            {formatMessageTime(message.createdAt)}
+                          </span>
+                          <Pin className="w-3 h-3 text-orange-500" />
+                          {/* Unpin button for admin only */}
+                          {currentUser?.isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
+                              onClick={() => handlePinMessage(message.id, true)}
+                              title="Unpin message"
+                            >
+                              <PinOff className="w-3 h-3" />
+                            </Button>
+                          )}
+                        </div>
+                        <div className="text-white text-sm break-words whitespace-pre-wrap">
+                          {renderMessageWithMentions(message.message)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Regular Messages */}
             {messages.map((message) => (
             <div key={message.id} className="flex gap-3 w-full p-4 max-w-4xl">
               <div className="flex-shrink-0">
@@ -463,6 +578,19 @@ export default function ChatRoomComponent({
                   <span className="text-xs text-gray-400">
                     {formatMessageTime(message.createdAt)}
                   </span>
+                  {/* Pin button for admin only */}
+                  {currentUser?.isAdmin && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 hover:bg-orange-600 hover:text-white opacity-70 hover:opacity-100"
+                      onClick={() => handlePinMessage(message.id, false)}
+                      title="Pin message"
+                      data-testid="button-pin-message"
+                    >
+                      <Pin className="w-4 h-4" />
+                    </Button>
+                  )}
                   {/* Delete button for admin only - visible on mobile */}
                   {(currentUser?.isAdmin || currentUser?.gamertag === 'CJ DirtyEwok') && (
                     <Button

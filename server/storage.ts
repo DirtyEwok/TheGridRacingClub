@@ -49,6 +49,9 @@ export interface IStorage {
   getChatMessages(chatRoomId: string, limit?: number, currentUserId?: string): Promise<ChatMessageWithMember[]>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   deleteChatMessage(messageId: string, deletedBy: string): Promise<boolean>;
+  pinMessage(messageId: string, pinnedBy: string): Promise<boolean>;
+  unpinMessage(messageId: string): Promise<boolean>;
+  getPinnedMessages(chatRoomId: string, currentUserId?: string): Promise<ChatMessageWithMember[]>;
 
   // Message Likes
   likeMessage(messageId: string, memberId: string): Promise<boolean>;
@@ -367,6 +370,88 @@ export class DatabaseStorage implements IStorage {
       .returning();
 
     return !!result;
+  }
+
+  async pinMessage(messageId: string, pinnedBy: string): Promise<boolean> {
+    const [result] = await db
+      .update(chatMessages)
+      .set({
+        isPinned: true,
+        pinnedBy,
+        pinnedAt: new Date(),
+      })
+      .where(eq(chatMessages.id, messageId))
+      .returning();
+
+    return !!result;
+  }
+
+  async unpinMessage(messageId: string): Promise<boolean> {
+    const [result] = await db
+      .update(chatMessages)
+      .set({
+        isPinned: false,
+        pinnedBy: null,
+        pinnedAt: null,
+      })
+      .where(eq(chatMessages.id, messageId))
+      .returning();
+
+    return !!result;
+  }
+
+  async getPinnedMessages(chatRoomId: string, currentUserId?: string): Promise<ChatMessageWithMember[]> {
+    const messages = await db
+      .select({
+        id: chatMessages.id,
+        chatRoomId: chatMessages.chatRoomId,
+        memberId: chatMessages.memberId,
+        message: chatMessages.message,
+        isDeleted: chatMessages.isDeleted,
+        deletedBy: chatMessages.deletedBy,
+        deletedAt: chatMessages.deletedAt,
+        isPinned: chatMessages.isPinned,
+        pinnedBy: chatMessages.pinnedBy,
+        pinnedAt: chatMessages.pinnedAt,
+        createdAt: chatMessages.createdAt,
+        member: {
+          id: members.id,
+          displayName: members.displayName,
+          gamertag: members.gamertag,
+          experienceLevel: members.experienceLevel,
+          isAdmin: members.isAdmin,
+        },
+      })
+      .from(chatMessages)
+      .innerJoin(members, eq(chatMessages.memberId, members.id))
+      .where(and(
+        eq(chatMessages.chatRoomId, chatRoomId),
+        eq(chatMessages.isDeleted, false),
+        eq(chatMessages.isPinned, true)
+      ))
+      .orderBy(desc(chatMessages.pinnedAt));
+
+    // Add like information to each message
+    const messagesWithLikes = await Promise.all(
+      messages.map(async (message) => {
+        // Get total like count
+        const likes = await db.select().from(messageLikes).where(eq(messageLikes.messageId, message.id));
+        const likeCount = likes.length;
+        
+        // Check if current user liked this message
+        const isLikedByCurrentUser = currentUserId 
+          ? likes.some(like => like.memberId === currentUserId)
+          : false;
+
+        return {
+          ...message,
+          likeCount,
+          isLikedByCurrentUser,
+        };
+      })
+    );
+
+    return messagesWithLikes;
   }
 
   // Message Likes
@@ -1097,6 +1182,9 @@ Server goes live at 20:00`,
       isDeleted: false,
       deletedBy: null,
       deletedAt: null,
+      isPinned: false,
+      pinnedBy: null,
+      pinnedAt: null,
       createdAt: new Date(),
     };
     this.chatMessages.set(id, message);
@@ -1116,6 +1204,69 @@ Server goes live at 20:00`,
     
     this.chatMessages.set(messageId, updatedMessage);
     return true;
+  }
+
+  async pinMessage(messageId: string, pinnedBy: string): Promise<boolean> {
+    const message = this.chatMessages.get(messageId);
+    if (!message) return false;
+
+    const updatedMessage: ChatMessage = {
+      ...message,
+      isPinned: true,
+      pinnedBy,
+      pinnedAt: new Date(),
+    };
+    
+    this.chatMessages.set(messageId, updatedMessage);
+    return true;
+  }
+
+  async unpinMessage(messageId: string): Promise<boolean> {
+    const message = this.chatMessages.get(messageId);
+    if (!message) return false;
+
+    const updatedMessage: ChatMessage = {
+      ...message,
+      isPinned: false,
+      pinnedBy: null,
+      pinnedAt: null,
+    };
+    
+    this.chatMessages.set(messageId, updatedMessage);
+    return true;
+  }
+
+  async getPinnedMessages(chatRoomId: string, currentUserId?: string): Promise<ChatMessageWithMember[]> {
+    const messages = Array.from(this.chatMessages.values())
+      .filter(message => 
+        message.chatRoomId === chatRoomId && 
+        !message.isDeleted && 
+        message.isPinned
+      )
+      .sort((a, b) => (b.pinnedAt?.getTime() || 0) - (a.pinnedAt?.getTime() || 0));
+
+    const messagesWithMembers: ChatMessageWithMember[] = [];
+
+    for (const message of messages) {
+      const member = this.members.get(message.memberId);
+      if (!member) continue;
+
+      const likes = Array.from(this.messageLikes.values())
+        .filter(like => like.messageId === message.id);
+      
+      const isLikedByCurrentUser = currentUserId 
+        ? likes.some(like => like.memberId === currentUserId)
+        : false;
+
+      messagesWithMembers.push({
+        ...message,
+        member,
+        likeCount: likes.length,
+        isLikedByCurrentUser,
+      });
+    }
+
+    return messagesWithMembers;
   }
 
   // Message Likes

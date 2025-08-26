@@ -75,6 +75,9 @@ export const chatMessages = pgTable("chat_messages", {
   isDeleted: boolean("is_deleted").notNull().default(false),
   deletedBy: varchar("deleted_by"),
   deletedAt: timestamp("deleted_at"),
+  isPinned: boolean("is_pinned").notNull().default(false),
+  pinnedBy: varchar("pinned_by"),
+  pinnedAt: timestamp("pinned_at"),
   createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
