@@ -28,6 +28,13 @@ export default function ChatRoomComponent({
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
+  // Mention autocomplete state
+  const [showMentionDropdown, setShowMentionDropdown] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState("");
+  const [mentionStartIndex, setMentionStartIndex] = useState(-1);
+  const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  
   // Fetch initial messages
   const { data: initialMessages } = useQuery<ChatMessageWithMember[]>({
     queryKey: ['/api/chat-rooms', chatRoom.id, 'messages'],
@@ -115,6 +122,89 @@ export default function ChatRoomComponent({
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  // Filter members for mention autocomplete
+  const filteredMembers = allMembers.filter(member => 
+    member.gamertag.toLowerCase().includes(mentionQuery.toLowerCase()) ||
+    member.displayName.toLowerCase().includes(mentionQuery.toLowerCase())
+  ).slice(0, 5);
+
+  // Handle input change with mention detection
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const cursorPosition = e.target.selectionStart || 0;
+    
+    setMessageText(value);
+    
+    // Check for @ mention
+    const textBeforeCursor = value.substring(0, cursorPosition);
+    const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+    
+    if (lastAtIndex >= 0) {
+      const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
+      // Only show dropdown if there's no space after @ and we're right after @
+      if (!textAfterAt.includes(' ') && textAfterAt.length >= 0) {
+        setMentionQuery(textAfterAt);
+        setMentionStartIndex(lastAtIndex);
+        setShowMentionDropdown(true);
+        setSelectedMentionIndex(0);
+      } else {
+        setShowMentionDropdown(false);
+      }
+    } else {
+      setShowMentionDropdown(false);
+    }
+  };
+
+  // Handle mention selection
+  const selectMention = (member: Member) => {
+    if (mentionStartIndex >= 0) {
+      const beforeMention = messageText.substring(0, mentionStartIndex);
+      const afterMention = messageText.substring(mentionStartIndex + mentionQuery.length + 1);
+      const newText = `${beforeMention}@${member.gamertag} ${afterMention}`;
+      setMessageText(newText);
+      setShowMentionDropdown(false);
+      
+      // Focus back to input
+      setTimeout(() => {
+        if (inputRef.current) {
+          const newCursorPosition = beforeMention.length + member.gamertag.length + 2;
+          inputRef.current.focus();
+          inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition);
+        }
+      }, 0);
+    }
+  };
+
+  // Handle keyboard navigation in mention dropdown
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (showMentionDropdown && filteredMembers.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedMentionIndex(prev => 
+          prev < filteredMembers.length - 1 ? prev + 1 : 0
+        );
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedMentionIndex(prev => 
+          prev > 0 ? prev - 1 : filteredMembers.length - 1
+        );
+      } else if (e.key === 'Tab' || e.key === 'Enter') {
+        e.preventDefault();
+        selectMention(filteredMembers[selectedMentionIndex]);
+        return;
+      } else if (e.key === 'Escape') {
+        setShowMentionDropdown(false);
+        return;
+      }
+    }
+    
+    // Handle normal Enter to send message
+    if (e.key === 'Enter' && !e.shiftKey && !showMentionDropdown) {
+      e.preventDefault();
+      handleSendMessage(e);
+    }
+  };
 
 
   const handleSendMessage = async (e?: React.FormEvent) => {
@@ -462,27 +552,49 @@ export default function ChatRoomComponent({
       {/* Message Input */}
       <div className="border-t border-gray-800 p-4">
         <form onSubmit={handleSendMessage} className="space-y-3">
-          <div className="flex gap-2">
-            <Input
-              id="chat-message-input"
-              name="messageText"
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage(e);
-                }
-              }}
-              placeholder="Type a message, paste image URL, or share a link..."
-              className="flex-1 bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
-              maxLength={500}
-              disabled={isSending}
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              data-testid="input-chat-message"
-            />
+          <div className="flex gap-2 relative">
+            <div className="flex-1 relative">
+              <Input
+                ref={inputRef}
+                id="chat-message-input"
+                name="messageText"
+                value={messageText}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                placeholder="Type a message, paste image URL, or share a link..."
+                className="w-full bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
+                maxLength={500}
+                disabled={isSending}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                data-testid="input-chat-message"
+              />
+              
+              {/* Mention Autocomplete Dropdown */}
+              {showMentionDropdown && filteredMembers.length > 0 && (
+                <div className="absolute bottom-full left-0 right-0 mb-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg max-h-40 overflow-y-auto z-50">
+                  {filteredMembers.map((member, index) => (
+                    <div
+                      key={member.id}
+                      className={`px-3 py-2 cursor-pointer hover:bg-gray-700 ${
+                        index === selectedMentionIndex ? 'bg-gray-700' : ''
+                      }`}
+                      onClick={() => selectMention(member)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="text-sm font-medium text-white">
+                          @{member.gamertag}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {member.displayName}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <ObjectUploader
               onComplete={(imageUrl) => {
                 setMessageText(prev => prev + ` ${imageUrl}`);
