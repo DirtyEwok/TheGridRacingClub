@@ -165,7 +165,7 @@ Neil Broom aka Neilb`;
         <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-200px)]">
           {/* Club Admin Team Sidebar - Hidden on mobile */}
           <div className="hidden lg:block w-80 flex-shrink-0">
-            <Card className="bg-gray-900 border-gray-800 h-full">
+            <Card className="bg-gray-900 border-gray-800 h-full relative">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Crown className="w-5 h-5 text-racing-green" />
@@ -228,8 +228,8 @@ Neil Broom aka Neilb`;
                   </div>
                 )}
 
-                {/* UKAU Section */}
-                <div className="pt-4 border-t border-gray-700 mt-4">
+                {/* UKAU Section - Positioned in lower center */}
+                <div className="absolute bottom-8 left-4 right-4">
                   <div className="text-center space-y-3">
                     <div className="flex flex-col items-center gap-2">
                       <img src="/ukau-logo.png" alt="UKAU Logo" className="w-24 h-24 object-contain" />
