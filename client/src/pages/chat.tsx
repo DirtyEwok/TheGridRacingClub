@@ -232,7 +232,7 @@ Neil Broom aka Neilb`;
                 <div className="pt-4 border-t border-gray-700 mt-4">
                   <div className="text-center space-y-3">
                     <div className="flex flex-col items-center gap-2">
-                      <img src="/ukau-logo.png" alt="UKAU Logo" className="w-12 h-12 object-contain" />
+                      <img src="/ukau-logo.png" alt="UKAU Logo" className="w-18 h-18 object-contain" />
                       <div>
                         <h3 className="text-lg font-bold text-white">UKAU</h3>
                         <p className="text-sm text-gray-300 font-semibold">Join the fight.</p>
