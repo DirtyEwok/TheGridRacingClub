@@ -24,8 +24,8 @@ export function useNotifications() {
 
   // Update count when data changes
   useEffect(() => {
-    if (countData?.count !== undefined) {
-      setUnreadCount(countData.count);
+    if (countData && typeof countData === 'object' && 'count' in countData) {
+      setUnreadCount(countData.count as number);
     }
   }, [countData]);
 

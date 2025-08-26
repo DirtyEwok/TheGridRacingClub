@@ -53,6 +53,7 @@ export default function Header() {
             </nav>
             
             {/* Notification Bell */}
+            <div className="text-white text-xs">Debug: {currentMember ? 'Logged in' : 'Not logged in'}</div>
             {currentMember && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
