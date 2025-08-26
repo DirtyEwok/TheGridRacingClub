@@ -524,25 +524,6 @@ Neil Broom aka Neilb`);
             </CardContent>
           </Card>
 
-          {/* UKAU Section - Bottom Half */}
-          <div className="mt-8 pt-8 border-t border-gray-700">
-            <div className="text-center space-y-4">
-              <div className="flex flex-col items-center gap-3">
-                <img src="/ukau-logo.png" alt="UKAU Logo" className="w-16 h-16 sm:w-20 sm:h-20 object-contain" />
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">UKAU</h2>
-                  <p className="text-base sm:text-lg text-gray-300 font-semibold">Join the fight.</p>
-                </div>
-              </div>
-              
-              <Button 
-                onClick={() => window.location.href = '/chat?room=ukau-chat'}
-                className="bg-green-700 hover:bg-green-600 text-white px-6 py-2 sm:px-8 sm:py-3 text-base sm:text-lg font-semibold"
-              >
-                Enter UKAU Chat
-              </Button>
-            </div>
-          </div>
         </TabsContent>
       </Tabs>
 
