@@ -18,6 +18,10 @@ export default function Chat() {
   const currentMember = getCurrentMember();
   const currentMemberId = currentMember?.id || "";
 
+  // Get room from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const roomFromUrl = urlParams.get('room');
+
   // Club admin information
   const clubAdminText = `Add our admin to your Xbox friends list.
 CJ Carmichael aka CJ DirtyEwok (Founder and Owner)
@@ -101,13 +105,17 @@ Neil Broom aka Neilb`;
     }
   }, [chatRooms]);
 
-  // Auto-select first chat room
+  // Auto-select chat room from URL or first available
   useEffect(() => {
     if (chatRooms && chatRooms.length > 0 && !selectedChatRoom) {
-      const generalChat = chatRooms.find(room => room.type === 'general');
-      setSelectedChatRoom(generalChat?.id || chatRooms[0].id);
+      if (roomFromUrl && chatRooms.find(room => room.id === roomFromUrl)) {
+        setSelectedChatRoom(roomFromUrl);
+      } else {
+        const generalChat = chatRooms.find(room => room.type === 'general');
+        setSelectedChatRoom(generalChat?.id || chatRooms[0].id);
+      }
     }
-  }, [chatRooms, selectedChatRoom]);
+  }, [chatRooms, selectedChatRoom, roomFromUrl]);
 
   const selectedRoom = chatRooms?.find(room => room.id === selectedChatRoom);
 

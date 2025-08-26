@@ -31,6 +31,7 @@ export default function MemberHeader() {
     { name: "Championships", href: "/championships" },
     { name: "Leaderboards", href: "/leaderboards" },
     { name: "Chat", href: "/chat" },
+    { name: "UKAU", href: "/chat?room=ukau-chat" },
     { name: "Coming Soon", href: "/coming-soon" },
     ...(isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
   ];

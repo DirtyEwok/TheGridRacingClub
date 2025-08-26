@@ -28,6 +28,9 @@ export default function ChatRoomComponent({
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
+  // Check if this is the UKAU chat room for special styling
+  const isUKAURoom = chatRoom.name === "UKAU Operations" || chatRoom.type === "military";
+  
   // Mention autocomplete state
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [mentionQuery, setMentionQuery] = useState("");
@@ -347,7 +350,7 @@ export default function ChatRoomComponent({
   };
 
   return (
-    <div className="flex h-full">
+    <div className={`flex h-full ${isUKAURoom ? 'camo-background' : ''}`}>
       {/* Member List Sidebar - Hidden on mobile */}
       <div className="hidden lg:flex w-64 border-r border-gray-800 flex-col">
         {/* Member List Header */}
