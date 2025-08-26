@@ -105,9 +105,6 @@
   }
 
   .camo-background {
-    background-image: url('/camo-background.png');
-    background-repeat: repeat;
-    background-size: 400px 400px;
-    background-position: 0 0;
+    background-color: #6b7c32;
   }
 }
