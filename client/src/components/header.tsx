@@ -38,12 +38,9 @@ export default function Header() {
             </Link>
             
             {/* Notification Bell next to title */}
-            <button className="relative text-gray-300 hover:text-racing-green p-2 ml-4">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                3
-              </span>
-            </button>
+            <div className="ml-4 p-2 text-white bg-red-500 rounded">
+              🔔 BELL TEST
+            </div>
           </div>
           
           <nav className="flex space-x-6">
