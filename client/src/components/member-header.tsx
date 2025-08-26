@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, User, Settings } from "lucide-react";
+import { Menu, X, User, Settings, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoImage from "@assets/new-grid-logo.png";
 import SignInModal from "./sign-in-modal";
@@ -43,6 +43,13 @@ export default function MemberHeader() {
               >
                 <img src={logoImage} alt="The Grid" className="h-8 w-auto" />
                 <span className="text-xl font-bold text-white">The Grid</span>
+                {/* Notification Bell */}
+                <button className="ml-3 relative text-gray-300 hover:text-racing-green p-2">
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    3
+                  </span>
+                </button>
               </div>
             </Link>
           </div>
