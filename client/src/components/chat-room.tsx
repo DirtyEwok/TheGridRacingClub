@@ -84,7 +84,7 @@ export default function ChatRoomComponent({
   let currentUser = getCurrentMember();
   // Update local storage with fresh admin status from server if available
   if (memberData && currentUser) {
-    const freshMemberData = memberData.find(m => m.id === currentUser.id);
+    const freshMemberData = memberData.find(m => m.id === currentUser?.id);
     if (freshMemberData && freshMemberData.isAdmin !== currentUser.isAdmin) {
       // Update session with fresh admin status
       const updatedUser = { ...currentUser, isAdmin: freshMemberData.isAdmin };
