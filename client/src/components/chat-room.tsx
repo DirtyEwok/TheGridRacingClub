@@ -451,7 +451,7 @@ export default function ChatRoomComponent({
               <h3 className="text-lg font-semibold text-white">{chatRoom.name}</h3>
               <p className="text-sm text-gray-400">
                 {chatRoom.type === "general" ? "General Discussion" : 
-                 chatRoom.type === "military" ? "RUN, GUN AND BLOW STUFF UP" : "Championship Chat"}
+                 chatRoom.type === "military" ? "Run, gun and blow stuff up" : "Championship Chat"}
               </p>
             </div>
             <div className="flex items-center gap-2">
