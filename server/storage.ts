@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, members, championships, races, registrations, chatRooms, chatMessages, messageLikes } from "@shared/schema";
+import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, type Notification, type InsertNotification, type NotificationWithMessage, members, championships, races, registrations, chatRooms, chatMessages, messageLikes, notifications } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -54,6 +54,13 @@ export interface IStorage {
   likeMessage(messageId: string, memberId: string): Promise<boolean>;
   unlikeMessage(messageId: string, memberId: string): Promise<boolean>;
   getMessageLikes(messageId: string): Promise<MessageLike[]>;
+
+  // Notifications
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  getUnreadNotifications(memberId: string): Promise<NotificationWithMessage[]>;
+  markNotificationAsRead(notificationId: string): Promise<boolean>;
+  markAllNotificationsAsRead(memberId: string): Promise<boolean>;
+  getUnreadNotificationCount(memberId: string): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -387,6 +394,73 @@ export class DatabaseStorage implements IStorage {
 
   async getMessageLikes(messageId: string): Promise<MessageLike[]> {
     return await db.select().from(messageLikes).where(eq(messageLikes.messageId, messageId));
+  }
+
+  // Notifications
+  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+    const [notification] = await db.insert(notifications).values(insertNotification).returning();
+    return notification;
+  }
+
+  async getUnreadNotifications(memberId: string): Promise<NotificationWithMessage[]> {
+    const notificationResults = await db
+      .select({
+        notification: notifications,
+        message: chatMessages,
+        member: members,
+        chatRoom: chatRooms,
+      })
+      .from(notifications)
+      .leftJoin(chatMessages, eq(notifications.messageId, chatMessages.id))
+      .leftJoin(members, eq(chatMessages.memberId, members.id))
+      .leftJoin(chatRooms, eq(chatMessages.chatRoomId, chatRooms.id))
+      .where(and(
+        eq(notifications.memberId, memberId),
+        eq(notifications.isRead, false)
+      ))
+      .orderBy(desc(notifications.createdAt));
+
+    return notificationResults.map(result => ({
+      ...result.notification,
+      message: {
+        ...result.message!,
+        member: result.member!,
+        likeCount: 0,
+        isLikedByCurrentUser: false,
+      },
+      chatRoom: result.chatRoom!,
+    }));
+  }
+
+  async markNotificationAsRead(notificationId: string): Promise<boolean> {
+    const [result] = await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, notificationId))
+      .returning();
+    return !!result;
+  }
+
+  async markAllNotificationsAsRead(memberId: string): Promise<boolean> {
+    const result = await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(and(
+        eq(notifications.memberId, memberId),
+        eq(notifications.isRead, false)
+      ));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getUnreadNotificationCount(memberId: string): Promise<number> {
+    const [result] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(notifications)
+      .where(and(
+        eq(notifications.memberId, memberId),
+        eq(notifications.isRead, false)
+      ));
+    return result?.count || 0;
   }
 }
 

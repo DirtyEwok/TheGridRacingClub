@@ -85,6 +85,15 @@ export const messageLikes = pgTable("message_likes", {
   createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  memberId: varchar("member_id").notNull(),
+  messageId: varchar("message_id").notNull(),
+  type: text("type").notNull(), // 'mention'
+  isRead: boolean("is_read").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const insertMemberSchema = createInsertSchema(members).pick({
   displayName: true,
   gamertag: true,
@@ -190,6 +199,12 @@ export const insertMessageLikeSchema = createInsertSchema(messageLikes).pick({
   memberId: true,
 });
 
+export const insertNotificationSchema = createInsertSchema(notifications).pick({
+  memberId: true,
+  messageId: true,
+  type: true,
+});
+
 export type InsertMember = z.infer<typeof insertMemberSchema>;
 export type UpdateMemberProfile = z.infer<typeof updateMemberProfileSchema>;
 export type ApproveMember = z.infer<typeof approveMemberSchema>;
@@ -208,6 +223,8 @@ export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertMessageLike = z.infer<typeof insertMessageLikeSchema>;
 export type MessageLike = typeof messageLikes.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
 
 export type RegistrationWithMember = Registration & {
   member?: Member;
@@ -234,4 +251,9 @@ export type ChatMessageWithMember = ChatMessage & {
 export type ChatRoomWithStats = ChatRoom & {
   messageCount: number;
   lastMessage?: ChatMessageWithMember;
+};
+
+export type NotificationWithMessage = Notification & {
+  message: ChatMessageWithMember;
+  chatRoom: ChatRoom;
 };

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema, insertMessageLikeSchema } from "@shared/schema";
+import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema, insertMessageLikeSchema, insertNotificationSchema } from "@shared/schema";
 import { z } from "zod";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
@@ -586,6 +586,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const message = await storage.createChatMessage(messageData);
       
+      // Detect mentions and create notifications
+      const mentionRegex = /@([\w\s]+)/g;
+      const mentions = [];
+      let match;
+      while ((match = mentionRegex.exec(messageData.message)) !== null) {
+        mentions.push(match[1].trim());
+      }
+
+      // Create notifications for mentioned users
+      for (const mentionedGamertag of mentions) {
+        try {
+          const mentionedMember = await storage.getMemberByGamertag(mentionedGamertag);
+          if (mentionedMember && mentionedMember.id !== messageData.memberId) {
+            await storage.createNotification({
+              memberId: mentionedMember.id,
+              messageId: message.id,
+              type: 'mention',
+            });
+          }
+        } catch (notificationError) {
+          console.error('Failed to create notification:', notificationError);
+          // Don't fail message creation if notification fails
+        }
+      }
+      
       // Get the complete message with member info for WebSocket broadcast
       const messages = await storage.getChatMessages(id, 1);
       const messageWithMember = messages[0];
@@ -692,6 +717,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Unlike message error:', error);
       res.status(500).json({ message: "Failed to unlike message" });
+    }
+  });
+
+  // Notification endpoints
+  app.get("/api/notifications/:memberId", async (req, res) => {
+    try {
+      const { memberId } = req.params;
+      const notifications = await storage.getUnreadNotifications(memberId);
+      res.json(notifications);
+    } catch (error) {
+      console.error('Get notifications error:', error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+
+  app.get("/api/notifications/:memberId/count", async (req, res) => {
+    try {
+      const { memberId } = req.params;
+      const count = await storage.getUnreadNotificationCount(memberId);
+      res.json({ count });
+    } catch (error) {
+      console.error('Get notification count error:', error);
+      res.status(500).json({ message: "Failed to fetch notification count" });
+    }
+  });
+
+  app.patch("/api/notifications/:notificationId/read", async (req, res) => {
+    try {
+      const { notificationId } = req.params;
+      const success = await storage.markNotificationAsRead(notificationId);
+      if (!success) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      res.json({ message: "Notification marked as read" });
+    } catch (error) {
+      console.error('Mark notification read error:', error);
+      res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  app.patch("/api/notifications/:memberId/read-all", async (req, res) => {
+    try {
+      const { memberId } = req.params;
+      const success = await storage.markAllNotificationsAsRead(memberId);
+      res.json({ message: "All notifications marked as read" });
+    } catch (error) {
+      console.error('Mark all notifications read error:', error);
+      res.status(500).json({ message: "Failed to mark all notifications as read" });
     }
   });
 
