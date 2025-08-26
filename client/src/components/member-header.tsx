@@ -56,7 +56,7 @@ export default function MemberHeader() {
                 {currentMember && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="ml-3 relative text-gray-300 hover:text-racing-green p-2">
+                      <button className="ml-2 relative text-gray-300 hover:text-racing-green p-2">
                         <Bell className="h-5 w-5" />
                         {unreadCount > 0 && (
                           <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
