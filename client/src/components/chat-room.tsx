@@ -75,7 +75,23 @@ export default function ChatRoomComponent({
 
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
-  const currentUser = getCurrentMember();
+  
+  // Force refresh member data to get updated admin status
+  const { data: memberData } = useQuery<Member[]>({
+    queryKey: ['/api/members'],
+  });
+  
+  let currentUser = getCurrentMember();
+  // Update local storage with fresh admin status from server if available
+  if (memberData && currentUser) {
+    const freshMemberData = memberData.find(m => m.id === currentUser.id);
+    if (freshMemberData && freshMemberData.isAdmin !== currentUser.isAdmin) {
+      // Update session with fresh admin status
+      const updatedUser = { ...currentUser, isAdmin: freshMemberData.isAdmin };
+      localStorage.setItem("grid-racing-member", JSON.stringify(updatedUser));
+      currentUser = updatedUser;
+    }
+  }
 
   // Pin/Unpin message function
   const handlePinMessage = async (messageId: string, isPinned: boolean) => {
