@@ -312,6 +312,9 @@ export class DatabaseStorage implements IStorage {
         isDeleted: chatMessages.isDeleted,
         deletedBy: chatMessages.deletedBy,
         deletedAt: chatMessages.deletedAt,
+        isPinned: chatMessages.isPinned,
+        pinnedBy: chatMessages.pinnedBy,
+        pinnedAt: chatMessages.pinnedAt,
         createdAt: chatMessages.createdAt,
         member: {
           id: members.id,
@@ -319,6 +322,18 @@ export class DatabaseStorage implements IStorage {
           gamertag: members.gamertag,
           experienceLevel: members.experienceLevel,
           isAdmin: members.isAdmin,
+          bio: members.bio,
+          favoriteTrack: members.favoriteTrack,
+          favoriteCarClass: members.favoriteCarClass,
+          carNumber: members.carNumber,
+          profileImageUrl: members.profileImageUrl,
+          streamLink: members.streamLink,
+          streamLink2: members.streamLink2,
+          status: members.status,
+          approvedBy: members.approvedBy,
+          approvedAt: members.approvedAt,
+          rejectionReason: members.rejectionReason,
+          createdAt: members.createdAt,
         },
       })
       .from(chatMessages)
@@ -420,6 +435,18 @@ export class DatabaseStorage implements IStorage {
           gamertag: members.gamertag,
           experienceLevel: members.experienceLevel,
           isAdmin: members.isAdmin,
+          bio: members.bio,
+          favoriteTrack: members.favoriteTrack,
+          favoriteCarClass: members.favoriteCarClass,
+          carNumber: members.carNumber,
+          profileImageUrl: members.profileImageUrl,
+          streamLink: members.streamLink,
+          streamLink2: members.streamLink2,
+          status: members.status,
+          approvedBy: members.approvedBy,
+          approvedAt: members.approvedAt,
+          rejectionReason: members.rejectionReason,
+          createdAt: members.createdAt,
         },
       })
       .from(chatMessages)
@@ -865,16 +892,17 @@ Server goes live at 20:00`,
   }
 
   async approveMember(approval: ApproveMember): Promise<Member | undefined> {
-    const member = this.members.get(approval.id);
+    const member = this.members.get(approval.memberId);
     if (!member) return undefined;
     
     const updatedMember = { 
       ...member, 
       status: approval.approved ? "approved" : "rejected",
       rejectionReason: approval.approved ? null : (approval.rejectionReason || null),
-      updatedAt: new Date()
+      approvedBy: "CJ DirtyEwok",
+      approvedAt: new Date()
     };
-    this.members.set(approval.id, updatedMember);
+    this.members.set(approval.memberId, updatedMember);
     return updatedMember;
   }
 
@@ -888,13 +916,14 @@ Server goes live at 20:00`,
       favoriteTrack: null,
       favoriteCarClass: null,
       carNumber: null,
-      streamLink1: null,
+      streamLink: null,
       streamLink2: null,
       profileImageUrl: null,
       status: "approved",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      rejectionReason: null
+      approvedBy: null,
+      approvedAt: null,
+      rejectionReason: null,
+      createdAt: new Date()
     };
     this.members.set(id, member);
     return member;
@@ -1302,6 +1331,43 @@ Server goes live at 20:00`,
   async getMessageLikes(messageId: string): Promise<MessageLike[]> {
     return Array.from(this.messageLikes.values())
       .filter(like => like.messageId === messageId);
+  }
+
+  // Missing methods to complete the interface
+  async deleteMember(id: string): Promise<boolean> {
+    return this.members.delete(id);
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const id = randomUUID();
+    const newNotification: Notification = {
+      ...notification,
+      id,
+      isRead: false,
+      createdAt: new Date(),
+    };
+    // For MemStorage, we don't actually store notifications, just return the created one
+    return newNotification;
+  }
+
+  async getUnreadNotifications(memberId: string): Promise<NotificationWithMessage[]> {
+    // For MemStorage, return empty array since we don't store notifications
+    return [];
+  }
+
+  async markNotificationAsRead(notificationId: string): Promise<boolean> {
+    // For MemStorage, always return true
+    return true;
+  }
+
+  async markAllNotificationsAsRead(memberId: string): Promise<boolean> {
+    // For MemStorage, always return true
+    return true;
+  }
+
+  async getUnreadNotificationCount(memberId: string): Promise<number> {
+    // For MemStorage, always return 0
+    return 0;
   }
 }
 
