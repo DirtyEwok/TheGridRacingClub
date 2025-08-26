@@ -76,6 +76,10 @@ export default function ChatRoomComponent({
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
   const currentUser = getCurrentMember();
+  
+  // Debug: log current user to see admin status
+  console.log('Current user:', currentUser);
+  console.log('Is admin:', currentUser?.isAdmin);
 
   // Pin/Unpin message function
   const handlePinMessage = async (messageId: string, isPinned: boolean) => {
