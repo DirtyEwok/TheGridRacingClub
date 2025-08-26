@@ -407,7 +407,8 @@ export default function ChatRoomComponent({
             <div>
               <h3 className="text-lg font-semibold text-white">{chatRoom.name}</h3>
               <p className="text-sm text-gray-400">
-                {chatRoom.type === "general" ? "General Discussion" : "Championship Chat"}
+                {chatRoom.type === "general" ? "General Discussion" : 
+                 chatRoom.type === "military" ? "UKAU Operations" : "Championship Chat"}
               </p>
             </div>
             <div className="flex items-center gap-2">
