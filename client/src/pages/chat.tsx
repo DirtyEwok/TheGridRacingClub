@@ -284,7 +284,10 @@ Neil Broom aka Neilb`;
                         <Settings className="w-3 h-3 flex-shrink-0" />
                       )}
                       <span className="font-medium truncate">
-                        {room.type === 'military' ? 'UKAU' : room.name.replace(' Chat', '').replace('Discussion', '')}
+                        {room.type === 'military' ? 'UKAU' : 
+                         room.name.includes('GT4') ? 'GT4' :
+                         room.name.includes('GT3') ? 'GT3' :
+                         room.name.replace(' Chat', '').replace('Discussion', '').replace('General ', '')}
                       </span>
                     </Button>
                   ))}
