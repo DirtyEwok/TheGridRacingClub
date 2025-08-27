@@ -379,6 +379,30 @@ export default function ChatRoomComponent({
     return [...webUrls, ...objectPaths];
   };
 
+  // Function to detect YouTube URLs
+  const detectYouTubeUrls = (text: string) => {
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
+    const matches = [];
+    let match;
+    while ((match = youtubeRegex.exec(text)) !== null) {
+      matches.push({
+        url: match[0],
+        videoId: match[1],
+        fullMatch: match[0]
+      });
+    }
+    return matches;
+  };
+
+  // Function to get YouTube video info
+  const getYouTubeVideoInfo = (videoId: string) => {
+    return {
+      thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+      title: `YouTube Video`,
+      url: `https://www.youtube.com/watch?v=${videoId}`
+    };
+  };
+
   const detectVideoUrls = (messageText: string) => {
     const videoUrls: Array<{ url: string; platform: string; videoId: string; thumbnail: string }> = [];
     
@@ -633,14 +657,25 @@ export default function ChatRoomComponent({
                   )}
                 </div>
                 <div className="text-gray-300 w-full">
-                  {/* Only show text if there are no images or if text has content beyond image URLs */}
+                  {/* Only show text if there are no images/videos or if text has content beyond URLs */}
                   {(() => {
                     const imageUrls = detectImageUrls(message.message);
-                    const messageWithoutImages = imageUrls.reduce((text, url) => text.replace(url, '').trim(), message.message);
+                    const youtubeVideos = detectYouTubeUrls(message.message);
+                    let messageWithoutMedia = message.message;
                     
-                    return messageWithoutImages && (
+                    // Remove image URLs
+                    imageUrls.forEach(url => {
+                      messageWithoutMedia = messageWithoutMedia.replace(url, '').trim();
+                    });
+                    
+                    // Remove YouTube URLs
+                    youtubeVideos.forEach(video => {
+                      messageWithoutMedia = messageWithoutMedia.replace(video.fullMatch, '').trim();
+                    });
+                    
+                    return messageWithoutMedia && (
                       <p className="mb-2 break-words overflow-wrap-anywhere">
-                        {renderMessageWithMentions(messageWithoutImages)}
+                        {renderMessageWithMentions(messageWithoutMedia)}
                       </p>
                     );
                   })()}
@@ -662,6 +697,43 @@ export default function ChatRoomComponent({
                       />
                     </div>
                   ))}
+
+                  {/* Show YouTube video previews */}
+                  {detectYouTubeUrls(message.message).map((video, videoIndex) => {
+                    const videoInfo = getYouTubeVideoInfo(video.videoId);
+                    return (
+                      <div key={videoIndex} className="mt-2 bg-gray-800 rounded-lg border border-gray-700 overflow-hidden max-w-sm">
+                        <div className="cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(videoInfo.url, '_blank')}>
+                          <div className="relative">
+                            <img
+                              src={videoInfo.thumbnail}
+                              alt="YouTube Video Thumbnail"
+                              className="w-full h-32 object-cover"
+                              onError={(e) => {
+                                // If maxresdefault fails, try default thumbnail
+                                e.currentTarget.src = `https://img.youtube.com/vi/${video.videoId}/default.jpg`;
+                              }}
+                            />
+                            {/* YouTube play button overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="bg-red-600 rounded-full p-3 opacity-90 hover:opacity-100 transition-opacity">
+                                <Play className="w-6 h-6 text-white fill-current" />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="p-3">
+                            <div className="flex items-center gap-2">
+                              <div className="text-red-600">
+                                <Play className="w-4 h-4 fill-current" />
+                              </div>
+                              <span className="text-sm text-gray-300 font-medium">YouTube Video</span>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1 truncate">{video.url}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
 
                   {/* Like button and count */}
                   <div className="flex items-center gap-2 mt-2">
