@@ -256,8 +256,8 @@ Neil Broom aka Neilb`;
             <Tabs value={selectedChatRoom || ""} onValueChange={setSelectedChatRoom} className="h-full flex flex-col">
               {/* Mobile: Fixed width tabs */}
               <div className="lg:hidden mb-4">
-                <div className="grid grid-cols-3 gap-1 p-1 bg-gray-800 rounded-lg">
-                  {chatRooms?.filter(room => room.type !== 'military').sort((a, b) => {
+                <div className="grid grid-cols-4 gap-1 p-1 bg-gray-800 rounded-lg">
+                  {chatRooms?.sort((a, b) => {
                     if (a.type === 'general') return -1;
                     if (b.type === 'general') return 1;
                     if (a.name.includes('GT4')) return -1;
@@ -278,11 +278,13 @@ Neil Broom aka Neilb`;
                     >
                       {room.type === 'general' ? (
                         <Users className="w-3 h-3 flex-shrink-0" />
+                      ) : room.type === 'military' ? (
+                        <span className="text-xs">🎖️</span>
                       ) : (
                         <Settings className="w-3 h-3 flex-shrink-0" />
                       )}
                       <span className="font-medium truncate">
-                        {room.name.replace(' Chat', '').replace('Discussion', '')}
+                        {room.type === 'military' ? 'UKAU' : room.name.replace(' Chat', '').replace('Discussion', '')}
                       </span>
                     </Button>
                   ))}
@@ -290,8 +292,8 @@ Neil Broom aka Neilb`;
               </div>
 
               {/* Desktop: Grid tabs at top */}
-              <TabsList className="hidden lg:grid w-full bg-gray-800 border-b border-gray-700 mb-4" style={{ gridTemplateColumns: `repeat(${chatRooms?.filter(room => room.type !== 'military').length || 1}, minmax(0, 1fr))` }}>
-                {chatRooms?.filter(room => room.type !== 'military').sort((a, b) => {
+              <TabsList className="hidden lg:grid w-full bg-gray-800 border-b border-gray-700 mb-4" style={{ gridTemplateColumns: `repeat(${chatRooms?.length || 1}, minmax(0, 1fr))` }}>
+                {chatRooms?.sort((a, b) => {
                   // Sort order: General first, then GT4, then GT3, then others
                   if (a.type === 'general') return -1;
                   if (b.type === 'general') return 1;
@@ -308,10 +310,12 @@ Neil Broom aka Neilb`;
                   >
                     {room.type === 'general' ? (
                       <Users className="w-4 h-4 flex-shrink-0" />
+                    ) : room.type === 'military' ? (
+                      <span className="text-sm">🎖️</span>
                     ) : (
                       <Settings className="w-4 h-4 flex-shrink-0" />
                     )}
-                    <span className="font-medium text-sm">{room.name}</span>
+                    <span className="font-medium text-sm">{room.type === 'military' ? 'UKAU Operations' : room.name}</span>
                   </TabsTrigger>
                 ))}
               </TabsList>
