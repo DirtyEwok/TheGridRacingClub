@@ -650,9 +650,10 @@ export default function ChatRoomComponent({
               </div>
             )}
 
-            {/* Regular Messages */}
-            {messages.map((message) => (
-            <div key={message.id} className="flex gap-3 w-full p-4 max-w-4xl">
+            {/* Regular Messages - Limited to 12 with scrolling */}
+            <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              {messages.slice(-12).map((message) => (
+              <div key={message.id} className="flex gap-3 w-full p-4 max-w-4xl">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-racing-green rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-white">
@@ -902,6 +903,7 @@ export default function ChatRoomComponent({
               </div>
             </div>
           ))}
+            </div>
           <div ref={messagesEndRef} />
         </div>
         </ScrollArea>
