@@ -1195,7 +1195,6 @@ Server goes live at 20:00`,
       if (member) {
         messagesWithMembers.push({
           ...message,
-          replyToMessageId: null,
           member,
           likeCount: 0,
           isLikedByCurrentUser: false,
