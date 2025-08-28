@@ -392,7 +392,13 @@ export default function ChatRoomComponent({
 
   // Function to check if URL is a video
   const isVideoUrl = (url: string) => {
-    return /\.(mp4|mov|avi|mkv|webm)(\?[^\s]*)?$/i.test(url);
+    // Check for direct video file extensions
+    const hasVideoExtension = /\.(mp4|mov|avi|mkv|webm)(\?[^\s]*)?$/i.test(url);
+    // For uploaded files, we need to assume /objects/uploads/ paths could be videos
+    // since they don't have file extensions in the URL
+    const isUploadedFile = url.startsWith('/objects/uploads/');
+    
+    return hasVideoExtension || isUploadedFile;
   };
 
   // Function to detect YouTube URLs
