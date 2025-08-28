@@ -4,7 +4,7 @@ import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply } from "lucide-react";
 import { ObjectUploader } from "./ObjectUploader";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
@@ -26,6 +26,7 @@ export default function ChatRoomComponent({
 }: ChatRoomProps) {
   const [messageText, setMessageText] = useState(messageDraft);
   const [isSending, setIsSending] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<ChatMessageWithMember | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Check if this is the UKAU chat room for special styling
@@ -292,6 +293,7 @@ export default function ChatRoomComponent({
         body: JSON.stringify({
           message: messageText.trim(),
           memberId: currentMemberId,
+          replyToMessageId: replyingTo?.id || null,
         }),
       });
       
@@ -299,6 +301,7 @@ export default function ChatRoomComponent({
       
       if (response.ok) {
         setMessageText("");
+        setReplyingTo(null);
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
@@ -615,6 +618,17 @@ export default function ChatRoomComponent({
                   <span className="text-xs text-gray-400">
                     {formatMessageTime(message.createdAt)}
                   </span>
+                  {/* Reply button */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:bg-blue-600 hover:text-white opacity-70 hover:opacity-100"
+                    onClick={() => setReplyingTo(message)}
+                    title="Reply to message"
+                    data-testid="button-reply-message"
+                  >
+                    <Reply className="w-4 h-4" />
+                  </Button>
                   {/* Pin button for admin only */}
                   {currentUser?.isAdmin && (
                     <Button
@@ -653,6 +667,37 @@ export default function ChatRoomComponent({
                     </Button>
                   )}
                 </div>
+                
+                {/* Reply Context Display */}
+                {message.replyToMessageId && (() => {
+                  const replyToMessage = messages.find(m => m.id === message.replyToMessageId);
+                  return replyToMessage ? (
+                    <div className="mb-2 pl-4 border-l-2 border-blue-500 bg-gray-800/30 rounded-r p-2">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Reply className="w-3 h-3 text-blue-400" />
+                        <span className="text-xs text-blue-400 font-medium">
+                          Replying to {replyToMessage.member.gamertag}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-400 max-h-12 overflow-hidden">
+                        {replyToMessage.message.length > 80 ? 
+                          `${replyToMessage.message.substring(0, 80)}...` : 
+                          replyToMessage.message
+                        }
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mb-2 pl-4 border-l-2 border-gray-600 bg-gray-800/30 rounded-r p-2">
+                      <div className="flex items-center gap-2">
+                        <Reply className="w-3 h-3 text-gray-500" />
+                        <span className="text-xs text-gray-500 font-medium italic">
+                          Replied to a deleted message
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
+                
                 <div className="text-gray-300 w-full">
                   {/* Only show text if there are no images/videos or if text has content beyond URLs */}
                   {(() => {
@@ -792,6 +837,31 @@ export default function ChatRoomComponent({
 
       {/* Message Input */}
       <div className="border-t border-gray-800 p-4">
+        {/* Reply Context */}
+        {replyingTo && (
+          <div className="mb-3 p-3 bg-gray-800 border border-gray-600 rounded-md">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-blue-400 font-medium">
+                Replying to {replyingTo.member.gamertag}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 hover:bg-gray-700"
+                onClick={() => setReplyingTo(null)}
+                title="Cancel reply"
+              >
+                ×
+              </Button>
+            </div>
+            <div className="text-sm text-gray-300 bg-gray-900 p-2 rounded border-l-4 border-blue-500 max-h-20 overflow-y-auto">
+              {replyingTo.message.length > 100 ? 
+                `${replyingTo.message.substring(0, 100)}...` : 
+                replyingTo.message
+              }
+            </div>
+          </div>
+        )}
         <form onSubmit={handleSendMessage} className="space-y-3">
           <div className="flex gap-2 relative">
             <div className="flex-1 relative">

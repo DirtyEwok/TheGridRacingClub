@@ -309,6 +309,7 @@ export class DatabaseStorage implements IStorage {
         chatRoomId: chatMessages.chatRoomId,
         memberId: chatMessages.memberId,
         message: chatMessages.message,
+        replyToMessageId: chatMessages.replyToMessageId,
         isDeleted: chatMessages.isDeleted,
         deletedBy: chatMessages.deletedBy,
         deletedAt: chatMessages.deletedAt,
@@ -422,6 +423,7 @@ export class DatabaseStorage implements IStorage {
         chatRoomId: chatMessages.chatRoomId,
         memberId: chatMessages.memberId,
         message: chatMessages.message,
+        replyToMessageId: chatMessages.replyToMessageId,
         isDeleted: chatMessages.isDeleted,
         deletedBy: chatMessages.deletedBy,
         deletedAt: chatMessages.deletedAt,
@@ -1193,6 +1195,7 @@ Server goes live at 20:00`,
       if (member) {
         messagesWithMembers.push({
           ...message,
+          replyToMessageId: null,
           member,
           likeCount: 0,
           isLikedByCurrentUser: false,

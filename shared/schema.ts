@@ -72,6 +72,7 @@ export const chatMessages = pgTable("chat_messages", {
   chatRoomId: varchar("chat_room_id").notNull(),
   memberId: varchar("member_id").notNull(),
   message: text("message").notNull(),
+  replyToMessageId: varchar("reply_to_message_id"), // ID of the message this is replying to
   isDeleted: boolean("is_deleted").notNull().default(false),
   deletedBy: varchar("deleted_by"),
   deletedAt: timestamp("deleted_at"),
