@@ -348,6 +348,7 @@ export default function ChatRoomComponent({
             if (part.startsWith('@')) {
               const mentionedGamertag = part.substring(1);
               const isCurrentUser = currentUser?.gamertag.toLowerCase() === mentionedGamertag.toLowerCase();
+              const isEveryoneMention = mentionedGamertag.toLowerCase() === 'everyone';
               
               return (
                 <span
@@ -355,6 +356,8 @@ export default function ChatRoomComponent({
                   className={`font-semibold px-1 rounded ${
                     isCurrentUser 
                       ? 'bg-orange-500 text-white' 
+                      : isEveryoneMention
+                      ? 'bg-red-600 text-white'
                       : 'text-orange-400 hover:text-orange-300'
                   }`}
                 >

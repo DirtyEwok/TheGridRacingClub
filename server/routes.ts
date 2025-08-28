@@ -594,20 +594,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mentions.push(match[1].trim());
       }
 
-      // Create notifications for mentioned users
-      for (const mentionedGamertag of mentions) {
+      // Check if @everyone is mentioned
+      const hasEveryoneMention = mentions.some(mention => mention.toLowerCase() === 'everyone');
+
+      if (hasEveryoneMention) {
+        // Create notifications for all members except the sender
         try {
-          const mentionedMember = await storage.getMemberByGamertag(mentionedGamertag);
-          if (mentionedMember && mentionedMember.id !== messageData.memberId) {
-            await storage.createNotification({
-              memberId: mentionedMember.id,
-              messageId: message.id,
-              type: 'mention',
-            });
+          const allMembers = await storage.getMembers();
+          for (const member of allMembers) {
+            if (member.id !== messageData.memberId) {
+              await storage.createNotification({
+                memberId: member.id,
+                messageId: message.id,
+                type: 'mention',
+              });
+            }
           }
         } catch (notificationError) {
-          console.error('Failed to create notification:', notificationError);
-          // Don't fail message creation if notification fails
+          console.error('Failed to create @everyone notifications:', notificationError);
+        }
+      } else {
+        // Create notifications for individual mentioned users
+        for (const mentionedGamertag of mentions) {
+          try {
+            const mentionedMember = await storage.getMemberByGamertag(mentionedGamertag);
+            if (mentionedMember && mentionedMember.id !== messageData.memberId) {
+              await storage.createNotification({
+                memberId: mentionedMember.id,
+                messageId: message.id,
+                type: 'mention',
+              });
+            }
+          } catch (notificationError) {
+            console.error('Failed to create notification:', notificationError);
+            // Don't fail message creation if notification fails
+          }
         }
       }
       
