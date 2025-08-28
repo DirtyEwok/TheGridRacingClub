@@ -78,7 +78,7 @@ export default function ChatRoomComponent({
   });
 
   // Fetch polls for this chat room
-  const { data: polls = [], refetch: refetchPolls } = useQuery<PollWithDetails[]>({
+  const { data: polls = [], refetch: refetchPolls, isLoading: pollsLoading } = useQuery<PollWithDetails[]>({
     queryKey: ['/api/chat-rooms', chatRoom.id, 'polls'],
     queryFn: async () => {
       const currentUser = getCurrentMember();
@@ -89,9 +89,11 @@ export default function ChatRoomComponent({
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/polls?${params}`);
       if (!response.ok) throw new Error('Failed to fetch polls');
       const data = await response.json();
-      console.log('Polls fetched:', data); // Debug log
+      console.log('Polls fetched for room:', chatRoom.id, 'data:', data); // Debug log
       return data;
     },
+    staleTime: 0, // Always refetch
+    gcTime: 0, // Don't cache
   });
 
   const queryClient = useQueryClient();
@@ -634,8 +636,11 @@ export default function ChatRoomComponent({
                 ))}
               </div>
             )}
-            {polls.length === 0 && (
-              <div className="px-4 text-gray-500 text-sm">No polls yet (polls: {JSON.stringify(polls)})</div>
+            {pollsLoading && (
+              <div className="px-4 text-gray-500 text-sm">Loading polls...</div>
+            )}
+            {!pollsLoading && polls.length === 0 && (
+              <div className="px-4 text-gray-500 text-sm">No polls yet (length: {polls.length}, chatRoom: {chatRoom.id})</div>
             )}
 
             {/* Regular Messages */}
@@ -978,6 +983,8 @@ export default function ChatRoomComponent({
               chatRoomId={chatRoom.id}
               currentMemberId={currentMemberId}
               onPollCreated={() => {
+                // Invalidate and refetch polls
+                queryClient.invalidateQueries({ queryKey: ['/api/chat-rooms', chatRoom.id, 'polls'] });
                 refetchPolls();
               }}
             >
