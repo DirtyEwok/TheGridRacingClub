@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, type Notification, type InsertNotification, type NotificationWithMessage, members, championships, races, registrations, chatRooms, chatMessages, messageLikes, notifications } from "@shared/schema";
+import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, type Notification, type InsertNotification, type NotificationWithMessage, type Poll, type InsertPoll, type PollOption, type InsertPollOption, type PollVote, type InsertPollVote, type PollWithDetails, type PollOptionWithVotes, members, championships, races, registrations, chatRooms, chatMessages, messageLikes, notifications, polls, pollOptions, pollVotes } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -64,6 +64,14 @@ export interface IStorage {
   markNotificationAsRead(notificationId: string): Promise<boolean>;
   markAllNotificationsAsRead(memberId: string): Promise<boolean>;
   getUnreadNotificationCount(memberId: string): Promise<number>;
+
+  // Polls
+  createPoll(poll: InsertPoll, options: string[]): Promise<Poll>;
+  getPollsInChatRoom(chatRoomId: string, currentUserId?: string): Promise<PollWithDetails[]>;
+  getPoll(pollId: string, currentUserId?: string): Promise<PollWithDetails | undefined>;
+  votePoll(pollId: string, optionId: string, memberId: string): Promise<boolean>;
+  unvotePoll(pollId: string, optionId: string, memberId: string): Promise<boolean>;
+  closePoll(pollId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -575,6 +583,61 @@ export class DatabaseStorage implements IStorage {
         eq(notifications.isRead, false)
       ));
     return result?.count || 0;
+  }
+
+  // Polls
+  async createPoll(poll: InsertPoll, options: string[]): Promise<Poll> {
+    const [newPoll] = await db.insert(polls).values(poll).returning();
+    
+    // Insert poll options
+    for (let i = 0; i < options.length; i++) {
+      await db.insert(pollOptions).values({
+        pollId: newPoll.id,
+        text: options[i],
+        displayOrder: i,
+      });
+    }
+    
+    return newPoll;
+  }
+
+  async getPollsInChatRoom(chatRoomId: string, currentUserId?: string): Promise<PollWithDetails[]> {
+    // Simple implementation - return empty for now
+    return [];
+  }
+
+  async getPoll(pollId: string, currentUserId?: string): Promise<PollWithDetails | undefined> {
+    // Simple implementation - return undefined for now
+    return undefined;
+  }
+
+  async votePoll(pollId: string, optionId: string, memberId: string): Promise<boolean> {
+    try {
+      await db.insert(pollVotes).values({
+        pollId,
+        optionId,
+        memberId,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async unvotePoll(pollId: string, optionId: string, memberId: string): Promise<boolean> {
+    const result = await db.delete(pollVotes).where(and(
+      eq(pollVotes.pollId, pollId),
+      eq(pollVotes.optionId, optionId),
+      eq(pollVotes.memberId, memberId)
+    ));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async closePoll(pollId: string): Promise<boolean> {
+    const result = await db.update(polls)
+      .set({ isActive: false })
+      .where(eq(polls.id, pollId));
+    return (result.rowCount ?? 0) > 0;
   }
 }
 
@@ -1210,6 +1273,7 @@ Server goes live at 20:00`,
     const message: ChatMessage = {
       ...insertChatMessage,
       id,
+      replyToMessageId: insertChatMessage.replyToMessageId || null,
       isDeleted: false,
       deletedBy: null,
       deletedAt: null,
@@ -1370,6 +1434,45 @@ Server goes live at 20:00`,
   async getUnreadNotificationCount(memberId: string): Promise<number> {
     // For MemStorage, always return 0
     return 0;
+  }
+
+  // Polls - Simple in-memory implementation
+  async createPoll(poll: InsertPoll, options: string[]): Promise<Poll> {
+    const id = randomUUID();
+    const newPoll: Poll = {
+      ...poll,
+      id,
+      isActive: true,
+      createdAt: new Date(),
+      expiresAt: poll.expiresAt || null,
+    };
+    // For MemStorage, we don't store polls yet, just return the created poll
+    return newPoll;
+  }
+
+  async getPollsInChatRoom(chatRoomId: string, currentUserId?: string): Promise<PollWithDetails[]> {
+    // For MemStorage, return empty array
+    return [];
+  }
+
+  async getPoll(pollId: string, currentUserId?: string): Promise<PollWithDetails | undefined> {
+    // For MemStorage, return undefined
+    return undefined;
+  }
+
+  async votePoll(pollId: string, optionId: string, memberId: string): Promise<boolean> {
+    // For MemStorage, always return true
+    return true;
+  }
+
+  async unvotePoll(pollId: string, optionId: string, memberId: string): Promise<boolean> {
+    // For MemStorage, always return true
+    return true;
+  }
+
+  async closePoll(pollId: string): Promise<boolean> {
+    // For MemStorage, always return true
+    return true;
   }
 }
 

@@ -98,6 +98,32 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const polls = pgTable("polls", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  chatRoomId: varchar("chat_room_id").notNull(),
+  createdBy: varchar("created_by").notNull(),
+  question: text("question").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  allowMultipleVotes: boolean("allow_multiple_votes").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  expiresAt: timestamp("expires_at"),
+});
+
+export const pollOptions = pgTable("poll_options", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pollId: varchar("poll_id").notNull(),
+  text: text("text").notNull(),
+  displayOrder: integer("display_order").notNull().default(0),
+});
+
+export const pollVotes = pgTable("poll_votes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pollId: varchar("poll_id").notNull(),
+  optionId: varchar("option_id").notNull(),
+  memberId: varchar("member_id").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const insertMemberSchema = createInsertSchema(members).pick({
   displayName: true,
   gamertag: true,
@@ -209,6 +235,26 @@ export const insertNotificationSchema = createInsertSchema(notifications).pick({
   type: true,
 });
 
+export const insertPollSchema = createInsertSchema(polls).pick({
+  chatRoomId: true,
+  createdBy: true,
+  question: true,
+  allowMultipleVotes: true,
+  expiresAt: true,
+});
+
+export const insertPollOptionSchema = createInsertSchema(pollOptions).pick({
+  pollId: true,
+  text: true,
+  displayOrder: true,
+});
+
+export const insertPollVoteSchema = createInsertSchema(pollVotes).pick({
+  pollId: true,
+  optionId: true,
+  memberId: true,
+});
+
 export type InsertMember = z.infer<typeof insertMemberSchema>;
 export type UpdateMemberProfile = z.infer<typeof updateMemberProfileSchema>;
 export type ApproveMember = z.infer<typeof approveMemberSchema>;
@@ -229,6 +275,12 @@ export type InsertMessageLike = z.infer<typeof insertMessageLikeSchema>;
 export type MessageLike = typeof messageLikes.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
+export type InsertPoll = z.infer<typeof insertPollSchema>;
+export type Poll = typeof polls.$inferSelect;
+export type InsertPollOption = z.infer<typeof insertPollOptionSchema>;
+export type PollOption = typeof pollOptions.$inferSelect;
+export type InsertPollVote = z.infer<typeof insertPollVoteSchema>;
+export type PollVote = typeof pollVotes.$inferSelect;
 
 export type RegistrationWithMember = Registration & {
   member?: Member;
@@ -260,4 +312,16 @@ export type ChatRoomWithStats = ChatRoom & {
 export type NotificationWithMessage = Notification & {
   message: ChatMessageWithMember;
   chatRoom: ChatRoom;
+};
+
+export type PollOptionWithVotes = PollOption & {
+  voteCount: number;
+  hasUserVoted: boolean;
+};
+
+export type PollWithDetails = Poll & {
+  options: PollOptionWithVotes[];
+  totalVotes: number;
+  hasUserVoted: boolean;
+  creator: Member;
 };

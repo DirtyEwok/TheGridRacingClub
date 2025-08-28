@@ -4,8 +4,9 @@ import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply, BarChart3 } from "lucide-react";
 import { ObjectUploader } from "./ObjectUploader";
+import { PollCreator } from "./PollCreator";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
 import { type ChatRoom, type ChatMessageWithMember } from "@shared/schema";
@@ -914,6 +915,22 @@ export default function ChatRoomComponent({
             >
               <Image className="w-4 h-4" />
             </ObjectUploader>
+            <PollCreator
+              chatRoomId={chatRoom.id}
+              currentMemberId={currentMemberId}
+              onPollCreated={() => {
+                // Refresh messages to show new poll
+              }}
+            >
+              <button
+                type="button"
+                className="h-10 w-10 p-0 bg-gray-700 hover:bg-gray-600 rounded-md flex items-center justify-center touch-manipulation"
+                title="Create poll"
+                data-testid="button-create-poll"
+              >
+                <BarChart3 className="w-4 h-4" />
+              </button>
+            </PollCreator>
             <button
               type="submit"
               disabled={!messageText.trim() || isSending}

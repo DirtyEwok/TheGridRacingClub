@@ -859,6 +859,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Poll endpoints
+  app.post("/api/chat-rooms/:chatRoomId/polls", async (req, res) => {
+    try {
+      const { chatRoomId } = req.params;
+      const { question, options, createdBy, allowMultipleVotes, expiresAt } = req.body;
+
+      if (!question || !options || !Array.isArray(options) || options.length < 2) {
+        return res.status(400).json({ message: "Question and at least 2 options are required" });
+      }
+
+      if (!createdBy) {
+        return res.status(400).json({ message: "Creator is required" });
+      }
+
+      // Check if member exists
+      const member = await storage.getMember(createdBy);
+      if (!member) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+
+      // Check if chat room exists
+      const chatRoom = await storage.getChatRoom(chatRoomId);
+      if (!chatRoom) {
+        return res.status(404).json({ message: "Chat room not found" });
+      }
+
+      const poll = await storage.createPoll({
+        chatRoomId,
+        createdBy,
+        question,
+        allowMultipleVotes: allowMultipleVotes || false,
+        expiresAt: expiresAt ? new Date(expiresAt) : null,
+      }, options);
+
+      res.status(201).json(poll);
+    } catch (error) {
+      console.error('Create poll error:', error);
+      res.status(500).json({ message: "Failed to create poll" });
+    }
+  });
+
+  app.post("/api/polls/:pollId/vote", async (req, res) => {
+    try {
+      const { pollId } = req.params;
+      const { optionId, memberId } = req.body;
+
+      if (!optionId || !memberId) {
+        return res.status(400).json({ message: "Option ID and Member ID are required" });
+      }
+
+      const success = await storage.votePoll(pollId, optionId, memberId);
+      if (!success) {
+        return res.status(400).json({ message: "Failed to vote" });
+      }
+
+      res.json({ message: "Vote recorded successfully" });
+    } catch (error) {
+      console.error('Vote poll error:', error);
+      res.status(500).json({ message: "Failed to vote" });
+    }
+  });
+
   // Object Storage endpoints for image uploads
   app.get("/objects/:objectPath(*)", async (req, res) => {
     const objectStorageService = new ObjectStorageService();
