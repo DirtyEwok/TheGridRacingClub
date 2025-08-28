@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
@@ -7,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply, BarChart3 } from "lucide-react";
 import { ObjectUploader } from "./ObjectUploader";
 import { PollCreator } from "./PollCreator";
+import { PollDisplay } from "./PollDisplay";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
-import { type ChatRoom, type ChatMessageWithMember } from "@shared/schema";
+import { type ChatRoom, type ChatMessageWithMember, type PollWithDetails } from "@shared/schema";
 import { getCurrentMember } from "@/lib/memberSession";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface ChatRoomProps {
   chatRoom: ChatRoom;
@@ -74,6 +76,44 @@ export default function ChatRoomComponent({
   const { data: allMembers = [] } = useQuery<Member[]>({
     queryKey: ['/api/members'],
   });
+
+  // Fetch polls for this chat room
+  const { data: polls = [], refetch: refetchPolls } = useQuery<PollWithDetails[]>({
+    queryKey: ['/api/chat-rooms', chatRoom.id, 'polls'],
+    queryFn: async () => {
+      const currentUser = getCurrentMember();
+      const params = new URLSearchParams();
+      if (currentUser?.id) {
+        params.append('userId', currentUser.id);
+      }
+      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/polls?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch polls');
+      return response.json();
+    },
+  });
+
+  const queryClient = useQueryClient();
+
+  // Vote on poll mutation
+  const voteMutation = useMutation({
+    mutationFn: async ({ pollId, optionId }: { pollId: string; optionId: string }) => {
+      const response = await fetch(`/api/polls/${pollId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ optionId, memberId: currentMemberId }),
+      });
+      if (!response.ok) throw new Error('Failed to vote');
+      return response.json();
+    },
+    onSuccess: () => {
+      // Refetch polls to update vote counts
+      refetchPolls();
+    },
+  });
+
+  const handleVote = async (pollId: string, optionId: string) => {
+    await voteMutation.mutateAsync({ pollId, optionId });
+  };
 
   // Use WebSocket hook for real-time messages
   const { messages, setMessages, isConnected, sendMessage, deleteMessage } = useChat(chatRoom.id);
@@ -579,6 +619,20 @@ export default function ChatRoomComponent({
               </div>
             )}
 
+            {/* Polls */}
+            {polls.length > 0 && (
+              <div className="px-4">
+                {polls.map((poll) => (
+                  <PollDisplay
+                    key={poll.id}
+                    poll={poll}
+                    currentMemberId={currentMemberId}
+                    onVote={handleVote}
+                  />
+                ))}
+              </div>
+            )}
+
             {/* Regular Messages */}
             {messages.map((message) => (
             <div key={message.id} className="flex gap-3 w-full p-4 max-w-4xl">
@@ -919,7 +973,7 @@ export default function ChatRoomComponent({
               chatRoomId={chatRoom.id}
               currentMemberId={currentMemberId}
               onPollCreated={() => {
-                // Refresh messages to show new poll
+                refetchPolls();
               }}
             >
               <button

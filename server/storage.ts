@@ -602,8 +602,61 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPollsInChatRoom(chatRoomId: string, currentUserId?: string): Promise<PollWithDetails[]> {
-    // Simple implementation - return empty for now
-    return [];
+    const pollsWithDetails: PollWithDetails[] = [];
+    
+    const chatRoomPolls = await db
+      .select()
+      .from(polls)
+      .where(eq(polls.chatRoomId, chatRoomId))
+      .orderBy(desc(polls.createdAt));
+
+    for (const poll of chatRoomPolls) {
+      // Get poll options
+      const options = await db
+        .select()
+        .from(pollOptions)
+        .where(eq(pollOptions.pollId, poll.id))
+        .orderBy(pollOptions.displayOrder);
+
+      // Get vote counts and user votes
+      const optionsWithVotes: PollOptionWithVotes[] = [];
+      let totalVotes = 0;
+      let hasUserVoted = false;
+
+      for (const option of options) {
+        const votes = await db
+          .select()
+          .from(pollVotes)
+          .where(eq(pollVotes.optionId, option.id));
+        
+        const hasUserVotedForOption = currentUserId ? 
+          votes.some(vote => vote.memberId === currentUserId) : false;
+        
+        if (hasUserVotedForOption) hasUserVoted = true;
+        
+        optionsWithVotes.push({
+          ...option,
+          voteCount: votes.length,
+          hasUserVoted: hasUserVotedForOption,
+        });
+        
+        totalVotes += votes.length;
+      }
+
+      // Get creator info
+      const creator = await this.getMember(poll.createdBy);
+      if (!creator) continue;
+
+      pollsWithDetails.push({
+        ...poll,
+        options: optionsWithVotes,
+        totalVotes,
+        hasUserVoted,
+        creator,
+      });
+    }
+
+    return pollsWithDetails;
   }
 
   async getPoll(pollId: string, currentUserId?: string): Promise<PollWithDetails | undefined> {

@@ -900,6 +900,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/chat-rooms/:chatRoomId/polls", async (req, res) => {
+    try {
+      const { chatRoomId } = req.params;
+      const currentUserId = req.query.userId as string;
+
+      const polls = await storage.getPollsInChatRoom(chatRoomId, currentUserId);
+      res.json(polls);
+    } catch (error) {
+      console.error('Get polls error:', error);
+      res.status(500).json({ message: "Failed to fetch polls" });
+    }
+  });
+
   app.post("/api/polls/:pollId/vote", async (req, res) => {
     try {
       const { pollId } = req.params;
