@@ -88,7 +88,9 @@ export default function ChatRoomComponent({
       }
       const response = await fetch(`/api/chat-rooms/${chatRoom.id}/polls?${params}`);
       if (!response.ok) throw new Error('Failed to fetch polls');
-      return response.json();
+      const data = await response.json();
+      console.log('Polls fetched:', data); // Debug log
+      return data;
     },
   });
 
@@ -631,6 +633,9 @@ export default function ChatRoomComponent({
                   />
                 ))}
               </div>
+            )}
+            {polls.length === 0 && (
+              <div className="px-4 text-gray-500 text-sm">No polls yet (polls: {JSON.stringify(polls)})</div>
             )}
 
             {/* Regular Messages */}
