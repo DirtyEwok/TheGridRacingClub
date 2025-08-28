@@ -376,7 +376,23 @@ export default function ChatRoomComponent({
     const webUrls = messageText.match(imageRegex) || [];
     const objectPaths = messageText.match(objectPathRegex) || [];
     
-    return [...webUrls, ...objectPaths];
+    return [...webUrls, ...objectPaths].filter(url => !isVideoUrl(url));
+  };
+
+  // Function to detect video URLs (MP4, etc.)
+  const detectVideoUrls = (messageText: string) => {
+    const videoRegex = /(https?:\/\/[^\s]+\.(?:mp4|mov|avi|mkv|webm))/gi;
+    const objectPathRegex = /\/objects\/[^\s]+/gi;
+    
+    const webUrls = messageText.match(videoRegex) || [];
+    const objectPaths = messageText.match(objectPathRegex) || [];
+    
+    return [...webUrls, ...objectPaths].filter(url => isVideoUrl(url));
+  };
+
+  // Function to check if URL is a video
+  const isVideoUrl = (url: string) => {
+    return /\.(mp4|mov|avi|mkv|webm)(\?[^\s]*)?$/i.test(url);
   };
 
   // Function to detect YouTube URLs
@@ -403,34 +419,6 @@ export default function ChatRoomComponent({
     };
   };
 
-  const detectVideoUrls = (messageText: string) => {
-    const videoUrls: Array<{ url: string; platform: string; videoId: string; thumbnail: string }> = [];
-    
-    // YouTube detection
-    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
-    let match;
-    while ((match = youtubeRegex.exec(messageText)) !== null) {
-      videoUrls.push({
-        url: match[0],
-        platform: 'YouTube',
-        videoId: match[1],
-        thumbnail: `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`
-      });
-    }
-    
-    // Vimeo detection
-    const vimeoRegex = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/gi;
-    while ((match = vimeoRegex.exec(messageText)) !== null) {
-      videoUrls.push({
-        url: match[0],
-        platform: 'Vimeo',
-        videoId: match[1],
-        thumbnail: `https://vumbnail.com/${match[1]}.jpg`
-      });
-    }
-    
-    return videoUrls;
-  };
 
   return (
     <div className={`flex h-full ${isUKAURoom ? 'camo-background' : ''}`}>
@@ -660,11 +648,17 @@ export default function ChatRoomComponent({
                   {/* Only show text if there are no images/videos or if text has content beyond URLs */}
                   {(() => {
                     const imageUrls = detectImageUrls(message.message);
+                    const videoUrls = detectVideoUrls(message.message);
                     const youtubeVideos = detectYouTubeUrls(message.message);
                     let messageWithoutMedia = message.message;
                     
                     // Remove image URLs
                     imageUrls.forEach(url => {
+                      messageWithoutMedia = messageWithoutMedia.replace(url, '').trim();
+                    });
+                    
+                    // Remove video URLs
+                    videoUrls.forEach(url => {
                       messageWithoutMedia = messageWithoutMedia.replace(url, '').trim();
                     });
                     
@@ -695,6 +689,24 @@ export default function ChatRoomComponent({
                         }}
                         title="Click to view full size"
                       />
+                    </div>
+                  ))}
+
+                  {/* Show embedded videos */}
+                  {detectVideoUrls(message.message).map((videoUrl, videoIndex) => (
+                    <div key={videoIndex} className="mt-2">
+                      <video
+                        controls
+                        className="max-w-32 sm:max-w-40 md:max-w-48 lg:max-w-xs w-auto max-h-32 sm:max-h-40 md:max-h-48 lg:max-h-64 rounded border border-gray-700"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        preload="metadata"
+                        title="MP4 Video"
+                      >
+                        <source src={videoUrl} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
                     </div>
                   ))}
 
