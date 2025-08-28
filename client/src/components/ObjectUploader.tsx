@@ -51,8 +51,11 @@ export function ObjectUploader({
       return;
     }
 
-    if (!file.type.startsWith('image/')) {
-      setError('Only image files are allowed');
+    const allowedTypes = ['image/', 'video/'];
+    const isAllowedType = allowedTypes.some(type => file.type.startsWith(type));
+    
+    if (!isAllowedType) {
+      setError('Only image and video files are allowed');
       return;
     }
 
@@ -180,7 +183,7 @@ export function ObjectUploader({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={closeModal}>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-black dark:text-white">Upload Image</h3>
+              <h3 className="text-lg font-semibold text-black dark:text-white">Upload File</h3>
               <Button
                 type="button"
                 variant="ghost"
@@ -197,7 +200,7 @@ export function ObjectUploader({
             <div>
               <Input
                 type="file"
-                accept="image/*"
+                accept="image/*,video/*"
                 onChange={handleFileSelect}
                 className="mb-2"
               />
