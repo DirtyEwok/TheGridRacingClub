@@ -525,17 +525,17 @@ export default function ChatRoomComponent({
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span 
                             className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
-                              message.member.gamertag === 'CJ DirtyEwok'
+                              ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag)
                                 ? "text-lime-400" 
-                                : ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
+                                : ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
                                 ? "text-orange-500"
                                 : message.member.isAdmin 
                                 ? "text-white" 
                                 : "text-white"
                             }`}
                             style={
-                              message.member.gamertag === 'CJ DirtyEwok' ? {} :
-                              ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
+                              ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag) ? {} :
+                              ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
                               message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
                             }
                             onDoubleClick={() => {
@@ -589,17 +589,17 @@ export default function ChatRoomComponent({
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span 
                     className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
-                      message.member.gamertag === 'CJ DirtyEwok'
+                      ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag)
                         ? "text-lime-400" 
-                        : ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
+                        : ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
                         ? "text-orange-500"
                         : message.member.isAdmin 
                         ? "text-white" 
                         : "text-white"
                     }`}
                     style={
-                      message.member.gamertag === 'CJ DirtyEwok' ? {} :
-                      ['Adzinski82', 'Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
+                      ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag) ? {} :
+                      ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
                       message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
                     }
                     onDoubleClick={() => {
