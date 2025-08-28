@@ -632,15 +632,22 @@ export default function ChatRoomComponent({
                     poll={poll}
                     currentMemberId={currentMemberId}
                     onVote={handleVote}
+                    onDelete={async (pollId) => {
+                      try {
+                        const response = await fetch(`/api/polls/${pollId}`, {
+                          method: 'DELETE',
+                        });
+                        if (response.ok) {
+                          queryClient.invalidateQueries({ queryKey: ['/api/chat-rooms', chatRoom.id, 'polls'] });
+                          refetchPolls();
+                        }
+                      } catch (error) {
+                        console.error('Error deleting poll:', error);
+                      }
+                    }}
                   />
                 ))}
               </div>
-            )}
-            {pollsLoading && (
-              <div className="px-4 text-gray-500 text-sm">Loading polls...</div>
-            )}
-            {!pollsLoading && polls.length === 0 && (
-              <div className="px-4 text-gray-500 text-sm">No polls yet (length: {polls.length}, chatRoom: {chatRoom.id})</div>
             )}
 
             {/* Regular Messages */}

@@ -1,18 +1,34 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { BarChart3, Users, Clock } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { BarChart3, Users, Clock, Trash2 } from "lucide-react";
 import { type PollWithDetails } from "@shared/schema";
 import { format } from "date-fns";
+import { getCurrentMember } from "@/lib/memberSession";
 
 interface PollDisplayProps {
   poll: PollWithDetails;
   currentMemberId: string;
   onVote: (pollId: string, optionId: string) => Promise<void>;
+  onDelete?: (pollId: string) => Promise<void>;
 }
 
-export function PollDisplay({ poll, currentMemberId, onVote }: PollDisplayProps) {
+export function PollDisplay({ poll, currentMemberId, onVote, onDelete }: PollDisplayProps) {
   const [isVoting, setIsVoting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const currentUser = getCurrentMember();
 
   const handleVote = async (optionId: string) => {
     setIsVoting(true);
@@ -20,6 +36,17 @@ export function PollDisplay({ poll, currentMemberId, onVote }: PollDisplayProps)
       await onVote(poll.id, optionId);
     } finally {
       setIsVoting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    setIsDeleting(true);
+    try {
+      await onDelete(poll.id);
+      setShowDeleteDialog(false);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -43,6 +70,45 @@ export function PollDisplay({ poll, currentMemberId, onVote }: PollDisplayProps)
             <span className="text-xs text-gray-500">
               {format(new Date(poll.createdAt), "HH:mm")}
             </span>
+            {/* Delete button for admin only */}
+            {(currentUser?.isAdmin || currentUser?.id === poll.createdBy) && onDelete && (
+              <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 ml-auto hover:bg-red-600 hover:text-white opacity-70 hover:opacity-100"
+                    disabled={isDeleting}
+                    title="Delete poll"
+                    data-testid="button-delete-poll"
+                  >
+                    {isDeleting ? (
+                      <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Trash2 className="w-3 h-3" />
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Poll</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete this poll? This action cannot be undone and all votes will be lost.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      className="bg-red-600 hover:bg-red-700"
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? "Deleting..." : "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
           <h3 className="text-white font-medium text-base leading-tight">
             {poll.question}

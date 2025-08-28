@@ -72,6 +72,7 @@ export interface IStorage {
   votePoll(pollId: string, optionId: string, memberId: string): Promise<boolean>;
   unvotePoll(pollId: string, optionId: string, memberId: string): Promise<boolean>;
   closePoll(pollId: string): Promise<boolean>;
+  deletePoll(pollId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -691,6 +692,20 @@ export class DatabaseStorage implements IStorage {
       .set({ isActive: false })
       .where(eq(polls.id, pollId));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  async deletePoll(pollId: string): Promise<boolean> {
+    try {
+      // Delete votes first
+      await db.delete(pollVotes).where(eq(pollVotes.pollId, pollId));
+      // Delete options
+      await db.delete(pollOptions).where(eq(pollOptions.pollId, pollId));
+      // Delete poll
+      const result = await db.delete(polls).where(eq(polls.id, pollId));
+      return (result.rowCount ?? 0) > 0;
+    } catch {
+      return false;
+    }
   }
 }
 
@@ -1524,6 +1539,11 @@ Server goes live at 20:00`,
   }
 
   async closePoll(pollId: string): Promise<boolean> {
+    // For MemStorage, always return true
+    return true;
+  }
+
+  async deletePoll(pollId: string): Promise<boolean> {
     // For MemStorage, always return true
     return true;
   }

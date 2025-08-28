@@ -934,6 +934,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/polls/:pollId", async (req, res) => {
+    try {
+      const { pollId } = req.params;
+      
+      const success = await storage.deletePoll(pollId);
+      if (!success) {
+        return res.status(404).json({ message: "Poll not found" });
+      }
+
+      res.json({ message: "Poll deleted successfully" });
+    } catch (error) {
+      console.error('Delete poll error:', error);
+      res.status(500).json({ message: "Failed to delete poll" });
+    }
+  });
+
   // Object Storage endpoints for image uploads
   app.get("/objects/:objectPath(*)", async (req, res) => {
     const objectStorageService = new ObjectStorageService();
