@@ -97,7 +97,7 @@ export function ObjectUploader({
       });
 
       console.log('Upload response status:', uploadResponse.status);
-      console.log('Upload response headers:', [...uploadResponse.headers.entries()]);
+      console.log('Upload response headers:', Array.from(uploadResponse.headers.entries()));
 
       if (!uploadResponse.ok) {
         const errorText = await uploadResponse.text();
