@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Trophy, Clock } from "lucide-react";
+import { getMemberGametagStyling } from "@/lib/memberUtils";
 import type { RegistrationWithMember, RaceWithStats } from "@shared/schema";
 
 interface RaceDriversModalProps {
@@ -82,7 +83,7 @@ export default function RaceDriversModal({ race, isOpen, onClose }: RaceDriversM
                               {registration.member?.displayName || "Unknown Driver"}
                             </h3>
                             <p className="text-sm text-gray-300">
-                              Gamertag: {registration.member?.gamertag || "N/A"}
+                              Gamertag: <span className={getMemberGametagStyling(registration.member?.gamertag || "")}>{registration.member?.gamertag || "N/A"}</span>
                             </p>
                           </div>
                         </div>

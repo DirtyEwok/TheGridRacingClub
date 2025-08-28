@@ -527,15 +527,15 @@ export default function ChatRoomComponent({
                             className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
                               ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag)
                                 ? "text-lime-400" 
-                                : ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
-                                ? "text-orange-500"
+                                : ['Alexcdl18', 'Stalker Brown', 'Snuffles 1983', 'Neilb2112'].includes(message.member.gamertag)
+                                ? "text-yellow-400"
                                 : message.member.isAdmin 
                                 ? "text-white" 
                                 : "text-white"
                             }`}
                             style={
                               ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag) ? {} :
-                              ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
+                              ['Alexcdl18', 'Stalker Brown', 'Snuffles 1983', 'Neilb2112'].includes(message.member.gamertag) ? {} :
                               message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
                             }
                             onDoubleClick={() => {
@@ -591,15 +591,15 @@ export default function ChatRoomComponent({
                     className={`font-semibold px-2 py-1 rounded text-sm cursor-pointer hover:opacity-80 transition-opacity ${
                       ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag)
                         ? "text-lime-400" 
-                        : ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag)
-                        ? "text-orange-500"
+                        : ['Alexcdl18', 'Stalker Brown', 'Snuffles 1983', 'Neilb2112'].includes(message.member.gamertag)
+                        ? "text-yellow-400"
                         : message.member.isAdmin 
                         ? "text-white" 
                         : "text-white"
                     }`}
                     style={
                       ['CJ DirtyEwok', 'Adzinski82'].includes(message.member.gamertag) ? {} :
-                      ['Snuffles 1983', 'Satlker Brown', 'Alexcdl18', 'Neil B'].includes(message.member.gamertag) ? {} :
+                      ['Alexcdl18', 'Stalker Brown', 'Snuffles 1983', 'Neilb2112'].includes(message.member.gamertag) ? {} :
                       message.member.isAdmin ? { backgroundColor: '#f97316' } : {}
                     }
                     onDoubleClick={() => {

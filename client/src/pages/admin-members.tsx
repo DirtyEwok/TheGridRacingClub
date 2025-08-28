@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
 import type { Member } from "@shared/schema";
+import { getMemberGametagStyling } from "@/lib/memberUtils";
 
 function AdminMemberApproval() {
   const { toast } = useToast();
@@ -202,7 +203,7 @@ function AdminMemberApproval() {
                         </Badge>
                       </CardTitle>
                       <CardDescription className="text-gray-400">
-                        Gamertag: {member.gamertag}
+                        Gamertag: <span className={getMemberGametagStyling(member.gamertag)}>{member.gamertag}</span>
                       </CardDescription>
                     </div>
                     <Badge className={getExperienceBadgeColor(member.experienceLevel)}>

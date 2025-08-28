@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import MemberHeader from "@/components/member-header";
 import { getCurrentMember } from "@/lib/memberSession";
+import { getMemberGametagStyling } from "@/lib/memberUtils";
 import { apiRequest } from "@/lib/queryClient";
 import { updateMemberProfileSchema, type Member } from "@shared/schema";
 import { z } from "zod";
@@ -271,7 +272,7 @@ function MemberProfile() {
                           member.displayName
                         )}
                       </CardTitle>
-                      <CardDescription className="text-gray-400 text-lg mb-3">
+                      <CardDescription className={`text-lg mb-3 ${getMemberGametagStyling(member.gamertag)}`}>
                         {member.gamertag}
                       </CardDescription>
                       <div className="flex items-center gap-4 flex-wrap">
