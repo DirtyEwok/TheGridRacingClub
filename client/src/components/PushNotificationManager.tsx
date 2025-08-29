@@ -35,12 +35,18 @@ export function PushNotificationManager() {
 
   const registerServiceWorker = async () => {
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      await registration.update();
+      // For mobile compatibility, ensure we wait for ready state
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/'
+      });
+      
+      // Wait for service worker to be ready
+      await navigator.serviceWorker.ready;
+      console.log('Service worker registered successfully');
       return registration;
     } catch (error) {
       console.error('Service worker registration failed:', error);
-      throw error;
+      throw new Error('Failed to register service worker. Please try refreshing the page.');
     }
   };
 
@@ -80,9 +86,9 @@ export function PushNotificationManager() {
       // Register service worker
       const registration = await registerServiceWorker();
 
-      // Generate VAPID keys (in production, use actual VAPID keys)
+      // Generate VAPID keys - using a more compatible format for mobile
       const applicationServerKey = urlBase64ToUint8Array(
-        'BMJYk7QvGPJ9eW8oaKK4WBr_5TG2sXFZr1KGR3VZfk4QNkWOBNv2Vwn9Qw8rNvD4-Lx5xQ2Qk9Sk8rR4WqNgN2Q'
+        'BEl62iUYgUivxIkv69yViEuiBIa40HI0DLdiTKBFMDddDQJBFAwL4-mcg6wAgKSHXTH_zJLZd4QPCzBIl6_5TXc'
       );
 
       // Subscribe to push notifications
@@ -106,7 +112,9 @@ export function PushNotificationManager() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save subscription');
+        const errorText = await response.text();
+        console.error('Subscription save failed:', response.status, errorText);
+        throw new Error(`Failed to save subscription: ${response.status} - Please try again`);
       }
 
       setIsSubscribed(true);
@@ -116,9 +124,21 @@ export function PushNotificationManager() {
       });
     } catch (error: any) {
       console.error('Push subscription failed:', error);
+      
+      // More specific error messages for mobile debugging
+      let errorMessage = error.message || "Please try again or check your browser settings";
+      
+      if (error.message?.includes('Failed to save subscription')) {
+        errorMessage = "Server connection issue. Please check your internet connection and try again.";
+      } else if (error.message?.includes('service worker')) {
+        errorMessage = "Please refresh the page and try again. Make sure your browser supports notifications.";
+      } else if (error.name === 'NotSupportedError') {
+        errorMessage = "Push notifications are not supported on this device or browser.";
+      }
+      
       toast({
         title: "Notification Setup Failed",
-        description: error.message || "Please try again or check your browser settings",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {

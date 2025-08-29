@@ -3,7 +3,8 @@ const CACHE_NAME = 'grid-racing-club-v1';
 
 self.addEventListener('install', event => {
   console.log('Service Worker installing...');
-  self.skipWaiting();
+  // Force activate immediately, especially important on mobile
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', event => {
