@@ -655,7 +655,7 @@ export default function ChatRoomComponent({
             )}
 
             {/* Regular Messages - Limited to 12 with scrolling */}
-            <div className="max-h-[625px] sm:max-h-[750px] md:max-h-[940px] lg:max-h-[1125px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+            <div className="max-h-[780px] sm:max-h-[940px] md:max-h-[1175px] lg:max-h-[1405px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
               {messages.slice(-12).map((message) => (
               <div key={message.id} className="flex gap-3 w-full p-4 max-w-4xl">
               <div className="flex-shrink-0">
