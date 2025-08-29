@@ -7,6 +7,8 @@ import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply, BarC
 import { ObjectUploader } from "./ObjectUploader";
 import { PollCreator } from "./PollCreator";
 import { PollDisplay } from "./PollDisplay";
+import { EmojiPicker } from "./EmojiPicker";
+import { GifPicker } from "./GifPicker";
 import { format } from "date-fns";
 import { useChat } from "@/hooks/useChat";
 import { type ChatRoom, type ChatMessageWithMember, type PollWithDetails } from "@shared/schema";
@@ -289,6 +291,24 @@ export default function ChatRoomComponent({
     }
   };
 
+  // Handle emoji selection
+  const handleEmojiSelect = (emoji: string) => {
+    setMessageText(prev => prev + emoji);
+    // Focus input after emoji selection
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  // Handle GIF selection
+  const handleGifSelect = (gifUrl: string) => {
+    setMessageText(prev => prev + ` ${gifUrl}`);
+    // Focus input after GIF selection
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   // Handle keyboard navigation in mention dropdown
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (showMentionDropdown && filteredMembers.length > 0) {
@@ -372,6 +392,7 @@ export default function ChatRoomComponent({
     // Split message by @mentions and URLs
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const mentionRegex = /(@\w+)/g;
+    const gifRegex = /https:\/\/media\.giphy\.com\/media\/[^\/]+\/giphy\.gif/g;
     
     // First split by URLs, then by mentions
     const urlParts = messageText.split(urlRegex);
@@ -381,6 +402,32 @@ export default function ChatRoomComponent({
         {urlParts.map((urlPart, urlIndex) => {
           // Check if this part is a URL
           if (urlRegex.test(urlPart)) {
+            // Check if it's a GIF URL
+            if (gifRegex.test(urlPart)) {
+              return (
+                <div key={urlIndex} className="my-2">
+                  <img
+                    src={urlPart}
+                    alt="GIF"
+                    className="max-w-xs max-h-48 rounded border border-gray-600"
+                    loading="lazy"
+                    data-testid="message-gif"
+                  />
+                  <div className="text-xs text-gray-400 mt-1">
+                    <a
+                      href={urlPart}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 underline break-all"
+                    >
+                      {urlPart}
+                    </a>
+                  </div>
+                </div>
+              );
+            }
+            
+            // Regular URL
             return (
               <a
                 key={urlIndex}
@@ -984,6 +1031,36 @@ export default function ChatRoomComponent({
                 </div>
               )}
             </div>
+            <button
+              type="submit"
+              disabled={!messageText.trim() || isSending}
+              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation select-none"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSendMessage(e);
+              }}
+              title="Send message"
+              data-testid="button-send-message"
+            >
+              {isSending ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+          
+          {/* Action buttons row underneath input */}
+          <div className="flex gap-2 justify-end">
+            <EmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              disabled={isSending}
+            />
+            <GifPicker
+              onGifSelect={handleGifSelect}
+              disabled={isSending}
+            />
             <ObjectUploader
               onComplete={(imageUrl) => {
                 setMessageText(prev => prev + ` ${imageUrl}`);
@@ -1010,24 +1087,6 @@ export default function ChatRoomComponent({
                 <BarChart3 className="w-4 h-4" />
               </button>
             </PollCreator>
-            <button
-              type="submit"
-              disabled={!messageText.trim() || isSending}
-              className="bg-racing-green hover:bg-racing-green/80 rounded-md p-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation select-none"
-              style={{ WebkitTapHighlightColor: 'transparent' }}
-              onClick={(e) => {
-                e.preventDefault();
-                handleSendMessage(e);
-              }}
-              title="Send message"
-              data-testid="button-send-message"
-            >
-              {isSending ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </button>
           </div>
           
           {/* Quick Actions */}
