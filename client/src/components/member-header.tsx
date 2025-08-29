@@ -254,6 +254,12 @@ export default function MemberHeader() {
                     Profile
                   </div>
                 </Link>
+                
+                {/* Mobile Alerts Section */}
+                <div className="px-3 py-2">
+                  <PushNotificationManager />
+                </div>
+                
                 <div
                   onClick={() => {
                     clearCurrentMember();
