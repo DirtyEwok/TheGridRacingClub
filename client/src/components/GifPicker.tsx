@@ -103,14 +103,19 @@ export function GifPicker({ onGifSelect, disabled = false }: GifPickerProps) {
   };
 
   const getCurrentGifs = () => {
-    if (searchQuery.trim()) {
-      // Simple search - filter by title containing search term
-      const allGifs = Object.values(popularGifs).flat();
-      return allGifs.filter(gif => 
-        gif.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    try {
+      if (searchQuery.trim()) {
+        // Simple search - filter by title containing search term
+        const allGifs = Object.values(popularGifs).flat();
+        return allGifs.filter(gif => 
+          gif?.title?.toLowerCase()?.includes(searchQuery.toLowerCase())
+        );
+      }
+      return popularGifs[selectedCategory as keyof typeof popularGifs] || [];
+    } catch (error) {
+      console.error('Error in getCurrentGifs:', error);
+      return [];
     }
-    return popularGifs[selectedCategory as keyof typeof popularGifs] || [];
   };
 
   return (
@@ -134,7 +139,14 @@ export function GifPicker({ onGifSelect, disabled = false }: GifPickerProps) {
             <Input
               placeholder="Search GIFs..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                try {
+                  console.log('Search input change:', e.target.value);
+                  setSearchQuery(e.target.value);
+                } catch (error) {
+                  console.error('Error in onChange:', error);
+                }
+              }}
               className="pl-10 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
               data-testid="input-gif-search"
             />
