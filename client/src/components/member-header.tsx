@@ -43,19 +43,17 @@ export default function MemberHeader() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/">
-              <div 
-                className="flex items-center space-x-2 cursor-pointer"
-                onDoubleClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.href = '/admin';
-                }}
-              >
-                <img src={logoImage} alt="The Grid" className="h-8 w-auto" />
-                <span className="text-xl font-bold text-white">The Grid</span>
-              </div>
-            </Link>
+            <div 
+              className="flex items-center space-x-2 cursor-pointer"
+              onDoubleClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = '/admin';
+              }}
+            >
+              <img src={logoImage} alt="The Grid" className="h-8 w-auto" />
+              <span className="text-xl font-bold text-white">The Grid</span>
+            </div>
             
             {/* Notification Bell - separate from logo link */}
             {currentMember && (
