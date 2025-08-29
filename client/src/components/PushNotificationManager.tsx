@@ -77,7 +77,7 @@ export function PushNotificationManager() {
       // Request notification permission
       const permission = await Notification.requestPermission();
       if (permission === 'denied') {
-        throw new Error('Notifications are blocked. Please enable them in your browser settings: Click the 🔒 lock icon in your address bar → Allow notifications');
+        throw new Error('Notifications are blocked. To enable: Browser settings → Privacy/Permissions → Notifications → Allow for this site, or look for a notification icon in your address bar');
       }
       if (permission !== 'granted') {
         throw new Error('Notification permission required. Please allow notifications when prompted.');
@@ -209,7 +209,7 @@ export function PushNotificationManager() {
           data-testid="button-enable-notifications"
           className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-white h-6 px-2 text-xs"
           title={permissionStatus === 'denied' ? 
-            'Notifications blocked. Click the lock icon in your address bar to enable them.' : 
+            'Notifications blocked. Check browser settings → Privacy/Permissions → Notifications to enable them.' : 
             'Enable push notifications for race updates'
           }
         >
