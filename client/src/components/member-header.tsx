@@ -28,10 +28,10 @@ export default function MemberHeader() {
   const isAdmin = currentMember?.gamertag === "CJ DirtyEwok";
 
   const navigation = [
-    { name: "Races", href: "/races" },
-    { name: "Championships", href: "/championships" },
-    { name: "Leaderboards", href: "/leaderboards" },
     { name: "Chat", href: "/chat" },
+    { name: "Championships", href: "/championships" },
+    { name: "Races", href: "/races" },
+    { name: "Leaderboards", href: "/leaderboards" },
     { name: "Coming Soon", href: "/coming-soon" },
     ...(isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
   ];
