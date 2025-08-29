@@ -171,29 +171,29 @@ export function PushNotificationManager() {
       {isSubscribed ? (
         <Button
           variant="outline"
-          size="sm"
+          size="xs"
           onClick={unsubscribeFromPush}
           disabled={isLoading}
           data-testid="button-disable-notifications"
-          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-white h-6 px-2 text-xs"
         >
-          <BellOff className="h-4 w-4 mr-2" />
+          <BellOff className="w-3 h-3 mr-1" />
           {isLoading ? "Disabling..." : "Disable Alerts"}
         </Button>
       ) : (
         <Button
           variant="outline"
-          size="sm"
+          size="xs"
           onClick={subscribeToPush}
           disabled={isLoading}
           data-testid="button-enable-notifications"
-          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+          className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-white h-6 px-2 text-xs"
           title={permissionStatus === 'denied' ? 
             'Notifications blocked. Click the lock icon in your address bar to enable them.' : 
             'Enable push notifications for race updates'
           }
         >
-          <Bell className="h-4 w-4 mr-2" />
+          <Bell className="w-3 h-3 mr-1" />
           {isLoading ? "Enabling..." : 
            permissionStatus === 'denied' ? "Unblock Alerts" :
            "Enable Alerts"}
