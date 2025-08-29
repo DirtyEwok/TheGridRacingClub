@@ -124,16 +124,25 @@ export function PushNotificationManager() {
       });
     } catch (error: any) {
       console.error('Push subscription failed:', error);
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
       
-      // More specific error messages for mobile debugging
-      let errorMessage = error.message || "Please try again or check your browser settings";
+      // More specific error messages for debugging
+      let errorMessage = error.message || "Unknown error occurred";
       
       if (error.message?.includes('Failed to save subscription')) {
-        errorMessage = "Server connection issue. Please check your internet connection and try again.";
+        errorMessage = `Server error: ${error.message}. Check console for details.`;
       } else if (error.message?.includes('service worker')) {
-        errorMessage = "Please refresh the page and try again. Make sure your browser supports notifications.";
+        errorMessage = `Service worker issue: ${error.message}. Try refreshing the page.`;
       } else if (error.name === 'NotSupportedError') {
-        errorMessage = "Push notifications are not supported on this device or browser.";
+        errorMessage = "Push notifications not supported on this browser/device.";
+      } else if (error.name === 'InvalidStateError') {
+        errorMessage = "Subscription state error. Try refreshing and enabling again.";
+      } else {
+        errorMessage = `Error: ${error.message}. Check browser console for more details.`;
       }
       
       toast({
