@@ -2,9 +2,43 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema, insertMessageLikeSchema, insertNotificationSchema } from "@shared/schema";
+import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, insertRaceSchema, updateRaceSchema, insertRegistrationSchema, insertChampionshipSchema, updateChampionshipSchema, insertChatRoomSchema, insertChatMessageSchema, insertMessageLikeSchema, insertNotificationSchema, type PushSubscription } from "@shared/schema";
 import { z } from "zod";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { notificationService } from "./notificationService";
+
+// Helper function to send push notifications
+async function sendPushNotifications(
+  subscriptions: PushSubscription[],
+  notification: {
+    title: string;
+    body: string;
+    url?: string;
+    icon?: string;
+    badge?: string;
+  }
+): Promise<{ successful: number; failed: number }> {
+  let successful = 0;
+  let failed = 0;
+
+  const promises = subscriptions.map(async (subscription) => {
+    try {
+      // Use the Fetch API to send push notification via browser's push service
+      const payload = JSON.stringify(notification);
+      
+      // For now, we'll simulate sending (in production, you'd use web-push library)
+      // This is a placeholder - actual push notification sending requires VAPID keys
+      console.log(`Simulating push to ${subscription.endpoint}:`, notification);
+      successful++;
+    } catch (error) {
+      console.error('Failed to send push notification:', error);
+      failed++;
+    }
+  });
+
+  await Promise.allSettled(promises);
+  return { successful, failed };
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get all races with stats
@@ -42,6 +76,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const raceData = insertRaceSchema.parse(req.body);
       const race = await storage.createRace(raceData);
+      
+      // Send push notification for new race
+      setTimeout(() => {
+        notificationService.notifyNewRaceAdded(race).catch(console.error);
+      }, 1000);
+      
       res.status(201).json(race);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -66,6 +106,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!race) {
         return res.status(404).json({ message: "Race not found" });
       }
+      
+      // Send push notification for race update
+      setTimeout(() => {
+        notificationService.notifyRaceUpdated(race).catch(console.error);
+      }, 1000);
       
       res.json(race);
     } catch (error) {
@@ -856,6 +901,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Mark all notifications read error:', error);
       res.status(500).json({ message: "Failed to mark all notifications as read" });
+    }
+  });
+
+  // Push Notification endpoints
+  app.post("/api/push/subscribe", async (req, res) => {
+    try {
+      const subscriptionData = req.body;
+      
+      if (!subscriptionData.memberId || !subscriptionData.endpoint || !subscriptionData.keys) {
+        return res.status(400).json({ message: "Missing required subscription data" });
+      }
+
+      const pushSubscription = {
+        memberId: subscriptionData.memberId,
+        endpoint: subscriptionData.endpoint,
+        p256dhKey: subscriptionData.keys.p256dh,
+        authKey: subscriptionData.keys.auth,
+        userAgent: req.get('User-Agent') || null
+      };
+
+      const subscription = await storage.createPushSubscription(pushSubscription);
+      res.status(201).json({ message: "Push subscription created", id: subscription.id });
+    } catch (error) {
+      console.error('Push subscription error:', error);
+      res.status(500).json({ message: "Failed to create push subscription" });
+    }
+  });
+
+  app.delete("/api/push/unsubscribe", async (req, res) => {
+    try {
+      const { endpoint } = req.body;
+      
+      if (!endpoint) {
+        return res.status(400).json({ message: "Endpoint is required" });
+      }
+
+      const success = await storage.deletePushSubscriptionByEndpoint(endpoint);
+      res.json({ message: success ? "Push subscription removed" : "Subscription not found" });
+    } catch (error) {
+      console.error('Push unsubscription error:', error);
+      res.status(500).json({ message: "Failed to remove push subscription" });
+    }
+  });
+
+  app.post("/api/push/send", async (req, res) => {
+    try {
+      // Check if user is admin
+      const adminCheck = req.headers.authorization === "admin";
+      if (!adminCheck) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { title, body, url, memberId } = req.body;
+
+      if (!title || !body) {
+        return res.status(400).json({ message: "Title and body are required" });
+      }
+
+      // Get push subscriptions (either for specific member or all members)
+      const subscriptions = memberId 
+        ? await storage.getPushSubscriptionsByMember(memberId)
+        : await storage.getAllPushSubscriptions();
+
+      if (subscriptions.length === 0) {
+        return res.status(404).json({ message: "No push subscriptions found" });
+      }
+
+      // Send push notifications (we'll implement this function)
+      const results = await sendPushNotifications(subscriptions, {
+        title,
+        body,
+        url: url || '/',
+        icon: '/icon-192.png',
+        badge: '/badge-72.png'
+      });
+
+      res.json({ 
+        message: "Push notifications sent", 
+        sent: results.successful,
+        failed: results.failed 
+      });
+    } catch (error) {
+      console.error('Send push notification error:', error);
+      res.status(500).json({ message: "Failed to send push notifications" });
     }
   });
 

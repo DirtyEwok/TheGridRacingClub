@@ -14,6 +14,7 @@ import SignInModal from "./sign-in-modal";
 import { getCurrentMember, clearCurrentMember } from "@/lib/memberSession";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/hooks/useNotifications";
+import { PushNotificationManager } from "./PushNotificationManager";
 
 export default function MemberHeader() {
   const [location] = useLocation();
@@ -172,6 +173,7 @@ export default function MemberHeader() {
                       Admin
                     </Button>
                   )}
+                  <PushNotificationManager />
                   <Button
                     variant="outline"
                     size="xs"

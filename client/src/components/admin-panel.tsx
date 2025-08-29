@@ -12,6 +12,7 @@ import CreateChampionshipModal from "@/components/create-championship-modal";
 import EditChampionshipModal from "@/components/edit-championship-modal";
 import EditRaceModal from "@/components/edit-race-modal";
 import RaceDriversModal from "@/components/race-drivers-modal";
+import { AdminPushNotifications } from "@/components/AdminPushNotifications";
 import type { RaceWithStats, ChampionshipWithStats } from "@shared/schema";
 
 export default function AdminPanel() {
@@ -160,7 +161,7 @@ Neil Broom aka Neilb`);
   return (
     <div className="p-6 space-y-6">
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-gray-800 border-gray-700">
+        <TabsList className="grid w-full grid-cols-6 bg-gray-800 border-gray-700">
           <TabsTrigger value="dashboard" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
             Dashboard
           </TabsTrigger>
@@ -172,6 +173,10 @@ Neil Broom aka Neilb`);
           </TabsTrigger>
           <TabsTrigger value="members" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
             Members
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
+            <Send className="w-4 h-4 mr-1" />
+            Notifications
           </TabsTrigger>
           <TabsTrigger value="clubadmin" className="data-[state=active]:bg-racing-green data-[state=active]:text-white">
             <Crown className="w-4 h-4 mr-1" />
@@ -524,6 +529,10 @@ Neil Broom aka Neilb`);
             </CardContent>
           </Card>
 
+        </TabsContent>
+
+        <TabsContent value="notifications" className="space-y-6">
+          <AdminPushNotifications />
         </TabsContent>
       </Tabs>
 

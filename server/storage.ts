@@ -1,4 +1,4 @@
-import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, type Notification, type InsertNotification, type NotificationWithMessage, type Poll, type InsertPoll, type PollOption, type InsertPollOption, type PollVote, type InsertPollVote, type PollWithDetails, type PollOptionWithVotes, members, championships, races, registrations, chatRooms, chatMessages, messageLikes, notifications, polls, pollOptions, pollVotes } from "@shared/schema";
+import { type Member, type InsertMember, type UpdateMemberProfile, type ApproveMember, type Championship, type InsertChampionship, type UpdateChampionship, type ChampionshipWithStats, type Race, type InsertRace, type UpdateRace, type Registration, type InsertRegistration, type RaceWithStats, type ChatRoom, type InsertChatRoom, type ChatMessage, type InsertChatMessage, type MessageLike, type InsertMessageLike, type ChatMessageWithMember, type ChatRoomWithStats, type Notification, type InsertNotification, type NotificationWithMessage, type Poll, type InsertPoll, type PollOption, type InsertPollOption, type PollVote, type InsertPollVote, type PollWithDetails, type PollOptionWithVotes, type PushSubscription, type InsertPushSubscription, members, championships, races, registrations, chatRooms, chatMessages, messageLikes, notifications, polls, pollOptions, pollVotes, pushSubscriptions } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -73,6 +73,13 @@ export interface IStorage {
   unvotePoll(pollId: string, optionId: string, memberId: string): Promise<boolean>;
   closePoll(pollId: string): Promise<boolean>;
   deletePoll(pollId: string): Promise<boolean>;
+
+  // Push Subscriptions
+  createPushSubscription(subscription: InsertPushSubscription): Promise<PushSubscription>;
+  getPushSubscriptionsByMember(memberId: string): Promise<PushSubscription[]>;
+  getAllPushSubscriptions(): Promise<PushSubscription[]>;
+  deletePushSubscription(id: string): Promise<boolean>;
+  deletePushSubscriptionByEndpoint(endpoint: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1546,6 +1553,37 @@ Server goes live at 20:00`,
   async deletePoll(pollId: string): Promise<boolean> {
     // For MemStorage, always return true
     return true;
+  }
+
+  // Push Subscriptions
+  async createPushSubscription(subscription: InsertPushSubscription): Promise<PushSubscription> {
+    const id = randomUUID();
+    const newSubscription: PushSubscription = {
+      ...subscription,
+      id,
+      createdAt: new Date(),
+    };
+
+    const [inserted] = await db.insert(pushSubscriptions).values(newSubscription).returning();
+    return inserted;
+  }
+
+  async getPushSubscriptionsByMember(memberId: string): Promise<PushSubscription[]> {
+    return await db.select().from(pushSubscriptions).where(eq(pushSubscriptions.memberId, memberId));
+  }
+
+  async getAllPushSubscriptions(): Promise<PushSubscription[]> {
+    return await db.select().from(pushSubscriptions);
+  }
+
+  async deletePushSubscription(id: string): Promise<boolean> {
+    const result = await db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, id));
+    return result.rowCount > 0;
+  }
+
+  async deletePushSubscriptionByEndpoint(endpoint: string): Promise<boolean> {
+    const result = await db.delete(pushSubscriptions).where(eq(pushSubscriptions.endpoint, endpoint));
+    return result.rowCount > 0;
   }
 }
 

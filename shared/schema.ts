@@ -124,6 +124,16 @@ export const pollVotes = pgTable("poll_votes", {
   createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  memberId: varchar("member_id").notNull(),
+  endpoint: text("endpoint").notNull(),
+  p256dhKey: text("p256dh_key").notNull(),
+  authKey: text("auth_key").notNull(),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export const insertMemberSchema = createInsertSchema(members).pick({
   displayName: true,
   gamertag: true,
@@ -255,6 +265,14 @@ export const insertPollVoteSchema = createInsertSchema(pollVotes).pick({
   memberId: true,
 });
 
+export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions).pick({
+  memberId: true,
+  endpoint: true,
+  p256dhKey: true,
+  authKey: true,
+  userAgent: true,
+});
+
 export type InsertMember = z.infer<typeof insertMemberSchema>;
 export type UpdateMemberProfile = z.infer<typeof updateMemberProfileSchema>;
 export type ApproveMember = z.infer<typeof approveMemberSchema>;
@@ -281,6 +299,8 @@ export type InsertPollOption = z.infer<typeof insertPollOptionSchema>;
 export type PollOption = typeof pollOptions.$inferSelect;
 export type InsertPollVote = z.infer<typeof insertPollVoteSchema>;
 export type PollVote = typeof pollVotes.$inferSelect;
+export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 
 export type RegistrationWithMember = Registration & {
   member?: Member;
