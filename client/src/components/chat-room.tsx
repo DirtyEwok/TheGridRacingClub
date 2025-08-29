@@ -32,6 +32,11 @@ export default function ChatRoomComponent({
   const [replyingTo, setReplyingTo] = useState<ChatMessageWithMember | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
+  // Get current member to check admin status for character limit
+  const currentMember = getCurrentMember();
+  const isAdmin = currentMember?.isAdmin || false;
+  const maxCharacters = isAdmin ? 2000 : 500;
+  
   // Check if this is the UKAU chat room for special styling
   const isUKAURoom = chatRoom.name === "UKAU Operations" || chatRoom.type === "military";
   
@@ -947,7 +952,7 @@ export default function ChatRoomComponent({
                 onKeyDown={handleKeyDown}
                 placeholder="Type a message, paste image URL, or share a link..."
                 className="w-full bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
-                maxLength={500}
+                maxLength={maxCharacters}
                 disabled={isSending}
                 autoComplete="off"
                 autoCorrect="off"
@@ -1040,7 +1045,7 @@ export default function ChatRoomComponent({
               Mention members
             </span>
             <span className="ml-auto">
-              {messageText.length}/500 characters
+              {messageText.length}/{maxCharacters} characters{isAdmin ? " (Admin)" : ""}
             </span>
           </div>
         </form>
