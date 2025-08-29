@@ -28,6 +28,11 @@ export function PushNotificationManager() {
     }
   };
 
+  const getCurrentPermissionStatus = () => {
+    if (!('Notification' in window)) return 'unsupported';
+    return Notification.permission;
+  };
+
   const registerServiceWorker = async () => {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js');
@@ -65,8 +70,11 @@ export function PushNotificationManager() {
     try {
       // Request notification permission
       const permission = await Notification.requestPermission();
+      if (permission === 'denied') {
+        throw new Error('Notifications are blocked. Please enable them in your browser settings: Click the 🔒 lock icon in your address bar → Allow notifications');
+      }
       if (permission !== 'granted') {
-        throw new Error('Notification permission denied');
+        throw new Error('Notification permission required. Please allow notifications when prompted.');
       }
 
       // Register service worker
@@ -156,6 +164,8 @@ export function PushNotificationManager() {
     return null; // Don't show anything if not supported
   }
 
+  const permissionStatus = getCurrentPermissionStatus();
+
   return (
     <div className="flex items-center gap-2">
       {isSubscribed ? (
@@ -178,9 +188,15 @@ export function PushNotificationManager() {
           disabled={isLoading}
           data-testid="button-enable-notifications"
           className="text-orange-500 border-orange-500 hover:bg-orange-500 hover:text-black"
+          title={permissionStatus === 'denied' ? 
+            'Notifications blocked. Click the lock icon in your address bar to enable them.' : 
+            'Enable push notifications for race updates'
+          }
         >
           <Bell className="h-4 w-4 mr-2" />
-          {isLoading ? "Enabling..." : "Enable Alerts"}
+          {isLoading ? "Enabling..." : 
+           permissionStatus === 'denied' ? "Unblock Alerts" :
+           "Enable Alerts"}
         </Button>
       )}
     </div>
