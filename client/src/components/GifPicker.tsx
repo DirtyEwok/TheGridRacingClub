@@ -188,7 +188,7 @@ export function GifPicker({ onGifSelect, disabled = false }: GifPickerProps) {
           
           {getCurrentGifs().length === 0 && searchQuery.trim() && (
             <div className="text-center py-8 text-gray-400">
-              <Image className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p>No GIFs found for "{searchQuery}"</p>
               <p className="text-xs mt-1">Try a different search term</p>
             </div>
