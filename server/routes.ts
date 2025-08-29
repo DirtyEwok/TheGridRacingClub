@@ -908,8 +908,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/push/subscribe", async (req, res) => {
     try {
       const subscriptionData = req.body;
+      console.log('Push subscription request received:', {
+        hasBody: !!req.body,
+        keys: Object.keys(subscriptionData),
+        memberId: subscriptionData.memberId,
+        hasEndpoint: !!subscriptionData.endpoint,
+        hasKeys: !!subscriptionData.keys,
+        keysStructure: subscriptionData.keys ? Object.keys(subscriptionData.keys) : 'none'
+      });
       
       if (!subscriptionData.memberId || !subscriptionData.endpoint || !subscriptionData.keys) {
+        console.log('Missing required data - validation failed');
         return res.status(400).json({ message: "Missing required subscription data" });
       }
 
