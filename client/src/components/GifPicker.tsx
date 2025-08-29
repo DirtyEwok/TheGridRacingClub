@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Image, Search } from "lucide-react";
+import { Film, Search } from "lucide-react";
 
 interface GifPickerProps {
   onGifSelect: (gifUrl: string) => void;
@@ -124,7 +124,7 @@ export function GifPicker({ onGifSelect, disabled = false }: GifPickerProps) {
           className="h-10 w-10 p-0 bg-gray-700 hover:bg-gray-600 text-white"
           data-testid="button-gif-picker"
         >
-          <Image className="w-4 h-4" />
+          <Film className="w-4 h-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0 bg-gray-800 border-gray-600" side="top">

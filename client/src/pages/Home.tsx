@@ -14,12 +14,12 @@ export default function Home() {
   }, [setLocation]);
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="w-full h-screen flex items-center justify-center">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="w-full h-full max-w-4xl max-h-[90vh] flex items-center justify-center">
         <img 
           src={homeImage} 
           alt="The Grid E-Sports - Chat, Race, Run, Gun & Socialise #RACEANDRESPECT" 
-          className="max-w-full max-h-full object-contain"
+          className="w-full h-full object-contain"
           data-testid="img-home-poster"
         />
       </div>
