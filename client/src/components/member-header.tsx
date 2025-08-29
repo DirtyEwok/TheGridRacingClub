@@ -28,6 +28,7 @@ export default function MemberHeader() {
   const isAdmin = currentMember?.gamertag === "CJ DirtyEwok";
 
   const navigation = [
+    { name: "Home", href: "/" },
     { name: "Races", href: "/races" },
     { name: "Championships", href: "/championships" },
     { name: "Leaderboards", href: "/leaderboards" },
@@ -42,7 +43,7 @@ export default function MemberHeader() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/races">
+            <Link href="/">
               <div 
                 className="flex items-center space-x-2 cursor-pointer"
                 onDoubleClick={(e) => {
