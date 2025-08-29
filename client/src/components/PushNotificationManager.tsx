@@ -30,6 +30,14 @@ export function PushNotificationManager() {
 
   const getCurrentPermissionStatus = () => {
     if (!('Notification' in window)) return 'unsupported';
+    
+    // Check if we're in an iframe (Replit environment)
+    const inIframe = window !== window.top;
+    if (inIframe && Notification.permission === 'default') {
+      // In iframe, permission might show as 'default' even when allowed
+      return 'default-iframe';
+    }
+    
     return Notification.permission;
   };
 
@@ -74,13 +82,26 @@ export function PushNotificationManager() {
 
     setIsLoading(true);
     try {
+      // Check if we're in Replit iframe environment
+      const inIframe = window !== window.top;
+      
       // Request notification permission
       const permission = await Notification.requestPermission();
+      
       if (permission === 'denied') {
-        throw new Error('Notifications are blocked. To enable: Browser settings → Privacy/Permissions → Notifications → Allow for this site, or look for a notification icon in your address bar');
+        if (inIframe) {
+          throw new Error('Replit iframe notification issue. Try opening your app in a new tab: Click the "Open in new tab" button at the top of the preview, then enable notifications there.');
+        } else {
+          throw new Error('Notifications are blocked. To enable: Browser settings → Privacy/Permissions → Notifications → Allow for this site');
+        }
       }
+      
       if (permission !== 'granted') {
-        throw new Error('Notification permission required. Please allow notifications when prompted.');
+        if (inIframe) {
+          throw new Error('Replit iframe detected. For full notification support, open your app in a new tab using the "Open in new tab" button in the preview area.');
+        } else {
+          throw new Error('Notification permission required. Please allow notifications when prompted.');
+        }
       }
 
       // Register service worker
