@@ -107,9 +107,12 @@ export function GifPicker({ onGifSelect, disabled = false }: GifPickerProps) {
       if (searchQuery.trim()) {
         // Simple search - filter by title containing search term
         const allGifs = Object.values(popularGifs).flat();
-        return allGifs.filter(gif => 
+        const results = allGifs.filter(gif => 
           gif?.title?.toLowerCase()?.includes(searchQuery.toLowerCase())
         );
+        console.log('Search results for "' + searchQuery + '":', results.length, 'found');
+        console.log('Available titles:', allGifs.map(g => g.title));
+        return results;
       }
       return popularGifs[selectedCategory as keyof typeof popularGifs] || [];
     } catch (error) {
