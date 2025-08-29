@@ -105,8 +105,8 @@ export function PushNotificationManager() {
           memberId: currentMember.id,
           endpoint: subscription.endpoint,
           keys: {
-            p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))),
-            auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!)))
+            p256dh: btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(subscription.getKey('p256dh')!)))),
+            auth: btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(subscription.getKey('auth')!))))
           }
         })
       });
@@ -191,7 +191,7 @@ export function PushNotificationManager() {
       {isSubscribed ? (
         <Button
           variant="outline"
-          size="xs"
+          size="sm"
           onClick={unsubscribeFromPush}
           disabled={isLoading}
           data-testid="button-disable-notifications"
@@ -203,7 +203,7 @@ export function PushNotificationManager() {
       ) : (
         <Button
           variant="outline"
-          size="xs"
+          size="sm"
           onClick={subscribeToPush}
           disabled={isLoading}
           data-testid="button-enable-notifications"

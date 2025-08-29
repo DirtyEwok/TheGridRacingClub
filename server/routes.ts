@@ -645,7 +645,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (hasEveryoneMention) {
         // Create notifications for all members except the sender
         try {
-          const allMembers = await storage.getMembers();
+          const allMembers = await storage.getAllMembers();
           for (const member of allMembers) {
             if (member.id !== messageData.memberId) {
               await storage.createNotification({
