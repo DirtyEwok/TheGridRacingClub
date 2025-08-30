@@ -15,7 +15,7 @@ export default function Home() {
     if (currentMember) {
       // User has a profile, show poster and redirect as normal
       const timeout = setTimeout(() => {
-        setLocation("/races");
+        setLocation("/chat");
       }, 5000);
       return () => clearTimeout(timeout);
     } else {
