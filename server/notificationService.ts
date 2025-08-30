@@ -1,5 +1,6 @@
 import { storage } from "./storage";
 import type { PushSubscription, Race, Member } from "@shared/schema";
+import webpush from "web-push";
 
 interface PushNotificationPayload {
   title: string;
@@ -11,6 +12,14 @@ interface PushNotificationPayload {
 }
 
 export class NotificationService {
+  constructor() {
+    // Configure VAPID keys for web-push
+    webpush.setVapidDetails(
+      'mailto:admin@thegrid.racing',
+      'BEl62iUYgUivxIkv69yViEuiBIa40HI0DLdiTKBFMDddDQJBFAwL4-mcg6wAgKSHXTH_zJLZd4QPCzBIl6_5TXc', // Public key
+      'dBnqKMw5e6SgHlCkAUHFwQzNxESTXwTNvOfvissOe-A' // Private key
+    );
+  }
   
   async sendPushToAllMembers(notification: PushNotificationPayload): Promise<{successful: number, failed: number}> {
     const subscriptions = await storage.getAllPushSubscriptions();
@@ -31,11 +40,28 @@ export class NotificationService {
 
     const promises = subscriptions.map(async (subscription) => {
       try {
-        // For now, simulate sending (in production, use web-push library)
-        console.log(`Simulating push to ${subscription.endpoint}:`, notification);
+        // Convert our subscription format to web-push format
+        const pushSubscription = {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: subscription.p256dhKey,
+            auth: subscription.authKey
+          }
+        };
+
+        // Send actual push notification
+        const payload = JSON.stringify(notification);
+        await webpush.sendNotification(pushSubscription, payload);
+        
+        console.log(`🏁 Push notification sent to ${subscription.endpoint.substring(0, 50)}...`);
         successful++;
-      } catch (error) {
-        console.error('Failed to send push notification:', error);
+      } catch (error: any) {
+        console.error('Failed to send push notification:', error.message);
+        // Remove invalid subscriptions
+        if (error.statusCode === 410 || error.statusCode === 404) {
+          console.log('Removing invalid subscription:', subscription.endpoint.substring(0, 50));
+          await storage.deletePushSubscriptionByEndpoint(subscription.endpoint);
+        }
         failed++;
       }
     });

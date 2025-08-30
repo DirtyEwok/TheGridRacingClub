@@ -6,6 +6,14 @@ import { insertMemberSchema, updateMemberProfileSchema, approveMemberSchema, ins
 import { z } from "zod";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { notificationService } from "./notificationService";
+import webpush from "web-push";
+
+// Configure VAPID keys for web-push
+webpush.setVapidDetails(
+  'mailto:admin@thegrid.racing',
+  'BEl62iUYgUivxIkv69yViEuiBIa40HI0DLdiTKBFMDddDQJBFAwL4-mcg6wAgKSHXTH_zJLZd4QPCzBIl6_5TXc', // Public key
+  'dBnqKMw5e6SgHlCkAUHFwQzNxESTXwTNvOfvissOe-A' // Private key
+);
 
 // Helper function to send push notifications
 async function sendPushNotifications(
@@ -23,15 +31,28 @@ async function sendPushNotifications(
 
   const promises = subscriptions.map(async (subscription) => {
     try {
-      // Use the Fetch API to send push notification via browser's push service
+      // Convert our subscription format to web-push format
+      const pushSubscription = {
+        endpoint: subscription.endpoint,
+        keys: {
+          p256dh: subscription.p256dhKey,
+          auth: subscription.authKey
+        }
+      };
+
+      // Send actual push notification
       const payload = JSON.stringify(notification);
+      await webpush.sendNotification(pushSubscription, payload);
       
-      // For now, we'll simulate sending (in production, you'd use web-push library)
-      // This is a placeholder - actual push notification sending requires VAPID keys
-      console.log(`Simulating push to ${subscription.endpoint}:`, notification);
+      console.log(`🏁 Push notification sent to ${subscription.endpoint.substring(0, 50)}...`);
       successful++;
-    } catch (error) {
-      console.error('Failed to send push notification:', error);
+    } catch (error: any) {
+      console.error('Failed to send push notification:', error.message);
+      // Remove invalid subscriptions
+      if (error.statusCode === 410 || error.statusCode === 404) {
+        console.log('Removing invalid subscription:', subscription.endpoint.substring(0, 50));
+        await storage.deletePushSubscriptionByEndpoint(subscription.endpoint);
+      }
       failed++;
     }
   });
