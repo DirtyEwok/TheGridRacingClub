@@ -612,10 +612,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/chat-rooms/:id/messages", async (req, res) => {
     try {
       const { id } = req.params;
+      console.log('📧 Message request body:', JSON.stringify(req.body, null, 2));
       const messageData = insertChatMessageSchema.parse({
         ...req.body,
         chatRoomId: id,
       });
+      console.log('📧 Parsed message data:', JSON.stringify(messageData, null, 2));
 
       // Check if chat room exists
       const chatRoom = await storage.getChatRoom(id);
