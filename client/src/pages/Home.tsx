@@ -83,6 +83,27 @@ export default function Home() {
             <p className="text-sm opacity-75">Welcome back, {currentMember.gamertag}</p>
           </div>
         )}
+        {currentMember && (
+          <div className="absolute bottom-8 right-8">
+            <Button 
+              onClick={async () => {
+                if ('Notification' in window && Notification.permission === 'default') {
+                  const permission = await Notification.requestPermission();
+                  if (permission === 'granted') {
+                    new Notification('🏁 The Grid Racing Club', {
+                      body: 'Notifications enabled! You\'ll now receive race updates.',
+                      icon: '/icon-192.png'
+                    });
+                  }
+                }
+              }}
+              className="bg-orange-600 hover:bg-orange-700 text-white"
+              data-testid="button-enable-notifications"
+            >
+              🔔 Enable Notifications
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
