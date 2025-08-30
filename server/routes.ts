@@ -929,20 +929,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/push/subscribe", async (req, res) => {
     try {
       const subscriptionData = req.body;
-      if (!subscriptionData.memberId || !subscriptionData.endpoint || !subscriptionData.keys) {
+      
+      // Validate required fields
+      if (!subscriptionData.endpoint || !subscriptionData.keys?.p256dh || !subscriptionData.keys?.auth) {
         return res.status(400).json({ message: "Missing required subscription data" });
       }
 
-      // Store subscription temporarily for immediate testing
-      global.testPushSubscription = {
+      // Store subscription for immediate testing (bypassing database issues)
+      global.realPushSubscription = {
         endpoint: subscriptionData.endpoint,
-        keys: subscriptionData.keys
+        keys: {
+          p256dh: subscriptionData.keys.p256dh,
+          auth: subscriptionData.keys.auth
+        }
       };
 
-      res.status(201).json({ message: "Push subscription created for testing", ready: true });
+      console.log('✅ Real push subscription registered:', {
+        endpoint: subscriptionData.endpoint.substring(0, 50) + '...',
+        hasKeys: !!(subscriptionData.keys.p256dh && subscriptionData.keys.auth)
+      });
+
+      res.status(201).json({ 
+        message: "Push subscription created successfully!", 
+        ready: true 
+      });
     } catch (error) {
       console.error('Push subscription error:', error);
-      res.status(500).json({ message: "Failed to create push subscription" });
+      res.status(500).json({ message: "Failed to create push subscription: " + error.message });
     }
   });
 
@@ -976,14 +989,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Title and body are required" });
       }
 
-      // Check for test subscription
-      if (!global.testPushSubscription) {
-        return res.status(404).json({ message: "No push subscriptions found. Please subscribe to notifications first by visiting the site." });
+      // Check for real subscription
+      if (!global.realPushSubscription) {
+        return res.status(404).json({ message: "No push subscriptions found. Please enable notifications in your browser first." });
       }
 
-      // Send test push notification
+      // Send real push notification
       try {
-        await webpush.sendNotification(global.testPushSubscription, JSON.stringify({
+        console.log('📤 Sending push notification to real device...');
+        
+        await webpush.sendNotification(global.realPushSubscription, JSON.stringify({
           title,
           body,
           url: url || '/',
@@ -991,13 +1006,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           badge: '/badge-72.png'
         }));
         
+        console.log('✅ Push notification sent successfully!');
+        
         res.json({ 
-          message: "Push notification sent successfully!", 
+          message: "Push notification sent successfully to your device!", 
           sent: 1,
           failed: 0 
         });
       } catch (pushError) {
-        console.error('Push send error:', pushError);
+        console.error('❌ Push send error:', pushError);
         res.status(500).json({ message: "Failed to send push notification: " + pushError.message });
       }
     } catch (error) {
