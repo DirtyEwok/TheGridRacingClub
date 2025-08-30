@@ -15,6 +15,7 @@ export default function Home() {
     if (currentMember) {
       // User has a profile, show poster and redirect as normal
       const timeout = setTimeout(() => {
+        console.log('🏠 Home page redirecting to chat');
         setLocation("/chat");
       }, 5000);
       return () => clearTimeout(timeout);
