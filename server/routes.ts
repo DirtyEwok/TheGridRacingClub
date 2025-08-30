@@ -925,6 +925,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Push status check endpoint
+  app.get("/api/push/status", (req, res) => {
+    const hasSubscription = !!global.realPushSubscription;
+    res.json({ 
+      hasSubscription,
+      subscriptionInfo: hasSubscription ? {
+        endpoint: global.realPushSubscription.endpoint.substring(0, 50) + '...',
+        hasKeys: !!(global.realPushSubscription.keys?.p256dh && global.realPushSubscription.keys?.auth)
+      } : null
+    });
+  });
+
   // Push Notification endpoints
   app.post("/api/push/subscribe", async (req, res) => {
     try {
