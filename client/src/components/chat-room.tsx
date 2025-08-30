@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,11 @@ export default function ChatRoomComponent({
   const [messageText, setMessageText] = useState(messageDraft);
   const [isSending, setIsSending] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ChatMessageWithMember | null>(null);
+  
+  // Debug the replyingTo state changes
+  React.useEffect(() => {
+    console.log('🔄 ReplyingTo state changed:', replyingTo?.id || 'null');
+  }, [replyingTo]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Get current member to check admin status for character limit
@@ -968,10 +973,6 @@ export default function ChatRoomComponent({
       <div className="border-t border-gray-800 p-4">
         {/* Reply Context */}
         {replyingTo && (
-          <>
-            {console.log('🔄 Showing reply context for:', replyingTo)}
-          </>
-        ) && replyingTo && (
           <div className="mb-3 p-3 bg-gray-800 border border-gray-600 rounded-md">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-blue-400 font-medium">
