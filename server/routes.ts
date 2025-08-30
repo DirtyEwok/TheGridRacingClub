@@ -933,16 +933,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Missing required subscription data" });
       }
 
-      const pushSubscription = {
-        memberId: subscriptionData.memberId,
+      // Store subscription temporarily for immediate testing
+      global.testPushSubscription = {
         endpoint: subscriptionData.endpoint,
-        p256dhKey: subscriptionData.keys.p256dh,
-        authKey: subscriptionData.keys.auth,
-        userAgent: req.get('User-Agent') || null
+        keys: subscriptionData.keys
       };
 
-      const subscription = await storage.createPushSubscription(pushSubscription);
-      res.status(201).json({ message: "Push subscription created", id: subscription.id });
+      res.status(201).json({ message: "Push subscription created for testing", ready: true });
     } catch (error) {
       console.error('Push subscription error:', error);
       res.status(500).json({ message: "Failed to create push subscription" });
@@ -979,36 +976,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Title and body are required" });
       }
 
-      // Get push subscriptions from database
-      let subscriptions = [];
+      // Check for test subscription
+      if (!global.testPushSubscription) {
+        return res.status(404).json({ message: "No push subscriptions found. Please subscribe to notifications first by visiting the site." });
+      }
+
+      // Send test push notification
       try {
-        subscriptions = memberId 
-          ? await storage.getPushSubscriptionsByMember(memberId)
-          : await storage.getAllPushSubscriptions();
-      } catch (storageError) {
-        console.error('Storage error, using fallback:', storageError);
-        // Fallback - no subscriptions available
-        subscriptions = [];
+        await webpush.sendNotification(global.testPushSubscription, JSON.stringify({
+          title,
+          body,
+          url: url || '/',
+          icon: '/icon-192.png',
+          badge: '/badge-72.png'
+        }));
+        
+        res.json({ 
+          message: "Push notification sent successfully!", 
+          sent: 1,
+          failed: 0 
+        });
+      } catch (pushError) {
+        console.error('Push send error:', pushError);
+        res.status(500).json({ message: "Failed to send push notification: " + pushError.message });
       }
-
-      if (subscriptions.length === 0) {
-        return res.status(404).json({ message: "No push subscriptions found. Please enable notifications in your browser first." });
-      }
-
-      // Send push notifications to all subscriptions
-      const results = await sendPushNotifications(subscriptions, {
-        title,
-        body,
-        url: url || '/',
-        icon: '/icon-192.png',
-        badge: '/badge-72.png'
-      });
-
-      res.json({ 
-        message: "Push notifications sent", 
-        sent: results.successful,
-        failed: results.failed 
-      });
     } catch (error) {
       console.error('Send push notification error:', error);
       res.status(500).json({ message: "Failed to send push notifications" });
