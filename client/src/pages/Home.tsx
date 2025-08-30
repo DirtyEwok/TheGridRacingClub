@@ -9,7 +9,9 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const [showRegistration, setShowRegistration] = useState(false);
   
+  console.log('🏠 Home component loading...');
   const currentMember = getCurrentMember();
+  console.log('🏠 Current member:', currentMember ? `${currentMember.gamertag} (${currentMember.id})` : 'null');
 
   useEffect(() => {
     if (currentMember) {
