@@ -1562,6 +1562,7 @@ Server goes live at 20:00`,
       ...subscription,
       id,
       createdAt: new Date(),
+      userAgent: subscription.userAgent ?? null,
     };
 
     const [inserted] = await db.insert(pushSubscriptions).values(newSubscription).returning();
