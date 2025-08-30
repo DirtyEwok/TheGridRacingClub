@@ -232,6 +232,7 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
   chatRoomId: true,
   memberId: true,
   message: true,
+  replyToMessageId: true,
 });
 
 export const insertMessageLikeSchema = createInsertSchema(messageLikes).pick({
