@@ -808,7 +808,10 @@ export default function ChatRoomComponent({
                 
                 {/* Reply Context Display */}
                 {message.replyToMessageId && (() => {
+                  console.log('🔍 Message has replyToMessageId:', message.replyToMessageId);
+                  console.log('🔍 Looking for reply in messages:', messages.map(m => ({id: m.id, message: m.message.substring(0, 20)})));
                   const replyToMessage = messages.find(m => m.id === message.replyToMessageId);
+                  console.log('🔍 Found replyToMessage:', replyToMessage ? 'YES' : 'NO');
                   return replyToMessage ? (
                     <div className="mb-2 pl-4 border-l-2 border-blue-500 bg-gray-800/30 rounded-r p-2">
                       <div className="flex items-center gap-2 mb-1">
