@@ -5,9 +5,10 @@ import MemberHeader from "@/components/member-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ProfileGuard } from "@/lib/profileGuard";
 import type { ChampionshipWithStats } from "@shared/schema";
 
-export default function Championships() {
+function ChampionshipsContent() {
   const { data: championships = [], isLoading } = useQuery<ChampionshipWithStats[]>({
     queryKey: ["/api/championships"],
     queryFn: async () => {
@@ -226,5 +227,13 @@ export default function Championships() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function Championships() {
+  return (
+    <ProfileGuard>
+      <ChampionshipsContent />
+    </ProfileGuard>
   );
 }

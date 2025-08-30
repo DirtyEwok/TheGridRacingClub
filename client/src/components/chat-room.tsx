@@ -33,10 +33,6 @@ export default function ChatRoomComponent({
   const [isSending, setIsSending] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ChatMessageWithMember | null>(null);
   
-  // Debug the replyingTo state changes
-  React.useEffect(() => {
-    console.log('🔄 ReplyingTo state changed:', replyingTo?.id || 'null');
-  }, [replyingTo]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Get current member to check admin status for character limit
@@ -752,18 +748,9 @@ export default function ChatRoomComponent({
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0 hover:bg-blue-600 hover:text-white opacity-70 hover:opacity-100"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      console.log('🔄 Reply button clicked for message:', message.id);
-                      console.log('🔄 Setting replyingTo to:', message);
-                      console.log('🔄 Current replyingTo before:', replyingTo?.id || 'null');
-                      setReplyingTo(message);
-                      console.log('🔄 setReplyingTo called with:', message);
-                    }}
+                    onClick={() => setReplyingTo(message)}
                     title="Reply to message"
                     data-testid="button-reply-message"
-                    style={{ backgroundColor: 'red', zIndex: 9999 }}
                   >
                     <Reply className="w-4 h-4" />
                   </Button>
@@ -808,10 +795,7 @@ export default function ChatRoomComponent({
                 
                 {/* Reply Context Display */}
                 {message.replyToMessageId && (() => {
-                  console.log('🔍 Message has replyToMessageId:', message.replyToMessageId);
-                  console.log('🔍 Looking for reply in messages:', messages.map(m => ({id: m.id, message: m.message.substring(0, 20)})));
                   const replyToMessage = messages.find(m => m.id === message.replyToMessageId);
-                  console.log('🔍 Found replyToMessage:', replyToMessage ? 'YES' : 'NO');
                   return replyToMessage ? (
                     <div className="mb-2 pl-4 border-l-2 border-blue-500 bg-gray-800/30 rounded-r p-2">
                       <div className="flex items-center gap-2 mb-1">

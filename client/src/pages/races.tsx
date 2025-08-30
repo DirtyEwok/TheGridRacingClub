@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { getCurrentMemberId } from "@/lib/memberSession";
+import { ProfileGuard } from "@/lib/profileGuard";
 import championship1Image from "@assets/championship1.png";
 import championship2Image from "@assets/championship2.png";
 import xboxSeriesXLogo from "@assets/4c1488526880b575b0a40944ea1f13d2 - Copy (2)_1756046859441.jpg";
 import xboxSeriesSLogo from "@assets/4c1488526880b575b0a40944ea1f13d2_1756046859441.jpg";
 import type { RaceWithStats } from "@shared/schema";
 
-export default function Races() {
+function RacesContent() {
   const [selectedRace, setSelectedRace] = useState<RaceWithStats | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
@@ -226,5 +227,13 @@ export default function Races() {
         />
       </main>
     </div>
+  );
+}
+
+export default function Races() {
+  return (
+    <ProfileGuard>
+      <RacesContent />
+    </ProfileGuard>
   );
 }

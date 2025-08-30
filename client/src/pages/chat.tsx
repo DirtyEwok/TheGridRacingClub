@@ -10,8 +10,9 @@ import { MessageCircle, Users, Settings, Crown } from "lucide-react";
 import { type ChatRoomWithStats, type Championship } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { getCurrentMember } from "@/lib/memberSession";
+import { ProfileGuard } from "@/lib/profileGuard";
 
-export default function Chat() {
+function ChatContent() {
   const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
   const [messageDrafts, setMessageDrafts] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
@@ -345,5 +346,13 @@ Neil Broom aka Neilb`;
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Chat() {
+  return (
+    <ProfileGuard>
+      <ChatContent />
+    </ProfileGuard>
   );
 }
