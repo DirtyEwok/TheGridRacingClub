@@ -752,13 +752,18 @@ export default function ChatRoomComponent({
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0 hover:bg-blue-600 hover:text-white opacity-70 hover:opacity-100"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       console.log('🔄 Reply button clicked for message:', message.id);
                       console.log('🔄 Setting replyingTo to:', message);
+                      console.log('🔄 Current replyingTo before:', replyingTo?.id || 'null');
                       setReplyingTo(message);
+                      console.log('🔄 setReplyingTo called with:', message);
                     }}
                     title="Reply to message"
                     data-testid="button-reply-message"
+                    style={{ backgroundColor: 'red', zIndex: 9999 }}
                   >
                     <Reply className="w-4 h-4" />
                   </Button>
