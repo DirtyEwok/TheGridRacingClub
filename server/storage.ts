@@ -1578,12 +1578,12 @@ Server goes live at 20:00`,
 
   async deletePushSubscription(id: string): Promise<boolean> {
     const result = await db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async deletePushSubscriptionByEndpoint(endpoint: string): Promise<boolean> {
     const result = await db.delete(pushSubscriptions).where(eq(pushSubscriptions.endpoint, endpoint));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 }
 
