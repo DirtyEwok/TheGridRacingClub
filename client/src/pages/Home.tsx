@@ -9,8 +9,7 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const [showRegistration, setShowRegistration] = useState(false);
   
-  // Temporarily simulate new user for demonstration - remove after screenshot
-  const currentMember = null; // getCurrentMember();
+  const currentMember = getCurrentMember();
 
   useEffect(() => {
     if (currentMember) {
