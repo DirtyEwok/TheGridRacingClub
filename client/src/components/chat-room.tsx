@@ -747,7 +747,11 @@ export default function ChatRoomComponent({
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0 hover:bg-blue-600 hover:text-white opacity-70 hover:opacity-100"
-                    onClick={() => setReplyingTo(message)}
+                    onClick={() => {
+                      console.log('🔄 Reply button clicked for message:', message.id);
+                      console.log('🔄 Setting replyingTo to:', message);
+                      setReplyingTo(message);
+                    }}
                     title="Reply to message"
                     data-testid="button-reply-message"
                   >
@@ -964,6 +968,10 @@ export default function ChatRoomComponent({
       <div className="border-t border-gray-800 p-4">
         {/* Reply Context */}
         {replyingTo && (
+          <>
+            {console.log('🔄 Showing reply context for:', replyingTo)}
+          </>
+        ) && replyingTo && (
           <div className="mb-3 p-3 bg-gray-800 border border-gray-600 rounded-md">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-blue-400 font-medium">
