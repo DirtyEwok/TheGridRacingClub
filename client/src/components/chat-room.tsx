@@ -245,12 +245,19 @@ export default function ChatRoomComponent({
 
   // Enhanced scroll to bottom function
   const scrollToBottom = () => {
-    // Method 1: Try scrolling the container directly
+    // Method 1: Try finding the actual scrollable viewport inside ScrollArea
     const scrollContainer = scrollAreaRef.current;
     if (scrollContainer) {
-      console.log('Scrolling container - before:', scrollContainer.scrollTop, 'height:', scrollContainer.scrollHeight);
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      console.log('Scrolling container - after:', scrollContainer.scrollTop);
+      // ScrollArea creates a viewport div inside - find it
+      const viewport = scrollContainer.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        console.log('Found viewport - before:', viewport.scrollTop, 'height:', viewport.scrollHeight);
+        viewport.scrollTop = viewport.scrollHeight;
+        console.log('Found viewport - after:', viewport.scrollTop);
+      } else {
+        console.log('No viewport found, trying container directly');
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
     }
     
     // Method 2: Also use scrollIntoView as backup
