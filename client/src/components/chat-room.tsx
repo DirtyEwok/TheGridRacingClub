@@ -236,58 +236,27 @@ export default function ChatRoomComponent({
   // Auto-scroll to bottom when new messages arrive or chat room changes
   useEffect(() => {
     const scrollToBottom = () => {
-      // Try multiple approaches to scroll to bottom
-      const scrollArea = scrollAreaRef.current;
-      if (scrollArea) {
-        // Method 1: Try to find Radix viewport
-        const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]');
-        if (viewport) {
-          viewport.scrollTop = viewport.scrollHeight;
-          return;
-        }
-        
-        // Method 2: Try to find any scrollable div
-        const scrollableDiv = scrollArea.querySelector('div[style*="overflow"]');
-        if (scrollableDiv) {
-          scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
-          return;
-        }
-        
-        // Method 3: Try scrolling the container itself
-        scrollArea.scrollTop = scrollArea.scrollHeight;
-      }
-      
-      // Fallback: use scrollIntoView
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
+      const scrollContainer = scrollAreaRef.current;
+      if (scrollContainer) {
+        // Scroll to bottom immediately
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
     };
 
-    // Use longer delay and try multiple times
-    setTimeout(scrollToBottom, 100);
-    setTimeout(scrollToBottom, 300);
+    // Scroll immediately and then again after a short delay
+    scrollToBottom();
+    setTimeout(scrollToBottom, 50);
   }, [messages, chatRoom.id]);
 
   // Auto-scroll to bottom when component first loads
   useEffect(() => {
     if (messages.length > 0) {
-      const scrollToBottom = () => {
-        const scrollArea = scrollAreaRef.current;
-        if (scrollArea) {
-          const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]');
-          if (viewport) {
-            viewport.scrollTop = viewport.scrollHeight;
-          } else {
-            scrollArea.scrollTop = scrollArea.scrollHeight;
-          }
+      setTimeout(() => {
+        const scrollContainer = scrollAreaRef.current;
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
         }
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
-        }
-      };
-      
-      setTimeout(scrollToBottom, 300);
-      setTimeout(scrollToBottom, 600);
+      }, 100);
     }
   }, []);
 
@@ -674,7 +643,7 @@ export default function ChatRoomComponent({
 
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
+        <div className="h-full overflow-y-auto" ref={scrollAreaRef}>
           <div className="space-y-4 max-w-none p-4">
             {/* Pinned Messages Section */}
             {pinnedMessages.length > 0 && (
@@ -1030,7 +999,7 @@ export default function ChatRoomComponent({
             </div>
           <div ref={messagesEndRef} />
         </div>
-        </ScrollArea>
+        </div>
       </div>
 
       {/* Message Input */}
