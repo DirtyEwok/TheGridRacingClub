@@ -214,10 +214,20 @@ export default function ChatRoomComponent({
   };
 
 
-  // Set initial messages when they load
+  // Set initial messages when they load and scroll to bottom
   useEffect(() => {
     if (initialMessages) {
       setMessages(initialMessages);
+      // Scroll to bottom after messages are set
+      setTimeout(() => {
+        const scrollContainer = scrollAreaRef.current;
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
+        }
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
+        }
+      }, 100);
     }
   }, [initialMessages, setMessages]);
 
@@ -254,20 +264,24 @@ export default function ChatRoomComponent({
     setTimeout(scrollToBottom, 200);
   }, [messages]);
 
-  // Separate effect for room changes
+  // Separate effect for room changes - wait for messages to load
   useEffect(() => {
-    const scrollToBottom = () => {
-      const scrollContainer = scrollAreaRef.current;
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
-      }
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
-      }
-    };
+    if (messages.length > 0) {
+      const scrollToBottom = () => {
+        const scrollContainer = scrollAreaRef.current;
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
+        }
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
+        }
+      };
 
-    setTimeout(scrollToBottom, 300);
-  }, [chatRoom.id]);
+      // Wait longer for room changes to ensure messages are fully loaded
+      setTimeout(scrollToBottom, 500);
+      setTimeout(scrollToBottom, 800);
+    }
+  }, [chatRoom.id, messages.length]);
 
   // Auto-scroll to bottom when component first loads
   useEffect(() => {
