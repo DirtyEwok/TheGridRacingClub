@@ -282,7 +282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Auto-promote CJ DirtyEwok to admin if not already
       if (member.gamertag === "CJ DirtyEwok" && !member.isAdmin) {
         try {
-          await storage.updateMember(member.id, { isAdmin: true });
+          await storage.updateMemberProfile(member.id, { isAdmin: true });
           member.isAdmin = true;
           console.log("🏁 Auto-promoted CJ DirtyEwok to admin");
         } catch (error) {
