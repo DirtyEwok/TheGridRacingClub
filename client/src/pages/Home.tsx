@@ -53,18 +53,18 @@ export default function Home() {
             </CardHeader>
             <CardContent className="space-y-4">
               <Button 
-                onClick={() => setLocation("/register")} 
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 text-lg"
-                data-testid="button-create-profile"
-              >
-                Create Driver Profile
-              </Button>
-              <Button 
                 onClick={() => setLocation("/signin")} 
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 text-lg"
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 text-lg"
                 data-testid="button-sign-in"
               >
-                Sign In (Existing Driver)
+                🏁 SIGN IN (Existing Driver)
+              </Button>
+              <Button 
+                onClick={() => setLocation("/register")} 
+                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 text-lg"
+                data-testid="button-create-profile"
+              >
+                Create New Driver Profile
               </Button>
               <div className="text-center space-y-2">
                 <p className="text-xs text-gray-400">
