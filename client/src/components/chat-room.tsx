@@ -859,7 +859,7 @@ export default function ChatRoomComponent({
                       <img
                         src={imageUrl}
                         alt="Shared image"
-                        className="w-full max-h-64 rounded border border-gray-700 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                        className="w-full rounded border border-gray-700 object-contain cursor-pointer hover:opacity-90 transition-opacity"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
