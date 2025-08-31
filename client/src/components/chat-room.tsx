@@ -243,33 +243,44 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Simple and direct scroll to bottom using the actual scroll container
+  // Force scroll to bottom using multiple methods
   const scrollToBottom = () => {
+    // Method 1: Scroll the container
     const scrollContainer = scrollAreaRef.current;
     if (scrollContainer) {
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      scrollContainer.scrollTo({
+        top: scrollContainer.scrollHeight,
+        behavior: 'auto'
+      });
+    }
+    
+    // Method 2: Use scrollIntoView on the end marker
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ 
+        behavior: 'auto',
+        block: 'end'
+      });
     }
   };
 
   // Auto-scroll when messages change
   useEffect(() => {
     if (messages.length > 0) {
-      // More aggressive timing to ensure DOM is ready
-      setTimeout(scrollToBottom, 10);
-      setTimeout(scrollToBottom, 100);
-      setTimeout(scrollToBottom, 300);
-      setTimeout(scrollToBottom, 600);
-      setTimeout(scrollToBottom, 1000);
+      // Multiple attempts with different timing
+      scrollToBottom();
+      requestAnimationFrame(scrollToBottom);
+      setTimeout(scrollToBottom, 0);
+      setTimeout(scrollToBottom, 50);
+      setTimeout(scrollToBottom, 200);
     }
   }, [messages]);
 
-  // Auto-scroll when switching rooms - wait longer for message loading
+  // Auto-scroll when switching rooms
   useEffect(() => {
     if (messages.length > 0) {
-      setTimeout(scrollToBottom, 200);
-      setTimeout(scrollToBottom, 500);
+      setTimeout(scrollToBottom, 100);
+      setTimeout(scrollToBottom, 400);
       setTimeout(scrollToBottom, 800);
-      setTimeout(scrollToBottom, 1200);
     }
   }, [chatRoom.id]);
 
