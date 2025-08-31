@@ -118,10 +118,25 @@ export default function Register() {
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <CardTitle className="text-white text-2xl">Create Driver Profile</CardTitle>
+            <CardTitle className="text-white text-2xl">Driver Access</CardTitle>
           </div>
+          
+          {/* Clear message for existing members */}
+          <div className="bg-orange-600/20 border border-orange-600 rounded-lg p-4 mb-4">
+            <h3 className="text-orange-400 font-semibold mb-2">🏁 Already a Grid Member?</h3>
+            <p className="text-gray-300 text-sm mb-3">
+              Just enter your Xbox gamertag below - if you're already registered, you'll be signed in automatically!
+            </p>
+            <Button 
+              onClick={() => setLocation("/signin")}
+              className="bg-orange-600 hover:bg-orange-700 text-white text-sm px-4 py-2"
+            >
+              Go to Dedicated Sign-In Page
+            </Button>
+          </div>
+          
           <CardDescription className="text-gray-400">
-            Join The Grid Racing Club by creating your driver profile. You'll be able to register for races, chat with other drivers, and compete in championships.
+            <strong>New to The Grid?</strong> Create your driver profile below to join races, chat with other drivers, and compete in championships.
           </CardDescription>
         </CardHeader>
         <CardContent>
