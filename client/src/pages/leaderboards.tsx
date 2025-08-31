@@ -1,6 +1,8 @@
 import MemberHeader from "@/components/member-header";
-import { Trophy, Medal, Award } from "lucide-react";
+import { Trophy, Medal, Award, Flag } from "lucide-react";
 import gt4LeaderboardImage from "@assets/GT4zolder_1756637219903.png";
+import raceResult1 from "@assets/image_1756637358869.png";
+import raceResult2 from "@assets/image_1756637383896.png";
 
 export default function Leaderboards() {
   return (
@@ -52,7 +54,35 @@ export default function Leaderboards() {
           </div>
         </div>
 
-
+        {/* Race Results Section */}
+        <div className="mb-16">
+          <div className="flex items-center justify-center space-x-3 mb-8">
+            <Flag className="h-8 w-8 text-racing-green" />
+            <h2 className="text-3xl font-bold text-white">Recent Race Results</h2>
+          </div>
+          
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Race Result 1 */}
+              <div className="text-center">
+                <img 
+                  src={raceResult1} 
+                  alt="GT4 Race Results - Lap Times" 
+                  className="w-full h-auto rounded-lg border border-gray-600"
+                />
+              </div>
+              
+              {/* Race Result 2 */}
+              <div className="text-center">
+                <img 
+                  src={raceResult2} 
+                  alt="GT4 Race Results - Final Times" 
+                  className="w-full h-auto rounded-lg border border-gray-600"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Call to Action */}
         <div className="text-center mt-16">
