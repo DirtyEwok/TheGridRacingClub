@@ -219,16 +219,57 @@ function AdminMemberApproval() {
                     </div>
                   </div>
                   
+                  {/* Member Details - Always visible */}
+                  <div className="grid gap-3 mb-4 text-sm">
+                    {member.bio && (
+                      <div className="text-gray-300">
+                        <strong className="text-white">Bio:</strong> {member.bio}
+                      </div>
+                    )}
+                    {member.favoriteTrack && (
+                      <div className="text-gray-300">
+                        <strong className="text-white">Favorite Track:</strong> {member.favoriteTrack}
+                      </div>
+                    )}
+                    {member.favoriteCarClass && (
+                      <div className="text-gray-300">
+                        <strong className="text-white">Favorite Car Class:</strong> {member.favoriteCarClass}
+                      </div>
+                    )}
+                    {member.carNumber && (
+                      <div className="text-gray-300">
+                        <strong className="text-white">Car Number:</strong> {member.carNumber}
+                      </div>
+                    )}
+                    {member.streamLink && (
+                      <div className="text-gray-300">
+                        <strong className="text-white">Stream Link:</strong>{" "}
+                        <a 
+                          href={member.streamLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-orange-500 hover:text-orange-400 underline"
+                        >
+                          {member.streamLink}
+                        </a>
+                      </div>
+                    )}
+                    {member.streamLink2 && (
+                      <div className="text-gray-300">
+                        <strong className="text-white">Stream Link 2:</strong>{" "}
+                        <a 
+                          href={member.streamLink2} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-orange-500 hover:text-orange-400 underline"
+                        >
+                          {member.streamLink2}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex gap-3">
-                    <Button
-                      onClick={() => window.location.href = `/members/${member.id}/profile`}
-                      variant="outline"
-                      className="border-gray-600 text-white hover:bg-gray-800"
-                      data-testid={`button-view-profile-${member.id}`}
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      View Profile
-                    </Button>
                     
                     {member.status === "pending" && (
                       <>
