@@ -243,46 +243,30 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Enhanced scroll to bottom function
+  // Simple and direct scroll to bottom
   const scrollToBottom = () => {
-    // Method 1: Try finding the actual scrollable viewport inside ScrollArea
-    const scrollContainer = scrollAreaRef.current;
-    if (scrollContainer) {
-      // ScrollArea creates a viewport div inside - find it
-      const viewport = scrollContainer.querySelector('[data-radix-scroll-area-viewport]');
-      if (viewport) {
-        console.log('Found viewport - before:', viewport.scrollTop, 'height:', viewport.scrollHeight);
-        viewport.scrollTop = viewport.scrollHeight;
-        console.log('Found viewport - after:', viewport.scrollTop);
-      } else {
-        console.log('No viewport found, trying container directly');
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
-    
-    // Method 2: Also use scrollIntoView as backup
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
+      messagesEndRef.current.scrollIntoView({ block: "end" });
     }
   };
 
   // Auto-scroll when messages change
   useEffect(() => {
     if (messages.length > 0) {
-      console.log('Messages changed, scrolling to bottom. Message count:', messages.length);
-      setTimeout(scrollToBottom, 100);
-      setTimeout(scrollToBottom, 300);
+      // Use multiple timing approaches to ensure it works
+      scrollToBottom();
+      setTimeout(scrollToBottom, 50);
+      setTimeout(scrollToBottom, 200);
+      setTimeout(scrollToBottom, 500);
     }
   }, [messages]);
 
-  // Auto-scroll when switching rooms
+  // Auto-scroll when switching rooms 
   useEffect(() => {
-    console.log('Room changed to:', chatRoom.name);
     if (messages.length > 0) {
-      setTimeout(() => {
-        console.log('Room switch scroll attempt');
-        scrollToBottom();
-      }, 500);
+      setTimeout(scrollToBottom, 100);
+      setTimeout(scrollToBottom, 300);
+      setTimeout(scrollToBottom, 600);
     }
   }, [chatRoom.id]);
 
