@@ -278,6 +278,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!member) {
         return res.status(404).json({ message: "Member not found" });
       }
+      
+      // Auto-promote CJ DirtyEwok to admin if not already
+      if (member.gamertag === "CJ DirtyEwok" && !member.isAdmin) {
+        try {
+          await storage.updateMember(member.id, { isAdmin: true });
+          member.isAdmin = true;
+          console.log("🏁 Auto-promoted CJ DirtyEwok to admin");
+        } catch (error) {
+          console.error("Failed to auto-promote to admin:", error);
+        }
+      }
+      
       res.json(member);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch member" });
