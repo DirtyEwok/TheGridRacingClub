@@ -238,17 +238,35 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Simple, reliable scroll to bottom
+  // Force scroll to bottom - multiple fallback methods
   const scrollToBottom = () => {
+    // Method 1: Direct scrollTop
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      const container = messagesContainerRef.current;
+      container.scrollTop = container.scrollHeight;
+    }
+    
+    // Method 2: Find any scrollable parent containers
+    const scrollableElements = document.querySelectorAll('[data-radix-scroll-area-viewport]');
+    scrollableElements.forEach(element => {
+      element.scrollTop = element.scrollHeight;
+    });
+    
+    // Method 3: Query select the scroll container
+    const chatContainer = document.querySelector('.h-full.overflow-y-auto');
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   };
 
   // Auto-scroll when messages change
   useEffect(() => {
     if (messages.length > 0) {
-      setTimeout(scrollToBottom, 100);
+      // Immediate scroll
+      scrollToBottom();
+      // Delayed scroll to catch any layout changes
+      setTimeout(scrollToBottom, 50);
+      setTimeout(scrollToBottom, 200);
     }
   }, [messages]);
 
@@ -392,6 +410,9 @@ export default function ChatRoomComponent({
         if (onMessageDraftChange) {
           onMessageDraftChange("");
         }
+        // Force scroll to show the new message immediately
+        setTimeout(scrollToBottom, 100);
+        setTimeout(scrollToBottom, 300);
       }
     } catch (error) {
       console.error('🔧 Enter error:', error);
