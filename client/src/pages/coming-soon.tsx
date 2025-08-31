@@ -1,5 +1,5 @@
 import comingSoonImage from "@assets/MC9porsche_1756023122999.png";
-import comingSoonVideo from "@assets/24-08-25_1756024739066.mp4";
+import comingSoonVideo from "@assets/31-08-25_1756629898362.mp4";
 import videoPlaceholder from "@assets/image_1756025228556.png";
 import MemberHeader from "@/components/member-header";
 import { useState, useRef } from "react";
