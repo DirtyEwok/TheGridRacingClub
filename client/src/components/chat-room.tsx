@@ -254,20 +254,22 @@ export default function ChatRoomComponent({
   // Auto-scroll when messages change
   useEffect(() => {
     if (messages.length > 0) {
-      // Use multiple timing approaches to ensure it works
-      scrollToBottom();
-      setTimeout(scrollToBottom, 50);
-      setTimeout(scrollToBottom, 200);
-      setTimeout(scrollToBottom, 500);
-    }
-  }, [messages]);
-
-  // Auto-scroll when switching rooms 
-  useEffect(() => {
-    if (messages.length > 0) {
+      // More aggressive timing to ensure DOM is ready
+      setTimeout(scrollToBottom, 10);
       setTimeout(scrollToBottom, 100);
       setTimeout(scrollToBottom, 300);
       setTimeout(scrollToBottom, 600);
+      setTimeout(scrollToBottom, 1000);
+    }
+  }, [messages]);
+
+  // Auto-scroll when switching rooms - wait longer for message loading
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(scrollToBottom, 200);
+      setTimeout(scrollToBottom, 500);
+      setTimeout(scrollToBottom, 800);
+      setTimeout(scrollToBottom, 1200);
     }
   }, [chatRoom.id]);
 
