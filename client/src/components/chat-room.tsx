@@ -860,7 +860,7 @@ export default function ChatRoomComponent({
                           Replying to {replyToMessage.member.gamertag}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-400 max-h-12 overflow-hidden">
+                      <div className="text-xs text-gray-400 max-h-12 overflow-hidden whitespace-pre-wrap">
                         {replyToMessage.message.length > 80 ? 
                           `${replyToMessage.message.substring(0, 80)}...` : 
                           replyToMessage.message
@@ -903,9 +903,9 @@ export default function ChatRoomComponent({
                     });
                     
                     return messageWithoutMedia && (
-                      <p className="mb-2 break-words overflow-wrap-anywhere">
+                      <div className="mb-2 break-words overflow-wrap-anywhere whitespace-pre-wrap">
                         {renderMessageWithMentions(messageWithoutMedia)}
-                      </p>
+                      </div>
                     );
                   })()}
                   
