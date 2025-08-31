@@ -1,6 +1,6 @@
 import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award } from "lucide-react";
-import gt4LeaderboardImage from "@assets/gt4redbull_1755878317150.png";
+import gt4LeaderboardImage from "@assets/GT4zolder_1756637219903.png";
 
 export default function Leaderboards() {
   return (
