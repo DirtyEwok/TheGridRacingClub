@@ -19,13 +19,13 @@ export default function Home() {
       const timeout = setTimeout(() => {
         console.log('🏠 Home page redirecting to chat');
         setLocation("/chat");
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timeout);
     } else {
-      // New user, show poster for 5 seconds then show registration prompt
+      // Show both options immediately after poster
       const timeout = setTimeout(() => {
         setShowRegistration(true);
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timeout);
     }
   }, [setLocation, currentMember]);
@@ -82,7 +82,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative">
       <div className="w-full h-full max-w-4xl max-h-[90vh] flex items-center justify-center">
         <img 
           src={homeImage} 
@@ -95,6 +95,17 @@ export default function Home() {
             <p className="text-sm opacity-75">Welcome back, {currentMember.gamertag}</p>
           </div>
         )}
+      </div>
+      
+      {/* Skip button for immediate access */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <Button
+          onClick={() => setShowRegistration(true)}
+          className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg font-semibold"
+          data-testid="button-skip"
+        >
+          Enter Racing Club
+        </Button>
       </div>
     </div>
   );
