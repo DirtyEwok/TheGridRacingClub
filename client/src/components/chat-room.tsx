@@ -238,15 +238,36 @@ export default function ChatRoomComponent({
     const scrollToBottom = () => {
       const scrollContainer = scrollAreaRef.current;
       if (scrollContainer) {
-        // Scroll to bottom immediately
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        // Force scroll to maximum possible position
+        scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
+      }
+      
+      // Also try scrollIntoView as backup
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
       }
     };
 
-    // Scroll immediately and then again after a short delay
-    scrollToBottom();
-    setTimeout(scrollToBottom, 50);
-  }, [messages, chatRoom.id]);
+    // Multiple attempts with increasing delays
+    setTimeout(scrollToBottom, 0);
+    setTimeout(scrollToBottom, 100);
+    setTimeout(scrollToBottom, 200);
+  }, [messages]);
+
+  // Separate effect for room changes
+  useEffect(() => {
+    const scrollToBottom = () => {
+      const scrollContainer = scrollAreaRef.current;
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
+      }
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
+      }
+    };
+
+    setTimeout(scrollToBottom, 300);
+  }, [chatRoom.id]);
 
   // Auto-scroll to bottom when component first loads
   useEffect(() => {
@@ -254,9 +275,12 @@ export default function ChatRoomComponent({
       setTimeout(() => {
         const scrollContainer = scrollAreaRef.current;
         if (scrollContainer) {
-          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
         }
-      }, 100);
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
+        }
+      }, 500);
     }
   }, []);
 
