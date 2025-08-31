@@ -236,22 +236,36 @@ export default function ChatRoomComponent({
   // Auto-scroll to bottom when new messages arrive or chat room changes
   useEffect(() => {
     const scrollToBottom = () => {
-      // Try to find the scroll area viewport and scroll it to bottom
+      // Try multiple approaches to scroll to bottom
       const scrollArea = scrollAreaRef.current;
       if (scrollArea) {
+        // Method 1: Try to find Radix viewport
         const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]');
         if (viewport) {
           viewport.scrollTop = viewport.scrollHeight;
+          return;
         }
+        
+        // Method 2: Try to find any scrollable div
+        const scrollableDiv = scrollArea.querySelector('div[style*="overflow"]');
+        if (scrollableDiv) {
+          scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+          return;
+        }
+        
+        // Method 3: Try scrolling the container itself
+        scrollArea.scrollTop = scrollArea.scrollHeight;
       }
-      // Fallback to scrollIntoView
+      
+      // Fallback: use scrollIntoView
       if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
       }
     };
 
-    // Small delay to ensure DOM is updated
-    setTimeout(scrollToBottom, 50);
+    // Use longer delay and try multiple times
+    setTimeout(scrollToBottom, 100);
+    setTimeout(scrollToBottom, 300);
   }, [messages, chatRoom.id]);
 
   // Auto-scroll to bottom when component first loads
@@ -263,14 +277,17 @@ export default function ChatRoomComponent({
           const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]');
           if (viewport) {
             viewport.scrollTop = viewport.scrollHeight;
+          } else {
+            scrollArea.scrollTop = scrollArea.scrollHeight;
           }
         }
         if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+          messagesEndRef.current.scrollIntoView({ behavior: "auto", block: "end" });
         }
       };
       
-      setTimeout(scrollToBottom, 200);
+      setTimeout(scrollToBottom, 300);
+      setTimeout(scrollToBottom, 600);
     }
   }, []);
 
