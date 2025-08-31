@@ -240,25 +240,47 @@ export default function ChatRoomComponent({
 
   // Scroll to bottom when chat room opens
   useEffect(() => {
-    const scrollToBottom = () => {
-      // Find the actual scrollable container
-      const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]') || 
-                            document.querySelector('.overflow-y-auto') ||
-                            messagesContainerRef.current;
-      
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
+    const forceScrollToBottom = () => {
+      // Try all possible scroll containers aggressively
+      const containers = [
+        // Radix ScrollArea viewport
+        document.querySelector('[data-radix-scroll-area-viewport]'),
+        // Any element with overflow scroll
+        document.querySelector('.overflow-y-auto'),
+        // The messages container ref
+        messagesContainerRef.current,
+        // Look for any scrollable div in the chat area
+        ...Array.from(document.querySelectorAll('div')).filter(el => 
+          el.scrollHeight > el.clientHeight
+        )
+      ].filter(Boolean);
+
+      containers.forEach(container => {
+        if (container) {
+          // Force scroll to absolute bottom
+          container.scrollTop = container.scrollHeight + 1000;
+          // Also try scrollIntoView on last message
+          const lastMessage = container.querySelector('[data-testid*="message"]:last-child');
+          if (lastMessage) {
+            lastMessage.scrollIntoView({ behavior: 'instant', block: 'end' });
+          }
+        }
+      });
     };
 
-    // Scroll when room changes or messages load
-    if (messages.length > 0) {
-      // Multiple attempts to ensure scroll works
-      scrollToBottom();
-      setTimeout(scrollToBottom, 100);
-      setTimeout(scrollToBottom, 500);
-    }
-  }, [chatRoom.id, messages.length]);
+    // Only scroll when switching rooms (chatRoom.id changes)
+    const timeoutId = setTimeout(() => {
+      if (messages.length > 0) {
+        forceScrollToBottom();
+        // Extra attempts with longer delays
+        setTimeout(forceScrollToBottom, 200);
+        setTimeout(forceScrollToBottom, 800);
+        setTimeout(forceScrollToBottom, 1500);
+      }
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [chatRoom.id]); // Only trigger on room change, not message updates
 
   // Filter members for mention autocomplete
   const filteredMembers = allMembers.filter(member => 
