@@ -240,44 +240,40 @@ export default function ChatRoomComponent({
 
   // Scroll to bottom when chat room opens
   useEffect(() => {
-    const forceScrollToBottom = () => {
-      // Try all possible scroll containers aggressively
-      const containers = [
-        // Radix ScrollArea viewport
-        document.querySelector('[data-radix-scroll-area-viewport]'),
-        // Any element with overflow scroll
-        document.querySelector('.overflow-y-auto'),
-        // The messages container ref
-        messagesContainerRef.current,
-        // Look for any scrollable div in the chat area
-        ...Array.from(document.querySelectorAll('div')).filter(el => 
-          el.scrollHeight > el.clientHeight
-        )
-      ].filter(Boolean);
+    const scrollToBottomOfMessages = () => {
+      // Focus specifically on the messages area, not the whole page
+      const messagesScrollContainer = 
+        // Try the Radix ScrollArea viewport first (most likely)
+        document.querySelector('[data-radix-scroll-area-viewport]') ||
+        // Try our ref container
+        messagesContainerRef.current;
 
-      containers.forEach(container => {
-        if (container) {
-          // Force scroll to absolute bottom
-          container.scrollTop = container.scrollHeight + 1000;
-          // Also try scrollIntoView on last message
-          const lastMessage = container.querySelector('[data-testid*="message"]:last-child');
-          if (lastMessage) {
-            lastMessage.scrollIntoView({ behavior: 'instant', block: 'end' });
-          }
+      if (messagesScrollContainer) {
+        // Force scroll to bottom of messages container only
+        messagesScrollContainer.scrollTop = messagesScrollContainer.scrollHeight;
+        
+        // Also try scrolling the last message into view within this container
+        const lastMessage = messagesScrollContainer.querySelector('[data-testid*="message"]:last-child');
+        if (lastMessage) {
+          lastMessage.scrollIntoView({ 
+            behavior: 'instant', 
+            block: 'end',
+            inline: 'nearest'
+          });
         }
-      });
+      }
     };
 
     // Only scroll when switching rooms (chatRoom.id changes)
     const timeoutId = setTimeout(() => {
       if (messages.length > 0) {
-        forceScrollToBottom();
-        // Extra attempts with longer delays
-        setTimeout(forceScrollToBottom, 200);
-        setTimeout(forceScrollToBottom, 800);
-        setTimeout(forceScrollToBottom, 1500);
+        scrollToBottomOfMessages();
+        // Extra attempts with longer delays for content loading
+        setTimeout(scrollToBottomOfMessages, 200);
+        setTimeout(scrollToBottomOfMessages, 600);
+        setTimeout(scrollToBottomOfMessages, 1200);
       }
-    }, 100);
+    }, 150);
 
     return () => clearTimeout(timeoutId);
   }, [chatRoom.id]); // Only trigger on room change, not message updates
