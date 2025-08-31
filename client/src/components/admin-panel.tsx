@@ -439,7 +439,7 @@ Neil Broom aka Neilb`);
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(`/member-profile/${member.id}`, '_blank')}
+                    onClick={() => window.location.href = '/admin/members'}
                     className="bg-blue-900 hover:bg-blue-800 border-blue-700 text-blue-300"
                   >
                     <Edit className="w-4 h-4" />
