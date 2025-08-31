@@ -1,5 +1,5 @@
 import comingSoonImage from "@assets/midevo8_1756630084862.png";
-import comingSoonVideo from "@assets/31-08-25_1756629898362.mp4";
+import comingSoonVideo from "@assets/31-08-25_1756640082349.mp4";
 import videoPlaceholder from "@assets/image_1756025228556.png";
 import MemberHeader from "@/components/member-header";
 import { useState, useRef } from "react";
