@@ -243,10 +243,11 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Simple and direct scroll to bottom
+  // Simple and direct scroll to bottom using the actual scroll container
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ block: "end" });
+    const scrollContainer = scrollAreaRef.current;
+    if (scrollContainer) {
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
   };
 
