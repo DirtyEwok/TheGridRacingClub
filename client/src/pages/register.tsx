@@ -59,12 +59,13 @@ export default function Register() {
       }
 
       if (existingMember) {
+        // Auto-login the existing member instead of showing error
+        setCurrentMember(existingMember);
         toast({
-          title: "Gamertag Already Exists",
-          description: `The gamertag "${data.gamertag}" is already registered. Please choose a different one.`,
-          variant: "destructive",
+          title: "Welcome Back!",
+          description: `Found your existing profile for "${data.gamertag}". Signing you in...`,
         });
-        setIsSubmitting(false);
+        setLocation("/chat");
         return;
       }
 
