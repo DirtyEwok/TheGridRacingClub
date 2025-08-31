@@ -243,60 +243,36 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Auto-scroll to bottom when new messages arrive or chat room changes
-  useEffect(() => {
-    const scrollToBottom = () => {
-      const scrollContainer = scrollAreaRef.current;
-      if (scrollContainer) {
-        // Force scroll to maximum possible position
-        scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
-      }
-      
-      // Also try scrollIntoView as backup
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
-      }
-    };
+  // Scroll to bottom function
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  };
 
-    // Multiple attempts with increasing delays
-    setTimeout(scrollToBottom, 0);
-    setTimeout(scrollToBottom, 100);
-    setTimeout(scrollToBottom, 200);
+  // Auto-scroll when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Use requestAnimationFrame for better timing
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
+      });
+    }
   }, [messages]);
 
-  // Separate effect for room changes - wait for messages to load
+  // Auto-scroll when switching rooms
   useEffect(() => {
     if (messages.length > 0) {
-      const scrollToBottom = () => {
-        const scrollContainer = scrollAreaRef.current;
-        if (scrollContainer) {
-          scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
-        }
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
-        }
-      };
-
-      // Wait longer for room changes to ensure messages are fully loaded
-      setTimeout(scrollToBottom, 500);
-      setTimeout(scrollToBottom, 800);
-    }
-  }, [chatRoom.id, messages.length]);
-
-  // Auto-scroll to bottom when component first loads
-  useEffect(() => {
-    if (messages.length > 0) {
+      // Wait for room transition and then scroll
       setTimeout(() => {
-        const scrollContainer = scrollAreaRef.current;
-        if (scrollContainer) {
-          scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
-        }
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
-        }
-      }, 500);
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
+      }, 200);
     }
-  }, []);
+  }, [chatRoom.id]);
 
   // Filter members for mention autocomplete
   const filteredMembers = allMembers.filter(member => 
