@@ -59,8 +59,15 @@ export default function Home() {
               >
                 Create Driver Profile
               </Button>
+              <Button 
+                onClick={() => setLocation("/signin")} 
+                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 text-lg"
+                data-testid="button-sign-in"
+              >
+                Sign In (Existing Driver)
+              </Button>
               <p className="text-xs text-gray-400 text-center">
-                New drivers must create a profile before accessing races and chat features.
+                New drivers create a profile • Existing drivers sign in with their gamertag
               </p>
             </CardContent>
           </Card>

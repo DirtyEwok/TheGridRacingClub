@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Dashboard from "@/pages/dashboard";
 import Home from "@/pages/Home";
 import Register from "@/pages/register";
+import SignIn from "@/pages/SignIn";
 import Races from "@/pages/races";
 import Championships from "@/pages/championships";
 import Leaderboards from "@/pages/leaderboards";
@@ -21,6 +22,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/register" component={Register} />
+      <Route path="/signin" component={SignIn} />
       <Route path="/races" component={Races} />
       <Route path="/championships" component={Championships} />
       <Route path="/leaderboards" component={Leaderboards} />
