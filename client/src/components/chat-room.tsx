@@ -426,9 +426,9 @@ export default function ChatRoomComponent({
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     
-    // If message is from today, show only time
+    // If message is from today, show "Today HH:mm"
     if (messageDate.toDateString() === today.toDateString()) {
-      return format(messageDate, "HH:mm");
+      return format(messageDate, "'Today' HH:mm");
     }
     // If message is from yesterday, show "Yesterday HH:mm"
     else if (messageDate.toDateString() === yesterday.toDateString()) {
