@@ -61,24 +61,45 @@ export default function Leaderboards() {
             <h2 className="text-3xl font-bold text-white">Recent Race Results</h2>
           </div>
           
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Race Result 1 */}
-              <div className="text-center">
-                <img 
-                  src={raceResult1} 
-                  alt="GT4 Race Results - Lap Times" 
-                  className="w-full h-auto rounded-lg border border-gray-600"
-                />
+          {/* GT3 Mid Evo Masters Results */}
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <Trophy className="h-6 w-6 text-racing-green" />
+              <h3 className="text-xl font-bold text-white">GT3 Mid Evo Masters</h3>
+            </div>
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <div className="text-center text-gray-400 py-8">
+                <Award className="h-12 w-12 mx-auto mb-4 text-gray-600" />
+                <p className="text-lg">Race results will appear here after races are completed.</p>
               </div>
-              
-              {/* Race Result 2 */}
-              <div className="text-center">
-                <img 
-                  src={raceResult2} 
-                  alt="GT4 Race Results - Final Times" 
-                  className="w-full h-auto rounded-lg border border-gray-600"
-                />
+            </div>
+          </div>
+          
+          {/* GT4 Mornings Season 2 Results */}
+          <div>
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <Medal className="h-6 w-6 text-racing-green" />
+              <h3 className="text-xl font-bold text-white">GT4 Mornings Season 2</h3>
+            </div>
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Race Result 1 */}
+                <div className="text-center">
+                  <img 
+                    src={raceResult1} 
+                    alt="GT4 Race Results - Lap Times" 
+                    className="w-full h-auto rounded-lg border border-gray-600"
+                  />
+                </div>
+                
+                {/* Race Result 2 */}
+                <div className="text-center">
+                  <img 
+                    src={raceResult2} 
+                    alt="GT4 Race Results - Final Times" 
+                    className="w-full h-auto rounded-lg border border-gray-600"
+                  />
+                </div>
               </div>
             </div>
           </div>
