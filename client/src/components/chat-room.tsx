@@ -232,12 +232,21 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive or chat room changes
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, chatRoom.id]);
+
+  // Auto-scroll to bottom when component first loads
+  useEffect(() => {
+    if (messagesEndRef.current && messages.length > 0) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, []);
 
   // Filter members for mention autocomplete
   const filteredMembers = allMembers.filter(member => 
@@ -386,7 +395,27 @@ export default function ChatRoomComponent({
 
 
   const formatMessageTime = (date: Date) => {
-    return format(new Date(date), "HH:mm");
+    const messageDate = new Date(date);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // If message is from today, show only time
+    if (messageDate.toDateString() === today.toDateString()) {
+      return format(messageDate, "HH:mm");
+    }
+    // If message is from yesterday, show "Yesterday HH:mm"
+    else if (messageDate.toDateString() === yesterday.toDateString()) {
+      return format(messageDate, "'Yesterday' HH:mm");
+    }
+    // If message is from this year, show "MMM dd HH:mm"
+    else if (messageDate.getFullYear() === today.getFullYear()) {
+      return format(messageDate, "MMM dd HH:mm");
+    }
+    // If message is from a different year, show full date
+    else {
+      return format(messageDate, "MMM dd, yyyy HH:mm");
+    }
   };
 
   const renderMessageWithMentions = (messageText: string) => {
