@@ -49,7 +49,7 @@ export default function ChatRoomComponent({
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionStartIndex, setMentionStartIndex] = useState(-1);
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   
   // Fetch initial messages
   const { data: initialMessages } = useQuery<ChatMessageWithMember[]>({
@@ -267,7 +267,7 @@ export default function ChatRoomComponent({
   ).slice(0, 5);
 
   // Handle input change with mention detection
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const cursorPosition = e.target.selectionStart || 0;
     
@@ -332,7 +332,7 @@ export default function ChatRoomComponent({
   };
 
   // Handle keyboard navigation in mention dropdown
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (showMentionDropdown && filteredMembers.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
@@ -354,11 +354,7 @@ export default function ChatRoomComponent({
       }
     }
     
-    // Handle normal Enter to send message
-    if (e.key === 'Enter' && !e.shiftKey && !showMentionDropdown) {
-      e.preventDefault();
-      handleSendMessage(e);
-    }
+    // Note: Enter key now creates new lines instead of sending messages
   };
 
 
@@ -1032,21 +1028,22 @@ export default function ChatRoomComponent({
         <form onSubmit={handleSendMessage} className="space-y-3">
           <div className="flex gap-2 relative">
             <div className="flex-1 relative">
-              <Input
+              <textarea
                 ref={inputRef}
                 id="chat-message-input"
                 name="messageText"
                 value={messageText}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Type a message, paste image URL, or share a link..."
-                className="w-full bg-gray-900 border-gray-700 text-white placeholder-gray-400 touch-manipulation"
+                placeholder="Type a message, paste image URL, or share a link... (Enter creates new lines)"
+                className="w-full bg-gray-900 border border-gray-700 rounded-md text-white placeholder-gray-400 touch-manipulation resize-none min-h-[2.5rem] max-h-32 px-3 py-2"
                 maxLength={maxCharacters}
                 disabled={isSending}
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck="false"
                 data-testid="input-chat-message"
+                rows={1}
               />
               
               {/* Mention Autocomplete Dropdown */}
