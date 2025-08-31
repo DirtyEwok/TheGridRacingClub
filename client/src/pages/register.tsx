@@ -59,11 +59,11 @@ export default function Register() {
       }
 
       if (existingMember) {
-        // Auto-login the existing member instead of showing error
+        // Auto-login the existing member with their actual profile data
         setCurrentMember(existingMember);
         toast({
           title: "Welcome Back!",
-          description: `Found your existing profile for "${data.gamertag}". Signing you in...`,
+          description: `Signed in as ${existingMember.displayName} (${existingMember.gamertag})`,
         });
         setLocation("/chat");
         return;
