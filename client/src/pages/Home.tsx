@@ -48,7 +48,7 @@ export default function Home() {
             <CardHeader className="text-center">
               <CardTitle className="text-white text-2xl mb-2">Welcome to The Grid Racing Club</CardTitle>
               <CardDescription className="text-gray-300">
-                Create your driver profile to join races, chat with other drivers, and compete in championships.
+                Join races, chat with other drivers, and compete in championships.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -66,9 +66,14 @@ export default function Home() {
               >
                 Sign In (Existing Driver)
               </Button>
-              <p className="text-xs text-gray-400 text-center">
-                New drivers create a profile • Existing drivers sign in with their gamertag
-              </p>
+              <div className="text-center space-y-2">
+                <p className="text-xs text-gray-400">
+                  <strong>New Driver?</strong> Create a profile to get started
+                </p>
+                <p className="text-xs text-gray-400">
+                  <strong>Returning Driver?</strong> Sign in with your gamertag
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
