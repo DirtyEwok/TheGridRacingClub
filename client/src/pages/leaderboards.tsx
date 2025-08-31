@@ -81,14 +81,14 @@ export default function Leaderboards() {
               <Medal className="h-6 w-6 text-racing-green" />
               <h3 className="text-xl font-bold text-white">GT4 Mornings Season 2</h3>
             </div>
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 md:p-6">
+              <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
                 {/* Race Result 1 */}
                 <div className="text-center">
                   <img 
                     src={raceResult1} 
                     alt="GT4 Race Results - Lap Times" 
-                    className="w-full h-auto rounded-lg border border-gray-600"
+                    className="w-full h-auto max-w-sm mx-auto rounded-lg border border-gray-600"
                   />
                 </div>
                 
@@ -97,7 +97,7 @@ export default function Leaderboards() {
                   <img 
                     src={raceResult2} 
                     alt="GT4 Race Results - Final Times" 
-                    className="w-full h-auto rounded-lg border border-gray-600"
+                    className="w-full h-auto max-w-sm mx-auto rounded-lg border border-gray-600"
                   />
                 </div>
               </div>
