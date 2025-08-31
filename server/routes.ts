@@ -274,8 +274,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get member by gamertag
   app.get("/api/members/by-gamertag/:gamertag", async (req, res) => {
     try {
-      const member = await storage.getMemberByGamertag(req.params.gamertag);
-      if (!member) {
+      let member = await storage.getMemberByGamertag(req.params.gamertag);
+      
+      // Special handling for CJ DirtyEwok - create admin profile if not found
+      if (!member && req.params.gamertag === "CJ DirtyEwok") {
+        try {
+          member = await storage.createMember({
+            displayName: "CJ Carmichael",
+            gamertag: "CJ DirtyEwok",
+            experienceLevel: "Professional",
+            isAdmin: true,
+            bio: "Club founder and owner",
+            favoriteTrack: "Mount Panorama",
+            favoriteCarClass: "GT3",
+            carNumber: "75"
+          });
+          console.log("🏁 Created admin profile for CJ DirtyEwok");
+        } catch (createError) {
+          console.error("Failed to create admin profile:", createError);
+          return res.status(500).json({ message: "Failed to create admin profile" });
+        }
+      } else if (!member) {
         return res.status(404).json({ message: "Member not found" });
       }
       
