@@ -33,8 +33,7 @@ export default function ChatRoomComponent({
   const [isSending, setIsSending] = useState(false);
   const [replyingTo, setReplyingTo] = useState<ChatMessageWithMember | null>(null);
   
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   
   // Get current member to check admin status for character limit
   const currentMember = getCurrentMember();
@@ -218,14 +217,10 @@ export default function ChatRoomComponent({
   useEffect(() => {
     if (initialMessages) {
       setMessages(initialMessages);
-      // Scroll to bottom after messages are set
+      // Simple scroll to bottom
       setTimeout(() => {
-        const scrollContainer = scrollAreaRef.current;
-        if (scrollContainer) {
-          scrollContainer.scrollTop = scrollContainer.scrollHeight + 1000;
-        }
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: "instant", block: "end" });
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
         }
       }, 100);
     }
@@ -243,44 +238,24 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Force scroll to bottom using multiple methods
+  // Simple, reliable scroll to bottom
   const scrollToBottom = () => {
-    // Method 1: Scroll the container
-    const scrollContainer = scrollAreaRef.current;
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: scrollContainer.scrollHeight,
-        behavior: 'auto'
-      });
-    }
-    
-    // Method 2: Use scrollIntoView on the end marker
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: 'auto',
-        block: 'end'
-      });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   };
 
   // Auto-scroll when messages change
   useEffect(() => {
     if (messages.length > 0) {
-      // Multiple attempts with different timing
-      scrollToBottom();
-      requestAnimationFrame(scrollToBottom);
-      setTimeout(scrollToBottom, 0);
-      setTimeout(scrollToBottom, 50);
-      setTimeout(scrollToBottom, 200);
+      setTimeout(scrollToBottom, 100);
     }
   }, [messages]);
 
   // Auto-scroll when switching rooms
   useEffect(() => {
     if (messages.length > 0) {
-      setTimeout(scrollToBottom, 100);
-      setTimeout(scrollToBottom, 400);
-      setTimeout(scrollToBottom, 800);
+      setTimeout(scrollToBottom, 200);
     }
   }, [chatRoom.id]);
 
@@ -663,7 +638,7 @@ export default function ChatRoomComponent({
 
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto" ref={scrollAreaRef}>
+        <div className="h-full overflow-y-auto" ref={messagesContainerRef}>
           <div className="space-y-4 max-w-none p-4">
             {/* Pinned Messages Section */}
             {pinnedMessages.length > 0 && (
@@ -1017,7 +992,6 @@ export default function ChatRoomComponent({
             </div>
           ))}
             </div>
-          <div ref={messagesEndRef} />
         </div>
         </div>
       </div>
