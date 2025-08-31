@@ -34,6 +34,7 @@ export default function ChatRoomComponent({
   const [replyingTo, setReplyingTo] = useState<ChatMessageWithMember | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   
   // Get current member to check admin status for character limit
   const currentMember = getCurrentMember();
@@ -234,17 +235,42 @@ export default function ChatRoomComponent({
 
   // Auto-scroll to bottom when new messages arrive or chat room changes
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const scrollToBottom = () => {
+      // Try to find the scroll area viewport and scroll it to bottom
+      const scrollArea = scrollAreaRef.current;
+      if (scrollArea) {
+        const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        }
+      }
+      // Fallback to scrollIntoView
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    // Small delay to ensure DOM is updated
+    setTimeout(scrollToBottom, 50);
   }, [messages, chatRoom.id]);
 
   // Auto-scroll to bottom when component first loads
   useEffect(() => {
-    if (messagesEndRef.current && messages.length > 0) {
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+    if (messages.length > 0) {
+      const scrollToBottom = () => {
+        const scrollArea = scrollAreaRef.current;
+        if (scrollArea) {
+          const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]');
+          if (viewport) {
+            viewport.scrollTop = viewport.scrollHeight;
+          }
+        }
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      };
+      
+      setTimeout(scrollToBottom, 200);
     }
   }, []);
 
@@ -631,7 +657,7 @@ export default function ChatRoomComponent({
 
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full">
+        <ScrollArea className="h-full" ref={scrollAreaRef}>
           <div className="space-y-4 max-w-none p-4">
             {/* Pinned Messages Section */}
             {pinnedMessages.length > 0 && (
