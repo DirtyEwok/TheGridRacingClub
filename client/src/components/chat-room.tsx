@@ -238,7 +238,27 @@ export default function ChatRoomComponent({
     }
   }, [messageText, onMessageDraftChange]);
 
-  // Note: Auto-scroll feature disabled due to technical limitations
+  // Scroll to bottom when chat room opens
+  useEffect(() => {
+    const scrollToBottom = () => {
+      // Find the actual scrollable container
+      const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]') || 
+                            document.querySelector('.overflow-y-auto') ||
+                            messagesContainerRef.current;
+      
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    };
+
+    // Scroll when room changes or messages load
+    if (messages.length > 0) {
+      // Multiple attempts to ensure scroll works
+      scrollToBottom();
+      setTimeout(scrollToBottom, 100);
+      setTimeout(scrollToBottom, 500);
+    }
+  }, [chatRoom.id, messages.length]);
 
   // Filter members for mention autocomplete
   const filteredMembers = allMembers.filter(member => 
