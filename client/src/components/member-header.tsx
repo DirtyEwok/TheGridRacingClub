@@ -166,10 +166,18 @@ export default function MemberHeader() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       const profileUrl = `/members/${currentMember.id}/profile`;
+                      console.log('Profile button clicked!');
+                      console.log('Current member ID:', currentMember.id);
                       console.log('Navigating to profile:', profileUrl);
+                      console.log('Current location before navigation:', window.location.href);
                       router.push(profileUrl);
+                      setTimeout(() => {
+                        console.log('Location after router.push:', window.location.href);
+                      }, 100);
                     }}
                     className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
                   >
