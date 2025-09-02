@@ -164,17 +164,17 @@ export default function MemberHeader() {
                   <span className="text-sm text-gray-300">Welcome, {currentMember.displayName}</span>
                   <Button
                     variant="outline"
-                    size="xs"
-                    onClick={() => window.location.href = `/members/${currentMember.id}/profile`}
+                    size="sm"
+                    onClick={() => window.location.href = '/admin/members'}
                     className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
                   >
                     <User className="w-3 h-3 mr-1" />
-                    Profile
+                    Members
                   </Button>
                   {isAdmin && (
                     <Button
                       variant="outline"
-                      size="xs"
+                      size="sm"
                       onClick={() => window.location.href = "/admin"}
                       className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white h-6 px-2 text-xs"
                     >
@@ -185,7 +185,7 @@ export default function MemberHeader() {
                   <PushNotificationManager />
                   <Button
                     variant="outline"
-                    size="xs"
+                    size="sm"
                     onClick={() => {
                       clearCurrentMember();
                       queryClient.invalidateQueries({ queryKey: ["/api/races"] });
@@ -198,7 +198,7 @@ export default function MemberHeader() {
               ) : (
                 <Button
                   variant="outline"
-                  size="xs"
+                  size="sm"
                   onClick={() => setIsSignInOpen(true)}
                   className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 h-6 px-2 text-xs"
                 >
@@ -260,19 +260,16 @@ export default function MemberHeader() {
             {currentMember && (
               <>
                 <div className="border-t border-gray-600 my-2"></div>
-                <Link href={`/members/${currentMember.id}/profile`}>
-                  <div
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors flex items-center ${
-                      location === `/members/${currentMember.id}/profile`
-                        ? "bg-racing-green text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                    }`}
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Profile
-                  </div>
-                </Link>
+                <div
+                  onClick={() => {
+                    window.location.href = '/admin/members';
+                    setIsMenuOpen(false);
+                  }}
+                  className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Members
+                </div>
                 
                 {/* Mobile Alerts Section */}
                 <div className="px-3 py-2">
