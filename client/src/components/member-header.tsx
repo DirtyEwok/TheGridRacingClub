@@ -163,16 +163,18 @@ export default function MemberHeader() {
               {currentMember ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-300">Welcome, {currentMember.displayName}</span>
-                  <Link href={`/members/${currentMember.id}/profile`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
-                    >
-                      <User className="w-3 h-3 mr-1" />
-                      Profile
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      console.log('Direct navigation attempt...');
+                      window.location.href = `${window.location.origin}/members/${currentMember.id}/profile`;
+                    }}
+                    className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
+                  >
+                    <User className="w-3 h-3 mr-1" />
+                    Profile
+                  </Button>
                   {isAdmin && (
                     <Button
                       variant="outline"
