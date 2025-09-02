@@ -163,27 +163,16 @@ export default function MemberHeader() {
               {currentMember ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-300">Welcome, {currentMember.displayName}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const profileUrl = `/members/${currentMember.id}/profile`;
-                      console.log('Profile button clicked!');
-                      console.log('Current member ID:', currentMember.id);
-                      console.log('Navigating to profile:', profileUrl);
-                      console.log('Current location before navigation:', window.location.href);
-                      router.push(profileUrl);
-                      setTimeout(() => {
-                        console.log('Location after router.push:', window.location.href);
-                      }, 100);
-                    }}
-                    className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
-                  >
-                    <User className="w-3 h-3 mr-1" />
-                    Profile
-                  </Button>
+                  <Link href={`/members/${currentMember.id}/profile`}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
+                    >
+                      <User className="w-3 h-3 mr-1" />
+                      Profile
+                    </Button>
+                  </Link>
                   {isAdmin && (
                     <Button
                       variant="outline"
