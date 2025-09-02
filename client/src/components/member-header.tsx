@@ -14,6 +14,7 @@ import SignInModal from "./sign-in-modal";
 import { getCurrentMember, clearCurrentMember } from "@/lib/memberSession";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useChatNotifications } from "@/hooks/useChatNotifications";
 import { PushNotificationManager } from "./PushNotificationManager";
 
 export default function MemberHeader() {
@@ -23,6 +24,7 @@ export default function MemberHeader() {
   const queryClient = useQueryClient();
   const currentMember = getCurrentMember();
   const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotifications();
+  const { unreadRoomsCount, markRoomAsRead, markAllRoomsAsRead } = useChatNotifications();
 
   // Check if current member is admin (CJ DirtyEwok)
   const isAdmin = currentMember?.gamertag === "CJ DirtyEwok";
@@ -132,13 +134,22 @@ export default function MemberHeader() {
             {navigation.map((item) => (
               <Link key={item.name} href={item.href}>
                 <div
-                  className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors relative ${
                     location === item.href
                       ? "bg-racing-green text-white"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white"
                   }`}
+                  onClick={() => {
+                    if (item.name === "Chat") {
+                      // Mark chat as read when clicked
+                      markAllRoomsAsRead();
+                    }
+                  }}
                 >
                   {item.name}
+                  {item.name === "Chat" && unreadRoomsCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+                  )}
                 </div>
               </Link>
             ))}
@@ -225,14 +236,22 @@ export default function MemberHeader() {
             {navigation.map((item) => (
               <Link key={item.name} href={item.href}>
                 <div
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors ${
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    if (item.name === "Chat") {
+                      markAllRoomsAsRead();
+                    }
+                  }}
+                  className={`block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors relative ${
                     location === item.href
                       ? "bg-racing-green text-white"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white"
                   }`}
                 >
                   {item.name}
+                  {item.name === "Chat" && unreadRoomsCount > 0 && (
+                    <span className="absolute top-2 right-3 h-3 w-3 bg-red-500 rounded-full"></span>
+                  )}
                 </div>
               </Link>
             ))}

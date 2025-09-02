@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { Bell } from "lucide-react";
 import logoImage from "@assets/new-grid-logo.png";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useChatNotifications } from "@/hooks/useChatNotifications";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +16,7 @@ import { getCurrentMember } from "@/lib/memberSession";
 export default function Header() {
   const [location] = useLocation();
   const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotifications();
+  const { unreadRoomsCount, markAllRoomsAsRead } = useChatNotifications();
   const currentMember = getCurrentMember();
 
   const navItems = [
@@ -48,13 +50,21 @@ export default function Header() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`font-medium transition-colors ${
+                className={`font-medium transition-colors relative ${
                   location === item.path
                     ? "text-racing-green"
                     : "text-gray-300 hover:text-racing-green"
                 }`}
+                onClick={() => {
+                  if (item.label === "Chat") {
+                    markAllRoomsAsRead();
+                  }
+                }}
               >
                 {item.label}
+                {item.label === "Chat" && unreadRoomsCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+                )}
               </Link>
             ))}
           </nav>
