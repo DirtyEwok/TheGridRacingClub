@@ -30,7 +30,7 @@ export function useChatNotifications() {
   });
 
   // Get all chat rooms
-  const { data: chatRooms = [] } = useQuery({
+  const { data: chatRooms = [] } = useQuery<ChatRoom[]>({
     queryKey: ['/api/chat-rooms'],
     enabled: !!currentMember,
   });
@@ -39,7 +39,7 @@ export function useChatNotifications() {
   const { data: allRoomsMessages = [] } = useQuery({
     queryKey: ['/api/chat-rooms/latest-messages'],
     queryFn: async () => {
-      if (!chatRooms.length) return [];
+      if (!Array.isArray(chatRooms) || chatRooms.length === 0) return [];
       
       const roomMessages = await Promise.all(
         chatRooms.map(async (room: ChatRoom) => {
@@ -59,12 +59,13 @@ export function useChatNotifications() {
       );
       return roomMessages;
     },
-    enabled: !!currentMember && chatRooms.length > 0,
+    enabled: !!currentMember && Array.isArray(chatRooms) && chatRooms.length > 0,
     refetchInterval: 30000, // Check every 30 seconds
   });
 
   // Calculate unread count
-  const unreadRoomsCount = allRoomsMessages.reduce((count, roomData) => {
+  const unreadRoomsCount = Array.isArray(allRoomsMessages) 
+    ? allRoomsMessages.reduce((count: number, roomData: any) => {
     if (!roomData.latestMessage || !currentMember) return count;
     
     const lastSeen = lastSeenTimestamps[roomData.roomId];
@@ -79,7 +80,8 @@ export function useChatNotifications() {
     }
     
     return count;
-  }, 0);
+  }, 0)
+    : 0;
 
   const markRoomAsRead = (roomId: string) => {
     const now = new Date().toISOString();
@@ -95,9 +97,11 @@ export function useChatNotifications() {
     const now = new Date().toISOString();
     const newTimestamps: Record<string, string> = {};
     
-    chatRooms.forEach((room: ChatRoom) => {
-      newTimestamps[room.id] = now;
-    });
+    if (Array.isArray(chatRooms)) {
+      chatRooms.forEach((room: ChatRoom) => {
+        newTimestamps[room.id] = now;
+      });
+    }
     
     setLastSeenTimestamps(newTimestamps);
     localStorage.setItem('chat-last-seen', JSON.stringify(newTimestamps));
