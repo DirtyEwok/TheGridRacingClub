@@ -176,15 +176,26 @@ export default function MemberHeader() {
                     Profile
                   </Button>
                   {isAdmin && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.location.href = "/admin"}
-                      className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white h-6 px-2 text-xs"
-                    >
-                      <Settings className="w-3 h-3 mr-1" />
-                      Admin
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.location.href = "/admin/members"}
+                        className="border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white h-6 px-2 text-xs"
+                      >
+                        <User className="w-3 h-3 mr-1" />
+                        Members
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.location.href = "/admin"}
+                        className="border-orange-600 text-orange-400 hover:bg-orange-600 hover:text-white h-6 px-2 text-xs"
+                      >
+                        <Settings className="w-3 h-3 mr-1" />
+                        Admin
+                      </Button>
+                    </>
                   )}
                   <PushNotificationManager />
                   <Button
