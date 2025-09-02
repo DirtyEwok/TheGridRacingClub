@@ -165,7 +165,11 @@ export default function MemberHeader() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.location.href = `/members/${currentMember.id}/profile`}
+                    onClick={() => {
+                      const profileUrl = `/members/${currentMember.id}/profile`;
+                      console.log('Navigating to profile:', profileUrl);
+                      window.location.href = profileUrl;
+                    }}
                     className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
                   >
                     <User className="w-3 h-3 mr-1" />
