@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -187,7 +188,11 @@ function AdminMemberApproval() {
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-white flex items-center gap-2">
-                        {member.displayName}
+                        <Link href={`/members/${member.id}/profile`}>
+                          <span className="text-orange-500 hover:text-orange-400 underline cursor-pointer">
+                            {member.displayName}
+                          </span>
+                        </Link>
                         <Badge 
                           variant="outline" 
                           className={
