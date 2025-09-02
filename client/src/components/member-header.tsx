@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useRouter } from "wouter";
 import { Menu, X, User, Settings, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +25,7 @@ export default function MemberHeader() {
   const currentMember = getCurrentMember();
   const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotifications();
   const { unreadRoomsCount, markRoomAsRead, markAllRoomsAsRead } = useChatNotifications();
+  const router = useRouter();
 
   // Check if current member is admin (CJ DirtyEwok)
   const isAdmin = currentMember?.gamertag === "CJ DirtyEwok";
@@ -168,7 +169,7 @@ export default function MemberHeader() {
                     onClick={() => {
                       const profileUrl = `/members/${currentMember.id}/profile`;
                       console.log('Navigating to profile:', profileUrl);
-                      window.location.href = profileUrl;
+                      router.push(profileUrl);
                     }}
                     className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
                   >
@@ -266,7 +267,9 @@ export default function MemberHeader() {
                 <div className="border-t border-gray-600 my-2"></div>
                 <div
                   onClick={() => {
-                    window.location.href = `/members/${currentMember.id}/profile`;
+                    const profileUrl = `/members/${currentMember.id}/profile`;
+                    console.log('Mobile: Navigating to profile:', profileUrl);
+                    router.push(profileUrl);
                     setIsMenuOpen(false);
                   }}
                   className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
