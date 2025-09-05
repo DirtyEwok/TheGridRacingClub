@@ -27,8 +27,8 @@ export default function MemberHeader() {
   const { unreadRoomsCount, markRoomAsRead, markAllRoomsAsRead } = useChatNotifications();
   const router = useRouter();
 
-  // Check if current member is admin (CJ DirtyEwok)
-  const isAdmin = currentMember?.gamertag === "CJ DirtyEwok";
+  // Check if current member is admin (CJ DirtyEwok) or always show for owner
+  const isAdmin = currentMember?.gamertag === "CJ DirtyEwok" || currentMember?.displayName === "CJ Carmichael";
 
   const navigation = [
     { name: "Chat", href: "/chat" },
