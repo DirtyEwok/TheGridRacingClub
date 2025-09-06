@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useRouter } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Menu, X, User, Settings, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +25,7 @@ export default function MemberHeader() {
   const currentMember = getCurrentMember();
   const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotifications();
   const { unreadRoomsCount, markRoomAsRead, markAllRoomsAsRead } = useChatNotifications();
-  const [, setLocation] = useRouter();
+  const setLocation = useLocation()[1];
 
   // Check if current member is admin (CJ DirtyEwok) or always show for owner
   const isAdmin = currentMember?.gamertag === "CJ DirtyEwok" || currentMember?.displayName === "CJ Carmichael";
