@@ -25,7 +25,7 @@ export default function MemberHeader() {
   const currentMember = getCurrentMember();
   const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotifications();
   const { unreadRoomsCount, markRoomAsRead, markAllRoomsAsRead } = useChatNotifications();
-  const router = useRouter();
+  const [, setLocation] = useRouter();
 
   // Check if current member is admin (CJ DirtyEwok) or always show for owner
   const isAdmin = currentMember?.gamertag === "CJ DirtyEwok" || currentMember?.displayName === "CJ Carmichael";
@@ -279,7 +279,7 @@ export default function MemberHeader() {
                   onClick={() => {
                     const profileUrl = `/members/${currentMember.id}/profile`;
                     console.log('Mobile: Navigating to profile:', profileUrl);
-                    router.push(profileUrl);
+                    setLocation(profileUrl);
                     setIsMenuOpen(false);
                   }}
                   className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
