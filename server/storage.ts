@@ -878,7 +878,7 @@ Sessions:
 • 20 mins Q
 • 90 mins R
 
-No mandatory pit stop.
+2 Mandatory Stops
 Random weather
 
 Rounds:
