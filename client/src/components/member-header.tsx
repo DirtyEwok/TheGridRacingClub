@@ -278,29 +278,17 @@ export default function MemberHeader() {
             {currentMember && (
               <>
                 <div className="border-t border-gray-600 my-2"></div>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const profileUrl = `/members/${currentMember.id}/profile`;
-                    console.log('Mobile Profile clicked!');
-                    console.log('Current member:', currentMember);
-                    console.log('Profile URL:', profileUrl);
-                    alert(`Mobile: Navigating to profile: ${profileUrl}`);
-                    setLocation(profileUrl);
+                <div
+                  onClick={() => {
+                    alert('Mobile Profile tapped!');
+                    window.location.href = `/members/${currentMember.id}/profile`;
                     setIsMenuOpen(false);
                   }}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
-                    console.log('Touch detected on mobile profile!');
-                  }}
-                  className="w-full text-left block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
-                  style={{ WebkitTapHighlightColor: 'rgba(255, 255, 255, 0.1)' }}
+                  className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
                 >
                   <User className="w-4 h-4 mr-2" />
                   Profile
-                </button>
+                </div>
                 
                 {/* Mobile Alerts Section */}
                 <div className="px-3 py-2">
