@@ -1,8 +1,8 @@
 import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award, Flag } from "lucide-react";
 import gt4LeaderboardImage from "@assets/GT4zolder_1756637219903.png";
-import raceResult1 from "@assets/image_1756637358869.png";
-import raceResult2 from "@assets/image_1756637383896.png";
+import raceResult1 from "@assets/gt4_race_result_1.png";
+import raceResult2 from "@assets/gt4_race_result_2.png";
 
 export default function Leaderboards() {
   return (
