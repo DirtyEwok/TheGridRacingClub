@@ -163,16 +163,15 @@ export default function MemberHeader() {
               {currentMember ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-300">Welcome, {currentMember.displayName}</span>
-                  <Link href={`/members/${currentMember.id}/profile`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
-                    >
-                      <User className="w-3 h-3 mr-1" />
-                      Profile
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.href = `/members/${currentMember.id}/profile`}
+                    className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
+                  >
+                    <User className="w-3 h-3 mr-1" />
+                    Profile
+                  </Button>
                   {isAdmin && (
                     <>
                       <Button
@@ -273,17 +272,16 @@ export default function MemberHeader() {
             {currentMember && (
               <>
                 <div className="border-t border-gray-600 my-2"></div>
-                <Link href={`/members/${currentMember.id}/profile`}>
-                  <div
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                    }}
-                    className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Profile
-                  </div>
-                </Link>
+                <div
+                  onClick={() => {
+                    window.location.href = `/members/${currentMember.id}/profile`;
+                    setIsMenuOpen(false);
+                  }}
+                  className="block px-3 py-2 rounded-md text-base font-medium cursor-pointer transition-colors text-gray-300 hover:bg-gray-700 hover:text-white flex items-center"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Profile
+                </div>
                 
                 {/* Mobile Alerts Section */}
                 <div className="px-3 py-2">
