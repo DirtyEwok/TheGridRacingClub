@@ -1,6 +1,6 @@
 import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award, Flag } from "lucide-react";
-import gt4LeaderboardImage from "@assets/gt4_standings_monza.png";
+import gt4LeaderboardImage from "@assets/GT4Monza_1757239335645.png";
 import raceResult1 from "@assets/gt4_race_1_results.png";
 import raceResult2 from "@assets/gt4_race_2_results.png";
 
