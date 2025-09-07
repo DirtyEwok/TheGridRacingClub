@@ -3,7 +3,7 @@ import { type Member } from "@shared/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply, BarChart3 } from "lucide-react";
+import { Send, Crown, Trash2, Image, Link, Play, Heart, Pin, PinOff, Reply, BarChart3, Upload } from "lucide-react";
 import { ObjectUploader } from "./ObjectUploader";
 import { PollCreator } from "./PollCreator";
 import { PollDisplay } from "./PollDisplay";
@@ -419,6 +419,51 @@ export default function ChatRoomComponent({
     }
   };
 
+  // Handle media upload - automatically sends uploaded media as a message
+  const handleMediaUpload = async (uploadURL: string) => {
+    if (isSending) return;
+    
+    try {
+      setIsSending(true);
+      
+      // Normalize the upload URL to get the object path
+      const normalizeResponse = await fetch('/api/objects/normalize-path', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uploadURL }),
+      });
+      
+      if (!normalizeResponse.ok) {
+        console.error('Failed to normalize object path');
+        return;
+      }
+      
+      const { objectPath } = await normalizeResponse.json();
+      
+      // Send the object path as a message
+      const response = await fetch(`/api/chat-rooms/${chatRoom.id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: objectPath,
+          memberId: currentMemberId,
+          replyToMessageId: replyingTo?.id || null,
+        }),
+      });
+      
+      if (response.ok) {
+        setReplyingTo(null); // Clear reply context after successful upload
+      }
+    } catch (error) {
+      console.error('Error uploading media:', error);
+    } finally {
+      setTimeout(() => setIsSending(false), 300);
+    }
+  };
 
   const formatMessageTime = (date: Date) => {
     const messageDate = new Date(date);
@@ -1118,9 +1163,7 @@ export default function ChatRoomComponent({
               disabled={isSending}
             />
             <ObjectUploader
-              onComplete={(imageUrl) => {
-                setMessageText(prev => prev + ` ${imageUrl}`);
-              }}
+              onComplete={(uploadURL) => handleMediaUpload(uploadURL)}
               buttonClassName="h-10 w-10 p-0 bg-gray-700 hover:bg-gray-600"
             >
               <Image className="w-4 h-4" />
