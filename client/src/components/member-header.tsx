@@ -167,8 +167,11 @@ export default function MemberHeader() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      console.log('Direct navigation attempt...');
-                      window.location.href = `${window.location.origin}/members/${currentMember.id}/profile`;
+                      console.log('Profile button clicked!');
+                      console.log('Current member:', currentMember);
+                      console.log('Profile URL:', `/members/${currentMember.id}/profile`);
+                      alert(`Navigating to profile: /members/${currentMember.id}/profile`);
+                      window.location.href = `/members/${currentMember.id}/profile`;
                     }}
                     className="border-gray-600 text-white hover:bg-gray-700 h-6 px-2 text-xs"
                   >
@@ -278,7 +281,10 @@ export default function MemberHeader() {
                 <div
                   onClick={() => {
                     const profileUrl = `/members/${currentMember.id}/profile`;
-                    console.log('Mobile: Navigating to profile:', profileUrl);
+                    console.log('Mobile Profile clicked!');
+                    console.log('Current member:', currentMember);
+                    console.log('Profile URL:', profileUrl);
+                    alert(`Mobile: Navigating to profile: ${profileUrl}`);
                     setLocation(profileUrl);
                     setIsMenuOpen(false);
                   }}
