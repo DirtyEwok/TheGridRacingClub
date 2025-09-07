@@ -1,8 +1,5 @@
 import MemberHeader from "@/components/member-header";
 import { Trophy, Medal, Award, Flag } from "lucide-react";
-import gt4LeaderboardImage from "@assets/GT4Monza_1757239335645.png";
-import raceResult1 from "@assets/gt4_race_1_results.png";
-import raceResult2 from "@assets/gt4_race_2_results.png";
 
 export default function Leaderboards() {
   return (
@@ -45,7 +42,7 @@ export default function Leaderboards() {
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
               <div className="text-center">
                 <img 
-                  src={gt4LeaderboardImage} 
+                  src="/gt4_standings.png" 
                   alt="GT4 Mornings Season 2 Leaderboard" 
                   className="w-full h-auto rounded-lg"
                 />
@@ -86,7 +83,7 @@ export default function Leaderboards() {
                 {/* Race Result 1 */}
                 <div className="text-center">
                   <img 
-                    src={raceResult1} 
+                    src="/gt4_race1.png" 
                     alt="GT4 Race Results - Lap Times" 
                     className="w-full h-auto max-w-sm mx-auto rounded-lg border border-gray-600"
                   />
@@ -95,7 +92,7 @@ export default function Leaderboards() {
                 {/* Race Result 2 */}
                 <div className="text-center">
                   <img 
-                    src={raceResult2} 
+                    src="/gt4_race2.png" 
                     alt="GT4 Race Results - Final Times" 
                     className="w-full h-auto max-w-sm mx-auto rounded-lg border border-gray-600"
                   />
